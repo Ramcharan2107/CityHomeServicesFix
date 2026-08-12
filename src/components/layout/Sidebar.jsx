@@ -19,6 +19,17 @@ function Sidebar({ sidebarOpen, closeSidebar, isMobile }) {
         },
 
         {
+            title: "PROFILES",
+            items: [
+                {
+                    name: "Profiles",
+                    icon: "bi-person-vcard",
+                    path: "/admin/profiles"
+                }
+            ]
+        },
+
+        {
             title: "MANAGEMENT",
             items: [
                 {

@@ -43,6 +43,7 @@ import JobAssignments from "../pages/Admin/JobAssignments/JobAssignments";
 import JobProgress from "../pages/Admin/JobProgress/JobProgress";
 import FinalReports from "../pages/Admin/FinalReports/FinalReports";
 import Notifications from "../pages/Admin/Notifications/Notifications";
+import Profiles from "../pages/Profiles/Profiles";
 import CustomerNotifications from "../pages/Customer/CustomerNotifications";
 import CategoryDetails from "../pages/Categories/CategoryDetails";
 function AppRoutes() {
@@ -186,6 +187,11 @@ function AppRoutes() {
                     <Route
                         path="/dashboard"
                         element={<Dashboard />}
+                    />
+
+                    <Route
+                        path="/admin/profiles"
+                        element={<Profiles />}
                     />
 
                     <Route
