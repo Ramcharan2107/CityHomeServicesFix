@@ -1,0 +1,591 @@
+/* =========================================================
+   HOW IT WORKS
+========================================================= */
+
+.how-it-works-section {
+    position: relative;
+    overflow: hidden;
+
+    padding: 85px 0;
+
+    background:
+        radial-gradient(
+            circle at 10% 20%,
+            rgba(247, 148, 29, 0.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(244, 180, 0, 0.08),
+            transparent 30%
+        ),
+        #fffaf0;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.how-header {
+    max-width: 760px;
+    margin: 0 auto 65px;
+    text-align: center;
+
+    opacity: 0;
+    transform: translateY(35px);
+
+    transition:
+        opacity .8s ease,
+        transform .8s ease;
+}
+
+.how-visible .how-header {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+.how-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 17px;
+
+    border-radius: 50px;
+
+    background: rgba(247, 148, 29, .12);
+
+    color: #F7941D;
+
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+
+    margin-bottom: 18px;
+}
+
+.how-badge span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #F7941D;
+
+    box-shadow: 0 0 0 5px rgba(247,148,29,.10);
+}
+
+
+.how-header h2 {
+    margin: 0;
+
+    color: #0B2E4F;
+
+    font-size: clamp(
+        2.2rem,
+        5vw,
+        3.7rem
+    );
+
+    line-height: 1.08;
+
+    font-weight: 800;
+
+    letter-spacing: -1.5px;
+}
+
+.how-header h2 strong {
+    color: #F7941D;
+}
+
+.how-header p {
+    max-width: 680px;
+
+    margin: 22px auto 0;
+
+    color: #6B7280;
+
+    font-size: 17px;
+
+    line-height: 1.75;
+}
+
+
+/* =========================================================
+   MAIN FLOW
+========================================================= */
+
+.how-flow {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(0, .85fr);
+
+    gap: 80px;
+
+    align-items: center;
+}
+
+
+/* =========================================================
+   LEFT DETAIL CARD
+========================================================= */
+
+.how-details {
+    position: relative;
+}
+
+.how-detail-card {
+    position: relative;
+
+    padding: 48px;
+
+    background: rgba(255,255,255,.88);
+
+    border: 1px solid rgba(247,148,29,.18);
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 25px 70px rgba(11,46,79,.08);
+
+    overflow: hidden;
+
+    animation: howCardIn .55s ease;
+}
+
+@keyframes howCardIn {
+
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+}
+
+
+.how-detail-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 6px;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            #F7941D,
+            #F4B400
+        );
+}
+
+
+.how-detail-number {
+    position: absolute;
+
+    top: 20px;
+    right: 28px;
+
+    font-size: 72px;
+
+    line-height: 1;
+
+    font-weight: 800;
+
+    color: rgba(247,148,29,.08);
+}
+
+
+.how-detail-icon {
+    width: 76px;
+    height: 76px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #FFF3D6,
+            #FFE7B0
+        );
+
+    color: #F7941D;
+
+    font-size: 32px;
+
+    margin-bottom: 28px;
+}
+
+
+.how-detail-label {
+    color: #F7941D;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: .12em;
+}
+
+
+.how-detail-card h3 {
+    margin: 8px 0 16px;
+
+    color: #0B2E4F;
+
+    font-size: clamp(
+        1.8rem,
+        3vw,
+        2.5rem
+    );
+
+    font-weight: 800;
+}
+
+
+.how-detail-card > p {
+    margin-bottom: 28px;
+
+    color: #6B7280;
+
+    font-size: 16px;
+
+    line-height: 1.75;
+}
+
+
+.how-detail-list {
+    display: grid;
+
+    gap: 13px;
+}
+
+
+.how-detail-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    color: #0B2E4F;
+
+    font-size: 15px;
+
+    font-weight: 600;
+}
+
+
+.how-detail-item i {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 23px;
+    height: 23px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: rgba(247,148,29,.12);
+
+    color: #F7941D;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+.how-timeline {
+    position: relative;
+
+    padding: 10px 0;
+}
+
+
+.how-line {
+    position: absolute;
+
+    left: 34px;
+
+    top: 42px;
+    bottom: 42px;
+
+    width: 2px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #F7941D,
+            rgba(247,148,29,.12)
+        );
+}
+
+
+.how-step {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+    padding: 18px 20px;
+
+    margin-bottom: 18px;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    transition:
+        transform .35s ease,
+        background .35s ease,
+        box-shadow .35s ease;
+}
+
+
+.how-step:last-child {
+    margin-bottom: 0;
+}
+
+
+.how-step:hover {
+    transform: translateX(8px);
+
+    background: rgba(255,255,255,.7);
+}
+
+
+.how-step.active {
+    background: #fff;
+
+    box-shadow:
+        0 15px 40px rgba(11,46,79,.08);
+
+    transform: translateX(8px);
+}
+
+
+/* marker */
+
+.how-step-marker {
+    position: relative;
+
+    z-index: 2;
+
+    width: 68px;
+    height: 68px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #FFF8EF;
+
+    border: 2px solid #F7941D;
+
+    transition: .35s ease;
+}
+
+
+.how-step-marker span {
+    color: #F7941D;
+
+    font-size: 15px;
+
+    font-weight: 800;
+}
+
+
+.how-step.active .how-step-marker {
+    background:
+        linear-gradient(
+            135deg,
+            #F7941D,
+            #F4B400
+        );
+
+    border-color: #F7941D;
+
+    box-shadow:
+        0 0 0 8px rgba(247,148,29,.10),
+        0 12px 30px rgba(247,148,29,.25);
+}
+
+
+.how-step.active .how-step-marker span {
+    color: white;
+}
+
+
+/* content */
+
+.how-step-content {
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    min-width: 0;
+}
+
+
+.how-step-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 13px;
+
+    background: rgba(247,148,29,.09);
+
+    color: #F7941D;
+
+    font-size: 20px;
+
+    transition: .35s ease;
+}
+
+
+.how-step.active .how-step-icon {
+    background: #FFF0D4;
+}
+
+
+.how-step h4 {
+    margin: 0 0 5px;
+
+    color: #0B2E4F;
+
+    font-size: 18px;
+
+    font-weight: 750;
+}
+
+
+.how-step p {
+    margin: 0;
+
+    color: #7B8491;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .how-it-works-section {
+        padding: 65px 0;
+    }
+
+    .how-header {
+        margin-bottom: 45px;
+    }
+
+    .how-flow {
+        grid-template-columns: 1fr;
+
+        gap: 45px;
+    }
+
+    .how-detail-card {
+        padding: 38px;
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .how-it-works-section {
+        padding: 50px 0;
+    }
+
+    .how-header h2 {
+        font-size: 2.15rem;
+    }
+
+    .how-header p {
+        font-size: 15px;
+    }
+
+    .how-detail-card {
+        padding: 32px 25px;
+    }
+
+    .how-detail-number {
+        font-size: 55px;
+    }
+
+    .how-step {
+        gap: 15px;
+
+        padding: 14px 10px;
+    }
+
+    .how-step-marker {
+        width: 55px;
+        height: 55px;
+    }
+
+    .how-step-content {
+        gap: 10px;
+    }
+
+    .how-step-icon {
+        display: none;
+    }
+
+    .how-step h4 {
+        font-size: 16px;
+    }
+
+    .how-step p {
+        font-size: 13px;
+    }
+
+    .how-line {
+        left: 37px;
+    }
+
+}

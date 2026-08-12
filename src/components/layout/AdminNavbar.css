@@ -1,0 +1,79 @@
+/* ==========================================
+   ADMIN NAVBAR
+========================================== */
+
+.admin-navbar{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    right:0;
+
+    height:80px;
+
+    background:#ffdd78;   /* Same as website */
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 24px;
+
+    border-bottom:1px solid #E5E7EB;
+
+    z-index:1100;
+
+}
+
+.admin-navbar-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+}
+
+.admin-navbar-center{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:28px;
+
+}
+
+.nav-link-custom{
+
+    text-decoration:none;
+
+    color:#0B2E4F;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.nav-link-custom:hover{
+
+    color:#F7941D;
+
+}
+
+.admin-navbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}

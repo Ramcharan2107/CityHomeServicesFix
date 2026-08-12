@@ -1,0 +1,1007 @@
+/* =========================================================
+   FEATURED TECHNICIANS
+========================================================= */
+
+.technicians-section {
+    position: relative;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    padding:
+        clamp(40px, 4vw, 50px)
+        0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #FFF8EF 0%,
+            #FFF3D6 100%
+        );
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.technician-glow {
+    position: absolute;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(10px);
+
+    opacity: .55;
+
+    animation:
+        technicianFloat
+        16s
+        ease-in-out
+        infinite;
+}
+
+
+.technician-glow-one {
+    width: 360px;
+    height: 360px;
+
+    right: -170px;
+    top: -150px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(247,148,29,.14),
+            transparent 70%
+        );
+}
+
+
+.technician-glow-two {
+    width: 300px;
+    height: 300px;
+
+    left: -150px;
+    bottom: -160px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(244,180,0,.10),
+            transparent 70%
+        );
+
+    animation-delay: -7s;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.technicians-header {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 720px;
+
+    margin:
+        0 auto
+        45px;
+
+    text-align: center;
+
+    opacity: 0;
+
+    transform:
+        translateY(35px);
+}
+
+
+.technicians-visible
+.technicians-header {
+    animation:
+        technicianHeaderIn
+        .8s
+        cubic-bezier(.22,1,.36,1)
+        forwards;
+}
+
+
+.technicians-label {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        7px
+        14px;
+
+    margin-bottom: 16px;
+
+    border-radius: 30px;
+
+    background: #FFF3D6;
+
+    color: #0B2E4F;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: .08em;
+}
+
+
+.technicians-label span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #F7941D;
+
+    box-shadow:
+        0 0 0 5px
+        rgba(247,148,29,.10);
+}
+
+
+.technicians-header h2 {
+    margin: 0;
+
+    color: #0B2E4F;
+
+    font-size:
+        clamp(2rem,4vw,3rem);
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    letter-spacing: -1.2px;
+}
+
+
+.technicians-header h2 span {
+    color: #F7941D;
+}
+
+
+.technicians-header p {
+    max-width: 650px;
+
+    margin:
+        15px auto
+        0;
+
+    color: #6B7280;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   CAROUSEL
+========================================================= */
+
+.technicians-carousel {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    gap: 22px;
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    padding:
+        8px
+        5px
+        20px;
+
+    scroll-behavior: smooth;
+
+    scroll-snap-type: x mandatory;
+
+    scrollbar-width: none;
+
+    -ms-overflow-style: none;
+}
+
+
+.technicians-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================================================
+   SLIDE
+========================================================= */
+
+.technician-slide {
+    flex:
+        0 0
+        calc(25% - 17px);
+
+    min-width: 250px;
+
+    scroll-snap-align: start;
+
+    opacity: 0;
+
+    transform:
+        translateY(40px)
+        scale(.97);
+}
+
+
+.technicians-visible
+.technician-slide {
+    animation:
+        technicianCardIn
+        .75s
+        cubic-bezier(.22,1,.36,1)
+        var(--tech-delay)
+        forwards;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.technician-card {
+    overflow: hidden;
+
+    height: 100%;
+
+    background: #FFFFFF;
+
+    border:
+        1px solid
+        rgba(11,46,79,.07);
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(11,46,79,.055);
+
+    transition:
+        transform .4s
+        cubic-bezier(.22,1,.36,1),
+
+        box-shadow .4s ease,
+
+        border-color .4s ease;
+}
+
+
+.technician-card:hover {
+    transform:
+        translateY(-10px);
+
+    border-color:
+        rgba(247,148,29,.25);
+
+    box-shadow:
+        0 24px 50px
+        rgba(11,46,79,.12);
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.technician-image-wrapper {
+    position: relative;
+
+    height: 300px;
+
+    overflow: hidden;
+}
+
+
+.technician-image {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform .7s
+        cubic-bezier(.22,1,.36,1);
+}
+
+
+.technician-card:hover
+.technician-image {
+    transform:
+        scale(1.08);
+}
+
+
+.technician-image-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(11,46,79,.03),
+            rgba(11,46,79,.38)
+        );
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   ROLE
+========================================================= */
+
+.technician-role {
+    position: absolute;
+
+    top: 15px;
+    left: 15px;
+
+    padding:
+        7px
+        13px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(247,148,29,.95);
+
+    color: #FFFFFF;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    backdrop-filter: blur(8px);
+}
+
+
+/* =========================================================
+   RATING
+========================================================= */
+
+.technician-rating {
+    position: absolute;
+
+    right: 15px;
+    bottom: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding:
+        7px
+        11px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(255,255,255,.95);
+
+    color: #0B2E4F;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 5px 15px
+        rgba(0,0,0,.12);
+}
+
+
+.technician-rating i {
+    color: #F4B400;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.technician-body {
+    padding:
+        22px;
+}
+
+
+/* =========================================================
+   NAME
+========================================================= */
+
+.technician-name-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.technician-name-row h3 {
+    margin: 0;
+
+    color: #0B2E4F;
+
+    font-size: 19px;
+
+    font-weight: 800;
+}
+
+
+.technician-verified {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #F7941D;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   SPECIALIST
+========================================================= */
+
+.technician-specialist {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin:
+        7px
+        0
+        20px;
+
+    color: #7A8795;
+
+    font-size: 13px;
+}
+
+
+.technician-specialist i {
+    color: #F7941D;
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.technician-stats {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding:
+        15px 0;
+
+    margin-bottom: 16px;
+
+    border-top:
+        1px solid
+        #EEF0F2;
+
+    border-bottom:
+        1px solid
+        #EEF0F2;
+}
+
+
+.technician-stats > div:not(.technician-divider) {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    flex: 1;
+}
+
+
+.technician-stats span {
+    color: #9AA3AC;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: .06em;
+}
+
+
+.technician-stats strong {
+    color: #0B2E4F;
+
+    font-size: 14px;
+
+    font-weight: 800;
+}
+
+
+.technician-divider {
+    width: 1px;
+    height: 30px;
+
+    background: #E6E9EC;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.technician-button {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    width: 100%;
+
+    padding:
+        11px
+        16px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #F7941D,
+            #FFB800
+        );
+
+    color: #FFFFFF;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 7px 18px
+        rgba(247,148,29,.18);
+
+    transition:
+        transform .25s ease,
+
+        box-shadow .25s ease;
+}
+
+
+.technician-button:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 24px
+        rgba(247,148,29,.28);
+}
+
+
+.technician-button span {
+    font-size: 17px;
+
+    transition:
+        transform .25s ease;
+}
+
+
+.technician-button:hover span {
+    transform:
+        translateX(4px);
+}
+
+
+/* =========================================================
+   DOTS
+========================================================= */
+
+.technicians-pagination {
+    position: relative;
+
+    z-index: 3;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 20px;
+}
+
+
+.technician-dot {
+    width: 8px;
+    height: 8px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #D9DEE4;
+
+    cursor: pointer;
+
+    transition:
+        width .3s
+        cubic-bezier(.22,1,.36,1),
+
+        background .3s ease,
+
+        transform .3s ease;
+}
+
+
+.technician-dot:hover {
+    background: #F7941D;
+
+    transform:
+        scale(1.25);
+}
+
+
+.technician-dot.active {
+    width: 27px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #F7941D,
+            #FFB800
+        );
+
+    box-shadow:
+        0 4px 12px
+        rgba(247,148,29,.20);
+}
+
+
+/* =========================================================
+   TRUST STRIP
+========================================================= */
+
+.technician-trust-strip {
+    position: relative;
+
+    z-index: 2;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 1px;
+
+    margin-top: 45px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(247,148,29,.12);
+
+    border-radius: 18px;
+
+    background:
+        rgba(247,148,29,.08);
+}
+
+
+.technician-trust-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding:
+        20px 22px;
+
+    background:
+        rgba(255,255,255,.72);
+}
+
+
+.trust-icon {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: #FFF3D6;
+
+    color: #F7941D;
+
+    font-size: 17px;
+}
+
+
+.technician-trust-item strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #0B2E4F;
+
+    font-size: 12px;
+
+    font-weight: 750;
+}
+
+
+.technician-trust-item span {
+    display: block;
+
+    color: #8A96A3;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes technicianHeaderIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+@keyframes technicianCardIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(40px)
+            scale(.97);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+@keyframes technicianFloat {
+
+    0%,
+    100% {
+        transform:
+            translate3d(0,0,0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(30px,-25px,0)
+            scale(1.08);
+    }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1199px) {
+
+    .technician-slide {
+        flex:
+            0 0
+            calc(50% - 11px);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .technicians-section {
+        padding:
+            60px
+            0;
+    }
+
+
+    .technicians-header {
+        margin-bottom: 30px;
+    }
+
+
+    .technicians-header h2 {
+        font-size: 2.2rem;
+    }
+
+
+    .technicians-header p {
+        padding:
+            0 10px;
+
+        font-size: 14px;
+    }
+
+
+    .technicians-carousel {
+        gap: 16px;
+
+        padding:
+            8px
+            3px
+            18px;
+    }
+
+
+    .technician-slide {
+        flex:
+            0 0
+            84%;
+    }
+
+
+    .technician-image-wrapper {
+        height: 290px;
+    }
+
+
+    .technician-trust-strip {
+        grid-template-columns: 1fr;
+
+        gap: 1px;
+
+        margin-top: 35px;
+    }
+
+
+    .technician-trust-item {
+        padding:
+            17px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .technicians-section {
+        padding:
+            55px
+            0;
+    }
+
+
+    .technicians-header h2 {
+        font-size: 2rem;
+    }
+
+
+    .technician-slide {
+        flex:
+            0 0
+            88%;
+    }
+
+
+    .technician-body {
+        padding:
+            19px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .technician-glow,
+    .technicians-header,
+    .technician-slide {
+        animation: none !important;
+    }
+
+
+    .technicians-header,
+    .technician-slide {
+        opacity: 1;
+
+        transform: none;
+    }
+
+
+    .technician-card,
+    .technician-image,
+    .technician-dot,
+    .technician-button {
+        transition: none !important;
+    }
+
+}

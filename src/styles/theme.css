@@ -1,0 +1,517 @@
+/* ==========================================
+   ADMIN LAYOUT
+========================================== */
+
+.admin-layout{
+    min-height:100vh;
+    background:#F8FAFC;
+}
+
+/* ==========================================
+   ADMIN CONTENT
+========================================== */
+
+.admin-content{
+    margin-top:80px;
+    min-height:calc(100vh - 80px);
+    padding:30px;
+    transition:all .3s ease;
+}
+
+.admin-content.sidebar-open{
+    margin-left:260px;
+}
+
+.admin-content.sidebar-close{
+    margin-left:80px;
+}
+
+/* ==========================================
+   SIDEBAR
+========================================== */
+
+.admin-sidebar{
+
+    position:fixed;
+
+    top:80px;
+
+    left:0;
+
+    width:260px;
+
+    height:calc(100vh - 80px);
+
+    background:#ffffff;
+
+    border-right:1px solid #E5E7EB;
+
+    overflow:hidden;
+
+    transition:all .3s ease;
+
+    z-index:1050;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.admin-sidebar.closed{
+
+    width:80px;
+
+}
+
+.sidebar-scroll{
+
+    height:100%;
+
+    overflow-y:auto;
+
+    padding:20px 14px;
+
+}
+
+.sidebar-scroll::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb{
+
+    background:#F7941D;
+
+    border-radius:20px;
+
+}
+
+/* ==========================================
+   SIDEBAR TITLES
+========================================== */
+
+.sidebar-title{
+
+    font-size:11px;
+
+    color:#94A3B8;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    margin:18px 12px 10px;
+
+}
+
+/* ==========================================
+   SIDEBAR LINKS
+========================================== */
+
+.sidebar-link{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    color:#374151;
+
+    text-decoration:none;
+
+    padding:12px 14px;
+
+    border-radius:14px;
+
+    margin-bottom:8px;
+
+    transition:.25s;
+
+    font-weight:600;
+
+}
+
+.sidebar-link:hover{
+
+    background:#FFF4E6;
+
+    color:#0B2E4F;
+
+    transform:translateX(5px);
+
+}
+
+.sidebar-link.active{
+
+    background:#F7941D;
+
+    color:white;
+
+    box-shadow:0 8px 20px rgba(247,148,29,.25);
+
+}
+
+.sidebar-link i{
+
+    font-size:20px;
+
+    min-width:24px;
+
+    text-align:center;
+
+}
+
+.admin-sidebar.closed .sidebar-link{
+
+    justify-content:center;
+
+    padding:14px;
+
+}
+
+.admin-sidebar.closed .sidebar-link span{
+
+    display:none;
+
+}
+
+.admin-sidebar.closed .sidebar-title{
+
+    display:none;
+
+}
+
+/* ==========================================
+   OVERLAY
+========================================== */
+
+.sidebar-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    z-index:1045;
+
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media(max-width:991px){
+
+.admin-sidebar{
+
+    transform:translateX(-100%);
+
+    width:260px;
+
+}
+
+.admin-sidebar.open{
+
+    transform:translateX(0);
+
+}
+
+.admin-sidebar.closed{
+
+    width:260px;
+
+}
+
+.admin-content{
+
+    margin-left:0!important;
+
+    padding:18px;
+
+}
+
+}
+
+/* ==========================================
+   TABLES
+========================================== */
+
+.table-responsive{
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+}
+
+/* ==========================================
+   BUTTON ANIMATION
+========================================== */
+
+.btn{
+
+    transition:.25s;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================
+   CARD ANIMATION
+========================================== */
+
+.card{
+
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-3px);
+
+}
+/* ===========================
+   ADMIN NAVBAR
+=========================== */
+
+.admin-navbar{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    right:0;
+
+    height:80px;
+
+    background:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 25px;
+
+    border-bottom:1px solid #E5E7EB;
+
+    z-index:1100;
+
+}
+
+.admin-navbar-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+.admin-navbar-left h4{
+
+    color:#0B2E4F;
+
+}
+
+.admin-navbar-left small{
+
+    color:#6B7280;
+
+}
+
+.menu-btn{
+
+    width:46px;
+
+    height:46px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#FFF4E6;
+
+    color:#F7941D;
+
+    font-size:24px;
+
+}
+
+.menu-btn:hover{
+
+    background:#F7941D;
+
+    color:white;
+
+}
+
+.admin-navbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+.icon-btn{
+
+    width:44px;
+
+    height:44px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#F8FAFC;
+
+    position:relative;
+
+}
+
+.icon-btn:hover{
+
+    background:#FFF4E6;
+
+}
+
+.badge-dot{
+
+    position:absolute;
+
+    width:10px;
+
+    height:10px;
+
+    background:#DC2626;
+
+    border-radius:50%;
+
+    top:8px;
+
+    right:8px;
+
+}
+
+.profile-btn{
+
+    border:none;
+
+    background:#F8FAFC;
+
+    padding:10px 16px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+}
+
+.search-box{
+
+    position:relative;
+
+}
+
+.search-box input{
+
+    width:240px;
+
+    height:44px;
+
+    padding-left:40px;
+
+    border-radius:12px;
+
+    border:1px solid #E5E7EB;
+
+}
+
+.search-box i{
+
+    position:absolute;
+
+    left:14px;
+
+    top:14px;
+
+    color:#6B7280;
+
+}
+
+@media(max-width:768px){
+
+.search-box{
+
+display:none;
+
+}
+
+.profile-btn{
+
+display:none;
+
+}
+
+}
+/* ===========================
+   ADMIN LOGO
+=========================== */
+
+.admin-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    color:#0B2E4F;
+
+}
+
+.admin-logo:hover{
+
+    color:#0B2E4F;
+
+}
+
+.admin-logo-img{
+
+    width:48px;
+
+    height:48px;
+
+    object-fit:contain;
+
+}
+
+.admin-logo h4{
+
+    font-size:22px;
+
+    margin:0;
+
+}
+
+.admin-logo small{
+
+    color:#6B7280;
+
+    font-size:12px;
+
+}

@@ -1,0 +1,639 @@
+/* =========================================================
+   CITY HOME SERVICES
+   WHY CHOOSE US
+========================================================= */
+
+.why-section {
+    position: relative;
+
+    overflow: hidden;
+
+    width: 100%;
+
+    padding: clamp(35px, 4vw, 55px) 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #FFF8EF 0%,
+            #FFF3D6 100%
+        );
+}
+
+
+/* =========================================================
+   BACKGROUND GLOWS
+========================================================= */
+
+.why-glow {
+    position: absolute;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(8px);
+
+    opacity: 0.55;
+
+    z-index: 0;
+
+    animation:
+        whyGlowFloat
+        15s
+        ease-in-out
+        infinite;
+}
+
+.why-glow-one {
+    width: 330px;
+    height: 330px;
+
+    top: -180px;
+    left: -120px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(247, 148, 29, 0.12),
+            transparent 70%
+        );
+}
+
+.why-glow-two {
+    width: 300px;
+    height: 300px;
+
+    right: -120px;
+    bottom: -160px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 184, 0, 0.12),
+            transparent 70%
+        );
+
+    animation-delay: -6s;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.why-header {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 700px;
+
+    margin:
+        0 auto
+        48px;
+
+    text-align: center;
+
+    opacity: 0;
+
+    transform:
+        translateY(35px);
+}
+
+
+.why-label {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        7px
+        14px;
+
+    margin-bottom: 16px;
+
+    border-radius: 30px;
+
+    background: #FFF3D6;
+
+    color: #0B2E4F;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.why-label span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #F7941D;
+
+    box-shadow:
+        0 0 0 5px
+        rgba(247, 148, 29, 0.10);
+
+    animation:
+        whyDotPulse
+        2.5s
+        ease-in-out
+        infinite;
+}
+
+
+.why-header h2 {
+    margin: 0;
+
+    color: #0B2E4F;
+
+    font-size:
+        clamp(2rem, 4vw, 3rem);
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    letter-spacing: -1.2px;
+}
+
+
+.why-header h2 span {
+    color: #F7941D;
+}
+
+
+.why-header p {
+    max-width: 650px;
+
+    margin:
+        15px auto
+        0;
+
+    color: #6B7280;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.why-card {
+    position: relative;
+
+    z-index: 2;
+
+    height: 100%;
+
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 28px;
+
+    overflow: hidden;
+
+    background:
+        rgba(255, 255, 255, 0.88);
+
+    border:
+        1px solid
+        rgba(11, 46, 79, 0.07);
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(11, 46, 79, 0.045);
+
+    opacity: 0;
+
+    transform:
+        translateY(45px)
+        scale(0.97);
+
+    transition:
+        transform 0.4s
+            cubic-bezier(.22, 1, .36, 1),
+
+        box-shadow 0.4s ease,
+
+        border-color 0.4s ease;
+}
+
+
+/* =========================================================
+   CARD NUMBER
+========================================================= */
+
+.why-number {
+    position: absolute;
+
+    top: 18px;
+    right: 22px;
+
+    color:
+        rgba(11, 46, 79, 0.07);
+
+    font-size: 36px;
+
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.why-icon-wrapper {
+    margin-bottom: 23px;
+}
+
+
+.why-icon {
+    width: 68px;
+    height: 68px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #FFF3D6,
+            #FFE8B0
+        );
+
+    color: #F7941D;
+
+    transition:
+        transform 0.4s
+            cubic-bezier(.22, 1, .36, 1),
+
+        background 0.4s ease,
+
+        color 0.4s ease,
+
+        box-shadow 0.4s ease;
+}
+
+
+.why-icon i {
+    font-size: 29px;
+
+    transition:
+        transform 0.35s
+        ease;
+}
+
+
+/* =========================================================
+   CARD CONTENT
+========================================================= */
+
+.why-content {
+    position: relative;
+
+    z-index: 2;
+
+    flex: 1;
+}
+
+
+.why-content h5 {
+    margin:
+        0 0
+        10px;
+
+    color: #0B2E4F;
+
+    font-size: 18px;
+
+    font-weight: 750;
+
+    line-height: 1.3;
+
+    transition:
+        color 0.25s ease;
+}
+
+
+.why-content p {
+    margin: 0;
+
+    color: #718096;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   BOTTOM ACCENT
+========================================================= */
+
+.why-card-line {
+    width: 0;
+
+    height: 3px;
+
+    margin-top: 24px;
+
+    border-radius: 5px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #F7941D,
+            #FFB800
+        );
+
+    transition:
+        width 0.4s
+        cubic-bezier(.22, 1, .36, 1);
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.why-card:hover {
+    transform:
+        translateY(-10px);
+
+    border-color:
+        rgba(247, 148, 29, 0.23);
+
+    box-shadow:
+        0 22px 45px
+        rgba(11, 46, 79, 0.10);
+}
+
+
+.why-card:hover
+.why-icon {
+    transform:
+        rotate(-5deg)
+        scale(1.08);
+
+    background:
+        linear-gradient(
+            145deg,
+            #F7941D,
+            #FFB800
+        );
+
+    color: #FFFFFF;
+
+    box-shadow:
+        0 10px 25px
+        rgba(247, 148, 29, 0.20);
+}
+
+
+.why-card:hover
+.why-icon i {
+    transform:
+        scale(1.08);
+}
+
+
+.why-card:hover
+.why-content h5 {
+    color: #F7941D;
+}
+
+
+.why-card:hover
+.why-card-line {
+    width: 48px;
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+========================================================= */
+
+.why-visible
+.why-header {
+    animation:
+        whyHeaderIn
+        0.8s
+        cubic-bezier(.22, 1, .36, 1)
+        forwards;
+}
+
+
+.why-visible
+.why-card {
+    animation:
+        whyCardIn
+        0.75s
+        cubic-bezier(.22, 1, .36, 1)
+        var(--card-delay)
+        forwards;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes whyHeaderIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+@keyframes whyCardIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(45px)
+            scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+@keyframes whyGlowFloat {
+
+    0%,
+    100% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(35px, -25px, 0)
+            scale(1.08);
+    }
+}
+
+
+@keyframes whyDotPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 5px
+            rgba(247, 148, 29, 0.10);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 8px
+            rgba(247, 148, 29, 0.04);
+    }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .why-section {
+        padding:
+            65px
+            0;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .why-section {
+        padding:
+            60px
+            0;
+    }
+
+
+    .why-header {
+        margin-bottom: 35px;
+    }
+
+
+    .why-header h2 {
+        font-size: 2.2rem;
+    }
+
+
+    .why-header p {
+        padding:
+            0 10px;
+
+        font-size: 14px;
+    }
+
+
+    .why-card {
+        min-height: 270px;
+
+        padding: 24px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .why-header h2 {
+        font-size: 2rem;
+    }
+
+
+    .why-header p {
+        font-size: 13px;
+    }
+
+
+    .why-card {
+        min-height: 250px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .why-glow,
+    .why-label span,
+    .why-header,
+    .why-card {
+        animation: none !important;
+    }
+
+
+    .why-header,
+    .why-card {
+        opacity: 1;
+
+        transform: none;
+    }
+
+
+    .why-card,
+    .why-icon,
+    .why-card-line {
+        transition: none !important;
+    }
+
+}

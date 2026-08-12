@@ -1,0 +1,558 @@
+/* =========================================================
+   CUSTOMER PROFILE
+========================================================= */
+
+.customer-profile-page {
+    min-height: 100vh;
+
+    padding:
+        24px 0 50px;
+
+    background:
+        #f8fafc;
+}
+
+
+/* =========================================================
+   PAGE HEADING
+========================================================= */
+
+.customer-profile-heading {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.profile-section-label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #f7941d;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
+}
+
+.customer-profile-heading h1 {
+    margin: 0;
+
+    color: #0b2e4f;
+
+    font-size: 27px;
+
+    font-weight: 850;
+}
+
+.customer-profile-heading p {
+    margin:
+        5px 0 0;
+
+    color: #7b8794;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   SECTION CARD
+========================================================= */
+
+.profile-section-card {
+    background: #ffffff;
+
+    border:
+        1px solid rgba(11, 46, 79, .10);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 6px 22px rgba(11, 46, 79, .045);
+
+    overflow: hidden;
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.profile-section-card:hover {
+    border-color:
+        rgba(247, 148, 29, .20);
+
+    box-shadow:
+        0 9px 27px rgba(11, 46, 79, .065);
+}
+
+
+/* =========================================================
+   CARD HEADING
+========================================================= */
+
+.profile-card-heading {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        15px 17px;
+
+    border-bottom:
+        1px solid rgba(11, 46, 79, .075);
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fcfdfe
+        );
+}
+
+.profile-card-heading-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: #fff4e6;
+
+    color: #f7941d;
+
+    border:
+        1px solid rgba(247, 148, 29, .14);
+
+    font-size: 13px;
+}
+
+.profile-card-heading h3 {
+    margin: 0;
+
+    color: #0b2e4f;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+.profile-card-heading p {
+    margin:
+        2px 0 0;
+
+    color: #8a949e;
+
+    font-size: 6.5px;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.profile-message {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 15px;
+
+    padding:
+        10px 12px;
+
+    border-radius: 10px;
+
+    font-size: 8px;
+
+    font-weight: 650;
+}
+
+.profile-message-success {
+    color: #146c43;
+
+    background: #edf9f2;
+
+    border:
+        1px solid #c9ecd8;
+}
+
+.profile-message-danger {
+    color: #b02a37;
+
+    background: #fff0f1;
+
+    border:
+        1px solid #f3c9ce;
+}
+
+.profile-message-info {
+    color: #055160;
+
+    background: #effcff;
+
+    border:
+        1px solid #c5edf3;
+}
+
+.profile-message-icon {
+    font-size: 12px;
+}
+
+.profile-message span {
+    flex: 1;
+}
+
+.profile-message button {
+    border: 0;
+
+    background: transparent;
+
+    color: inherit;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   SAVE SECTION
+========================================================= */
+
+.profile-save-section {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 20px;
+
+    padding:
+        14px 16px;
+
+    background: #ffffff;
+
+    border:
+        1px solid rgba(11, 46, 79, .10);
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 5px 18px rgba(11, 46, 79, .04);
+}
+
+.profile-save-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+.profile-save-info > i {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #edf9f2;
+
+    color: #198754;
+
+    font-size: 13px;
+}
+
+.profile-save-info strong {
+    display: block;
+
+    color: #344054;
+
+    font-size: 8px;
+}
+
+.profile-save-info span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #98a1aa;
+
+    font-size: 6.5px;
+}
+
+.profile-save-btn {
+    min-width: 150px;
+
+    min-height: 38px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    border:
+        1px solid #f7941d;
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f7941d,
+            #f4b400
+        );
+
+    color: #ffffff;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 14px rgba(247, 148, 29, .15);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.profile-save-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 19px rgba(247, 148, 29, .22);
+}
+
+.profile-save-btn:disabled {
+    opacity: .65;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.customer-profile-loading {
+    min-height: 70vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+}
+
+.profile-loading-icon {
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 14px;
+
+    border-radius: 50%;
+
+    background: #fff4e6;
+
+    color: #f7941d;
+
+    font-size: 28px;
+
+    border:
+        1px solid rgba(247, 148, 29, .15);
+}
+
+.customer-profile-loading .spinner-border {
+    width: 24px;
+    height: 24px;
+
+    margin-bottom: 10px;
+}
+
+.customer-profile-loading h5 {
+    margin: 0;
+
+    color: #0b2e4f;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+.customer-profile-loading p {
+    margin-top: 5px;
+
+    color: #8a949e;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.profile-error-card {
+    max-width: 480px;
+
+    margin:
+        90px auto;
+
+    padding: 30px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border:
+        1px solid rgba(220, 53, 69, .14);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 30px rgba(11, 46, 79, .06);
+}
+
+.profile-error-icon {
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin:
+        0 auto 13px;
+
+    border-radius: 50%;
+
+    background: #fff0f1;
+
+    color: #dc3545;
+
+    font-size: 27px;
+}
+
+.profile-error-card h3 {
+    margin-bottom: 5px;
+
+    color: #0b2e4f;
+
+    font-size: 16px;
+
+    font-weight: 800;
+}
+
+.profile-error-card p {
+    margin-bottom: 16px;
+
+    color: #7b8794;
+
+    font-size: 8px;
+}
+
+.profile-retry-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 9px 14px;
+
+    border:
+        1px solid #f7941d;
+
+    border-radius: 8px;
+
+    background: #f7941d;
+
+    color: #ffffff;
+
+    font-size: 8px;
+
+    font-weight: 750;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .customer-profile-page {
+        padding-top: 15px;
+    }
+
+    .customer-profile-heading h1 {
+        font-size: 23px;
+    }
+
+    .profile-save-section {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+    .profile-save-btn {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .profile-card-heading {
+        padding:
+            13px;
+    }
+
+    .profile-save-info {
+        align-items: flex-start;
+    }
+
+}

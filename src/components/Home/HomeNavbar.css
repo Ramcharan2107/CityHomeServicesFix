@@ -1,0 +1,1226 @@
+/* =========================================================
+   CITY HOME SERVICES
+   MODERN FLOATING NAVBAR
+========================================================= */
+
+
+/* =========================================================
+   NAVBAR SHELL
+========================================================= */
+
+.navbar-shell {
+    position: relative;
+
+    width: 100%;
+
+    height: 78px;
+
+    z-index: 1100;
+}
+
+
+/*
+   When navbar becomes fixed, the shell continues
+   occupying its original space.
+   This prevents the page from jumping upward.
+*/
+
+.navbar-shell-scrolled {
+    height: 78px;
+}
+
+
+/* =========================================================
+   NORMAL NAVBAR
+   TOP OF PAGE
+========================================================= */
+
+.custom-navbar {
+
+    position: relative;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 100%;
+
+    height: 82px;
+
+    background: #FFF8E6;
+
+    border-radius: 0;
+
+    border-bottom:
+        1px solid rgba(11, 31, 58, 0.06);
+
+    box-shadow: none;
+
+    z-index: 1100;
+
+    transition:
+        height 0.45s ease,
+        top 0.45s ease,
+        border-radius 0.45s ease,
+        background 0.45s ease,
+        box-shadow 0.45s ease,
+        backdrop-filter 0.45s ease;
+}
+
+
+/* =========================================================
+   SCROLLED NAVBAR
+   FLOATING CAPSULE
+========================================================= */
+
+.custom-navbar.navbar-scrolled {
+
+    position: fixed;
+
+    /* Horizontal position stays locked; scrolling only changes vertical state. */
+
+    top: 14px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 94%;
+
+    max-width: 1380px;
+
+    height: 72px;
+
+    background:
+        rgba(255, 253, 248, 0.94);
+
+    border-radius: 999px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.75);
+
+    backdrop-filter: blur(18px);
+
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 10px 30px
+        rgba(11, 31, 58, 0.13);
+}
+
+
+/* =========================================================
+   NAVBAR CONTAINER
+========================================================= */
+
+.navbar-container {
+
+    width: 100%;
+
+    height: 100%;
+
+    padding:
+        8px 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+/* =========================================================
+   SCROLLED CONTAINER
+========================================================= */
+
+.custom-navbar.navbar-scrolled
+.navbar-container {
+
+    padding:
+        6px 20px;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.navbar-brand-custom {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    text-decoration: none;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.navbar-logo {
+
+    width: 55px;
+
+    height: 55px;
+
+    object-fit: contain;
+
+    flex-shrink: 0;
+
+    transition:
+        width 0.4s ease,
+        height 0.4s ease,
+        transform 0.3s ease;
+}
+
+
+.navbar-brand-custom:hover
+.navbar-logo {
+
+    transform: scale(1.04);
+}
+
+
+/* Smaller logo when floating */
+
+.custom-navbar.navbar-scrolled
+.navbar-logo {
+
+    width: 40px;
+
+    height: 40px;
+}
+
+
+/* =========================================================
+   BRAND TEXT
+========================================================= */
+
+.navbar-brand-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+.navbar-brand-text h3 {
+
+    margin: 0;
+
+    color: #0B1F3A;
+
+    font-size: 1.3rem;
+
+    font-weight: 750;
+
+    line-height: 1.1;
+
+    white-space: nowrap;
+
+    transition:
+        font-size 0.35s ease;
+}
+
+
+.navbar-brand-text small {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: #6B7280;
+
+    font-size: 0.70rem;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+    transition:
+        font-size 0.35s ease;
+}
+
+
+/* Smaller brand while scrolling */
+
+.custom-navbar.navbar-scrolled
+.navbar-brand-text h3 {
+
+    font-size: 1.02rem;
+}
+
+
+.custom-navbar.navbar-scrolled
+.navbar-brand-text small {
+
+    font-size: 0.62rem;
+}
+
+
+/* =========================================================
+   NAVIGATION LINKS
+========================================================= */
+
+.navbar-links {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 2px;
+
+    flex: 1;
+
+    margin:
+        0 10px;
+}
+
+
+.nav-link-custom {
+
+    position: relative;
+
+    padding:
+        9px 14px;
+
+    color: #0B1F3A !important;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    border-radius: 999px;
+
+    white-space: nowrap;
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.nav-link-custom:hover {
+
+    color: #F7941D !important;
+
+    background: #FFF3D6;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   RIGHT ACTIONS
+========================================================= */
+
+.navbar-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BOOK SERVICE
+========================================================= */
+
+.btn-book-service {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    min-width: 138px;
+
+    padding:
+        11px 18px;
+
+    background: #F7941D;
+
+    color: #FFFFFF !important;
+
+    border-radius: 999px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    box-shadow:
+        0 6px 18px
+        rgba(247, 148, 29, 0.20);
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.btn-book-service:hover {
+
+    background: #F4B400;
+
+    color: #0B1F3A !important;
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 9px 22px
+        rgba(247, 148, 29, 0.30);
+}
+
+
+.book-arrow {
+
+    font-size: 17px;
+
+    line-height: 1;
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+.btn-book-service:hover
+.book-arrow {
+
+    transform:
+        translate(2px, -2px);
+}
+
+
+/* Smaller floating button */
+
+.custom-navbar.navbar-scrolled
+.btn-book-service {
+
+    min-width: 122px;
+
+    padding:
+        9px 15px;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.btn-login {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding:
+        10px 17px;
+
+    border:
+        1.3px solid #0B1F3A;
+
+    border-radius: 999px;
+
+    background: transparent;
+
+    color: #0B1F3A !important;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.btn-login:hover {
+
+    background: #0B1F3A;
+
+    color: #FFFFFF !important;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   USER BUTTON
+========================================================= */
+
+.user-dropdown {
+
+    position: relative;
+}
+
+
+.user-button {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        10px 14px;
+
+    border:
+        1.3px solid #0B1F3A;
+
+    border-radius: 999px;
+
+    background: transparent;
+
+    color: #0B1F3A;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.user-button:hover {
+
+    background: #FFF3D6;
+
+    border-color: #F7941D;
+
+    transform:
+        translateY(-1px);
+}
+
+
+.user-button
+.bi-person-circle {
+
+    font-size: 17px;
+}
+
+
+.user-chevron {
+
+    font-size: 10px;
+
+    margin-left: 1px;
+}
+
+
+/* Smaller floating user button */
+
+.custom-navbar.navbar-scrolled
+.user-button {
+
+    padding:
+        8px 12px;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   USER DROPDOWN
+========================================================= */
+
+.user-menu {
+
+    position: absolute;
+
+    top:
+        calc(100% + 11px);
+
+    right: 0;
+
+    width: 215px;
+
+    padding: 7px;
+
+    background: #FFFFFF;
+
+    border:
+        1px solid rgba(11, 31, 58, 0.08);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 15px 40px
+        rgba(11, 31, 58, 0.15);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+        translateY(-8px)
+        scale(0.97);
+
+    transform-origin:
+        top right;
+
+    transition:
+        opacity 0.22s ease,
+        visibility 0.22s ease,
+        transform 0.22s ease;
+}
+
+
+.user-dropdown:hover
+.user-menu {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+.user-menu a,
+.user-menu button {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        11px 12px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #0B1F3A;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.user-menu a:hover,
+.user-menu button:hover {
+
+    background: #FFF3D6;
+
+    color: #F7941D;
+}
+
+
+.user-menu i {
+
+    width: 18px;
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   MOBILE TOGGLE
+========================================================= */
+
+.navbar-mobile-toggle {
+
+    display: none;
+
+    width: 42px;
+
+    height: 42px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #FFF3D6;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+}
+
+
+.navbar-mobile-toggle span {
+
+    width: 19px;
+
+    height: 2px;
+
+    background: #0B1F3A;
+
+    border-radius: 10px;
+
+    transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
+}
+
+
+/* =========================================================
+   MOBILE TOGGLE ANIMATION
+========================================================= */
+
+.mobile-toggle-open
+span:nth-child(1) {
+
+    transform:
+        translateY(7px)
+        rotate(45deg);
+}
+
+
+.mobile-toggle-open
+span:nth-child(2) {
+
+    opacity: 0;
+}
+
+
+.mobile-toggle-open
+span:nth-child(3) {
+
+    transform:
+        translateY(-7px)
+        rotate(-45deg);
+}
+
+
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+
+.mobile-navbar-menu {
+
+    display: none;
+
+    overflow: hidden;
+
+    max-height: 0;
+
+    opacity: 0;
+
+    padding:
+        0 15px;
+
+    transition:
+        max-height 0.4s ease,
+        opacity 0.3s ease,
+        padding 0.3s ease;
+}
+
+
+.mobile-navbar-menu.mobile-menu-open {
+
+    max-height: 500px;
+
+    opacity: 1;
+
+    padding:
+        6px 15px 15px;
+}
+
+
+.mobile-navbar-menu a,
+.mobile-navbar-menu button {
+
+    width: 100%;
+
+    display: block;
+
+    padding:
+        12px 14px;
+
+    margin-top: 4px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: transparent;
+
+    color: #0B1F3A;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.mobile-navbar-menu a:hover,
+.mobile-navbar-menu button:hover {
+
+    background: #FFF3D6;
+
+    color: #F7941D;
+}
+
+
+/* =========================================================
+   MOBILE BOOK BUTTON
+========================================================= */
+
+.mobile-book-button {
+
+    margin-top: 8px !important;
+
+    background: #F7941D !important;
+
+    color: #FFFFFF !important;
+
+    text-align: center !important;
+}
+
+
+.mobile-book-button:hover {
+
+    background: #F4B400 !important;
+
+    color: #0B1F3A !important;
+}
+
+
+/* =========================================================
+   MOBILE LOGIN
+========================================================= */
+
+.mobile-login {
+
+    margin-top: 8px !important;
+
+    border:
+        1px solid #0B1F3A !important;
+
+    text-align: center !important;
+}
+
+
+/* =========================================================
+   MOBILE LOGOUT
+========================================================= */
+
+.mobile-logout {
+
+    margin-top: 8px !important;
+
+    background: #FFF3D6 !important;
+
+    text-align: center !important;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .navbar-container {
+
+        padding-left: 22px;
+
+        padding-right: 22px;
+    }
+
+
+    .navbar-brand-text h3 {
+
+        font-size: 1.08rem;
+    }
+
+
+    .navbar-links {
+
+        margin:
+            0 5px;
+    }
+
+
+    .nav-link-custom {
+
+        padding:
+            8px 10px;
+
+        font-size: 14px;
+    }
+
+
+    .btn-book-service {
+
+        min-width: 125px;
+
+        padding:
+            10px 14px;
+
+        font-size: 13px;
+    }
+
+
+    .user-button {
+
+        padding:
+            9px 11px;
+
+        font-size: 13px;
+    }
+
+
+    .user-name {
+
+        max-width: 90px;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+    }
+}
+
+
+/* =========================================================
+   MOBILE / TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .navbar-shell {
+
+        height: 68px;
+    }
+
+
+    .navbar-shell-scrolled {
+
+        height: 68px;
+    }
+
+
+    /* Normal mobile navbar */
+
+    .custom-navbar {
+
+        height: 68px;
+
+        border-radius: 0;
+
+        background: #FFF8E6;
+    }
+
+
+    /* Floating mobile navbar */
+
+    .custom-navbar.navbar-scrolled {
+
+        top: 10px;
+
+        width:
+            calc(100% - 20px);
+
+        height: 58px;
+
+        border-radius: 28px;
+    }
+
+
+    .navbar-container {
+
+        padding:
+            7px 15px;
+    }
+
+
+    .custom-navbar.navbar-scrolled
+    .navbar-container {
+
+        padding:
+            5px 13px;
+    }
+
+
+    .navbar-logo {
+
+        width: 44px;
+
+        height: 44px;
+    }
+
+
+    .custom-navbar.navbar-scrolled
+    .navbar-logo {
+
+        width: 38px;
+
+        height: 38px;
+    }
+
+
+    .navbar-brand-text h3 {
+
+        font-size: 1rem;
+    }
+
+
+    .navbar-brand-text small {
+
+        font-size: 0.63rem;
+    }
+
+
+    .custom-navbar.navbar-scrolled
+    .navbar-brand-text h3 {
+
+        font-size: 0.94rem;
+    }
+
+
+    .custom-navbar.navbar-scrolled
+    .navbar-brand-text small {
+
+        display: none;
+    }
+
+
+    /* Hide desktop */
+
+    .navbar-links,
+    .navbar-actions {
+
+        display: none;
+    }
+
+
+    /* Show mobile toggle */
+
+    .navbar-mobile-toggle {
+
+        display: flex;
+    }
+
+
+    /* Show mobile menu */
+
+    .mobile-navbar-menu {
+
+        display: block;
+    }
+
+
+    /*
+       Keep mobile menu inside the capsule
+       while the menu is open.
+    */
+
+    .custom-navbar:not(.navbar-scrolled)
+    .mobile-navbar-menu {
+
+        background: #FFF8E6;
+    }
+
+
+    .custom-navbar.navbar-scrolled
+    .mobile-navbar-menu {
+
+        background:
+            rgba(255, 253, 248, 0.96);
+
+        border-radius:
+            0 0 25px 25px;
+
+        backdrop-filter: blur(18px);
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .navbar-shell {
+
+        height: 64px;
+    }
+
+
+    .navbar-shell-scrolled {
+
+        height: 64px;
+    }
+
+
+    .custom-navbar {
+
+        height: 64px;
+    }
+
+
+    .custom-navbar.navbar-scrolled {
+
+        width:
+            calc(100% - 14px);
+
+        top: 8px;
+
+        height: 55px;
+
+        border-radius: 25px;
+    }
+
+
+    .navbar-container {
+
+        padding:
+            6px 11px;
+    }
+
+
+    .navbar-logo {
+
+        width: 40px;
+
+        height: 40px;
+    }
+
+
+    .custom-navbar.navbar-scrolled
+    .navbar-logo {
+
+        width: 35px;
+
+        height: 35px;
+    }
+
+
+    .navbar-brand-text h3 {
+
+        font-size: 0.92rem;
+    }
+
+
+    .navbar-brand-text small {
+
+        display: none;
+    }
+
+
+    .navbar-mobile-toggle {
+
+        width: 39px;
+
+        height: 39px;
+    }
+
+
+    .custom-navbar.navbar-scrolled
+    .navbar-mobile-toggle {
+
+        width: 36px;
+
+        height: 36px;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .custom-navbar,
+    .navbar-logo,
+    .nav-link-custom,
+    .btn-book-service,
+    .btn-login,
+    .user-button,
+    .user-menu,
+    .mobile-navbar-menu {
+
+        transition: none !important;
+    }
+}

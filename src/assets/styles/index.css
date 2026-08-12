@@ -1,0 +1,100 @@
+/* ==========================================
+   Google Font
+========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* ==========================================
+   Design System
+========================================== */
+
+@import "./theme.css";
+@import "./utilities.css";
+@import "./responsive.css";
+@import "./animations.css";
+
+/* ==========================================
+   Global Styles
+========================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+
+    margin: 0;
+
+    font-family: "Poppins", sans-serif;
+
+    background: var(--background);
+
+    color: var(--text-primary);
+
+    overflow-x: hidden;
+
+    -webkit-font-smoothing: antialiased;
+
+}
+
+/* ==========================================
+   Links
+========================================== */
+
+a {
+
+    text-decoration: none;
+
+    color: inherit;
+
+}
+
+/* ==========================================
+   Images
+========================================== */
+
+img {
+
+    max-width: 100%;
+
+    display: block;
+
+}
+
+/* ==========================================
+   Buttons
+========================================== */
+
+button {
+
+    transition: var(--transition);
+
+}
+
+/* ==========================================
+   Sections
+========================================== */
+
+section {
+
+    position: relative;
+
+}
+
+/* ==========================================
+   Selection
+========================================== */
+
+::selection {
+
+    background: var(--primary);
+
+    color: white;
+
+}

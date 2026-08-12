@@ -1,0 +1,42 @@
+body{
+    margin:0;
+    background:var(--background);
+    color:var(--text);
+    font-family:"Segoe UI",sans-serif;
+}
+
+.card{
+    border:none;
+    border-radius:18px;
+    background:var(--card);
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+
+.btn-primary{
+    background:var(--primary);
+    border-color:var(--primary);
+    color:var(--text);
+    font-weight:600;
+}
+
+.btn-primary:hover{
+    background:var(--primary-hover);
+    border-color:var(--primary-hover);
+    color:var(--text);
+}
+
+.table thead{
+    background:var(--primary);
+}
+
+.table thead th{
+    color:var(--text);
+}
+
+.table tbody tr:hover{
+    background:#FFF4CC;
+}
+.table thead th{
+    background: #f2c53d !important;
+    color: var(--text) !important;
+}
