@@ -1,0 +1,6 @@
+@CityHomeServicesFix.Api_HostAddress = http://localhost:5063
+
+GET {{CityHomeServicesFix.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

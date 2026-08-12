@@ -1,0 +1,7 @@
+﻿namespace CityHomeServicesFix.Shared
+{
+    public class Class1
+    {
+
+    }
+}

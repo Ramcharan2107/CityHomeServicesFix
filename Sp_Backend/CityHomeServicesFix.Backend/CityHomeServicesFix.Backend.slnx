@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="CityHomeServicesFix.Api/CityHomeServicesFix.Api.csproj" />
+  <Project Path="CityHomeServicesFix.Application/CityHomeServicesFix.Application.csproj" />
+  <Project Path="CityHomeServicesFix.Domain/CityHomeServicesFix.Domain.csproj" />
+  <Project Path="CityHomeServicesFix.Infrastructure/CityHomeServicesFix.Infrastructure.csproj" />
+  <Project Path="CityHomeServicesFix.Shared/CityHomeServicesFix.Shared.csproj" />
+</Solution>

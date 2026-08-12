@@ -1,29 +1,33 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
+# Visual Studio
+.vs/
+*.user
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 
-# Environment variables
+# .NET build
+**/bin/
+**/obj/
+**/out/
+
+# Ignore x86 deployment output
+**/publish-x86/
+
+# Frontend
+**/node_modules/
+**/dist/
+
+# Environment / secrets
 .env
 .env.*
 !.env.example
+
+# Logs
+*.log
+
+# ZIP files
+*.zip
+
+# Database backups/dumps
+*.sql
+
+**/publish/
+**/publish-x86/
