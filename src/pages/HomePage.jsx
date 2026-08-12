@@ -11,36 +11,21 @@ import FAQ from "../components/Home/FAQ";
 import Contact from "../components/Home/Contact";
 import Footer from "../components/Home/Footer";
 
-
 function HomePage() {
     return (
         <>
-            <Navbar />
-
             <Hero />
-
             <Categories />
-
             <WhyChooseUs />
-
             <HowItWorks />
-
             <FeaturedServices />
-
             <FeaturedTechnicians />
-
             <Testimonials />
-
             <Statistics />
-
             <FAQ />
-
             <Contact />
-
-            <Footer />
         </>
     );
 }
-
 
 export default HomePage;
