@@ -44,7 +44,7 @@ import JobProgress from "../pages/Admin/JobProgress/JobProgress";
 import FinalReports from "../pages/Admin/FinalReports/FinalReports";
 import Notifications from "../pages/Admin/Notifications/Notifications";
 import CustomerNotifications from "../pages/Customer/CustomerNotifications";
-import CategoryDetails from "../pages/categories/CategoryDetails";
+import CategoryDetails from "../pages/Categories/CategoryDetails";
 function AppRoutes() {
     return (
         <BrowserRouter>
