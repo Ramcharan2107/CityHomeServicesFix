@@ -1,492 +1,467 @@
-import { useEffect, useState } from "react";
-import serviceService from "../../../services/serviceService";
+import { useEffect } from "react";
+import "./ServiceModal.css";
 
 function ServiceDetailsModal({
-
     show,
-
     service,
-
     onClose
-
 }) {
-
-    const [loading, setLoading] = useState(false);
-
-    const [details, setDetails] = useState(null);
-
-    const [error, setError] = useState("");
 
     useEffect(() => {
 
-        if (!show || !service)
-            return;
+        if (!show) return undefined;
 
-        loadService();
+        const previousOverflow =
+            document.body.style.overflow;
 
-    }, [show, service]);
+        document.body.style.overflow = "hidden";
 
-    const loadService = async () => {
+        const handleKeyDown = (event) => {
 
-        setLoading(true);
+            if (event.key === "Escape") {
+                onClose();
+            }
 
-        setError("");
+        };
 
-        try {
+        document.addEventListener(
+            "keydown",
+            handleKeyDown
+        );
 
-            const data = await serviceService.getById(
+        return () => {
 
-                service.serviceId
+            document.body.style.overflow =
+                previousOverflow;
 
+            document.removeEventListener(
+                "keydown",
+                handleKeyDown
             );
 
-            setDetails(data);
+        };
 
-        }
-        catch (err) {
+    }, [show, onClose]);
 
-            console.error(err);
 
-            setError("Failed to load service details.");
-
-        }
-        finally {
-
-            setLoading(false);
-
-        }
-
-    };
-
-    const formatCurrency = (amount) => {
-
-        if (amount == null)
-            return "-";
-
-        return `₹ ${Number(amount).toLocaleString("en-IN")}`;
-
-    };
-
-    if (!show)
+    if (!show || !service) {
         return null;
+    }
+
+
+    const serviceId =
+        service?.serviceId ??
+        service?.ServiceId ??
+        service?.id ??
+        "—";
+
+    const serviceName =
+        service?.serviceName ??
+        service?.ServiceName ??
+        service?.name ??
+        "Unnamed Service";
+
+    const serviceCode =
+        service?.serviceCode ??
+        service?.ServiceCode ??
+        service?.code ??
+        "—";
+
+    const categoryName =
+        service?._categoryName ??
+        service?.categoryName ??
+        service?.CategoryName ??
+        service?.category?.categoryName ??
+        service?.category?.CategoryName ??
+        service?.category?.name ??
+        "Uncategorized";
+
+    const description =
+        service?._description ??
+        service?.description ??
+        service?.Description ??
+        "No description available.";
+
+    const estimatedHours =
+        service?._hours ??
+        service?.estimatedHours ??
+        service?.EstimatedHours ??
+        null;
+
+    const basePrice =
+        service?._price ??
+        service?.basePrice ??
+        service?.BasePrice ??
+        service?.price ??
+        service?.Price ??
+        null;
+
+    const isActive =
+        service?._active ??
+        service?.isActive ??
+        service?.IsActive ??
+        false;
+
+    const createdAt =
+        service?._createdAt ??
+        service?.createdAt ??
+        service?.CreatedAt ??
+        null;
+
+    const updatedAt =
+        service?._updatedAt ??
+        service?.updatedAt ??
+        service?.UpdatedAt ??
+        null;
+
+
+    const safeNumber = (value) => {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+            return null;
+        }
+
+        const number = Number(value);
+
+        return Number.isFinite(number)
+            ? number
+            : null;
+
+    };
+
+
+    const formatPrice = (value) => {
+
+        const number = safeNumber(value);
+
+        if (number === null) {
+            return "—";
+        }
+
+        return `₹ ${number.toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }
+        )}`;
+
+    };
+
+
+    const formatHours = (value) => {
+
+        const number = safeNumber(value);
+
+        if (number === null) {
+            return "—";
+        }
+
+        return `${number} ${
+            number === 1
+                ? "hour"
+                : "hours"
+        }`;
+
+    };
+
+
+    const formatDate = (value) => {
+
+        if (!value) return "—";
+
+        const date = new Date(value);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return "—";
+        }
+
+        return date.toLocaleString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
+    };
+
+
+    const handleBackdrop = (event) => {
+
+        if (
+            event.target ===
+            event.currentTarget
+        ) {
+            onClose();
+        }
+
+    };
+
 
     return (
 
         <div
-            className="modal fade show"
-            style={{
-                display: "block",
-                background: "rgba(0,0,0,.45)"
-            }}
+            className="service-modal-backdrop"
+            onMouseDown={handleBackdrop}
         >
 
-            <div className="modal-dialog modal-xl modal-dialog-centered">
+            <div
+                className="service-modal service-modal-large"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="service-details-title"
+                onMouseDown={(event) =>
+                    event.stopPropagation()
+                }
+            >
 
-                <div
-                    className="modal-content border-0 shadow-lg"
-                    style={{
-                        borderRadius: "20px"
-                    }}
-                >
+                <div className="service-modal-header">
 
-                    <div
-                        className="modal-header"
-                        style={{
-                            background: "#0B2E4F",
-                            color: "#fff"
-                        }}
-                    >
+                    <div className="service-modal-title">
 
-                        <h4 className="fw-bold mb-0">
+                        <div className="service-modal-title-icon">
 
-                            Service Details
+                            <i className="bi bi-tools"></i>
 
-                        </h4>
+                        </div>
 
-                        <button
-                            className="btn-close btn-close-white"
-                            onClick={onClose}
-                        ></button>
+                        <div className="service-modal-title-content">
+
+                            <span className="service-modal-eyebrow">
+                                SERVICE INFORMATION
+                            </span>
+
+                            <h2 id="service-details-title">
+                                Service Details
+                            </h2>
+
+                            <p>
+                                Complete information about this service.
+                            </p>
+
+                        </div>
 
                     </div>
 
-                    <div className="modal-body p-4">
-                                            {loading ? (
 
-                        <div className="text-center py-5">
-
-                            <div
-                                className="spinner-border text-warning"
-                                style={{
-                                    width: "3rem",
-                                    height: "3rem"
-                                }}
-                            ></div>
-
-                            <h5 className="mt-3">
-
-                                Loading Service...
-
-                            </h5>
-
-                        </div>
-
-                    ) : error ? (
-
-                        <div className="alert alert-danger">
-
-                            {error}
-
-                        </div>
-
-                    ) : (
-
-                        <>
-
-                            {/* ================= Header ================= */}
-
-                            <div className="row align-items-center mb-4">
-
-                                <div className="col-lg-3 text-center">
-
-                                    <div
-                                        className="rounded-circle d-flex justify-content-center align-items-center mx-auto"
-                                        style={{
-                                            width: "120px",
-                                            height: "120px",
-                                            background: "#0B2E4F",
-                                            color: "#fff",
-                                            fontSize: "48px"
-                                        }}
-                                    >
-
-                                        <i className="bi bi-tools"></i>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="col-lg-9">
-
-                                    <h2
-                                        className="fw-bold mb-2"
-                                        style={{
-                                            color: "#0B2E4F"
-                                        }}
-                                    >
-
-                                        {details.serviceName}
-
-                                    </h2>
-
-                                    <div className="d-flex flex-wrap gap-2">
-
-                                        <span className="badge bg-primary">
-
-                                            {details.serviceCode}
-
-                                        </span>
-
-                                        <span className="badge bg-info">
-
-                                            {details.categoryName}
-
-                                        </span>
-
-                                        {details.isActive ? (
-
-                                            <span className="badge bg-success">
-
-                                                Active
-
-                                            </span>
-
-                                        ) : (
-
-                                            <span className="badge bg-danger">
-
-                                                Inactive
-
-                                            </span>
-
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            {/* ================= Information ================= */}
-
-                            <div className="row g-4">
-
-                                <div className="col-lg-6">
-
-                                    <div
-                                        className="card border shadow-sm h-100"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
-                                    >
-
-                                        <div className="card-body">
-
-                                            <h5
-                                                className="fw-bold mb-4"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
-
-                                                Service Information
-
-                                            </h5>
-
-                                            <table className="table table-borderless mb-0">
-
-                                                <tbody>
-
-                                                    <tr>
-
-                                                        <th width="45%">
-
-                                                            Service ID
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            #{details.serviceId}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Service Name
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.serviceName}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Service Code
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.serviceCode}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Category
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.categoryName}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                </tbody>
-
-                                            </table>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="col-lg-6">
-
-                                    <div
-                                        className="card border shadow-sm h-100"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
-                                    >
-
-                                        <div className="card-body">
-
-                                            <h5
-                                                className="fw-bold mb-4"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
-
-                                                Pricing & Duration
-
-                                            </h5>
-
-                                            <table className="table table-borderless mb-0">
-
-                                                <tbody>
-
-                                                    <tr>
-
-                                                        <th width="45%">
-
-                                                            Base Price
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {formatCurrency(details.basePrice)}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Estimated Hours
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.estimatedHours} hrs
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Status
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.isActive ? (
-
-                                                                <span className="badge bg-success">
-
-                                                                    Active
-
-                                                                </span>
-
-                                                            ) : (
-
-                                                                <span className="badge bg-danger">
-
-                                                                    Inactive
-
-                                                                </span>
-
-                                                            )}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                </tbody>
-
-                                            </table>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="col-12">
-
-                                    <div
-                                        className="card border shadow-sm"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
-                                    >
-
-                                        <div className="card-body">
-
-                                            <h5
-                                                className="fw-bold mb-3"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
-
-                                                Description
-
-                                            </h5>
-
-                                            <p
-                                                className="text-muted mb-0"
-                                                style={{
-                                                    lineHeight: "1.8"
-                                                }}
-                                            >
-
-                                                {details.description ||
-
-                                                    "No description available for this service."}
-
-                                            </p>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </>
-
-                    )}
-                                        <div
-                        className="modal-footer"
-                        style={{
-                            background: "#F8F9FA"
-                        }}
+                    <button
+                        type="button"
+                        className="service-modal-close"
+                        onClick={onClose}
+                        aria-label="Close"
                     >
 
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={onClose}
+                        <i className="bi bi-x-lg"></i>
+
+                    </button>
+
+                </div>
+
+
+                <div className="service-modal-body">
+
+                    <div className="service-details-summary">
+
+                        <div className="service-details-summary-icon">
+
+                            <i className="bi bi-tools"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3>
+                                {serviceName}
+                            </h3>
+
+                            <p>
+                                {serviceCode !== "—"
+                                    ? `Service Code: ${serviceCode}`
+                                    : "Service code not available"
+                                }
+                            </p>
+
+                        </div>
+
+
+                        <span
+                            className={
+                                isActive
+                                    ? "service-modal-status active"
+                                    : "service-modal-status inactive"
+                            }
                         >
 
-                            <i className="bi bi-x-circle me-2"></i>
+                            <span></span>
 
-                            Close
+                            {isActive
+                                ? "Active"
+                                : "Inactive"
+                            }
 
-                        </button>
+                        </span>
 
                     </div>
+
+
+                    <div className="service-details-grid">
+
+                        <div className="service-detail-card">
+
+                            <span>
+                                Service ID
+                            </span>
+
+                            <strong>
+                                #{serviceId}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="service-detail-card">
+
+                            <span>
+                                Service Code
+                            </span>
+
+                            <strong>
+                                {serviceCode}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="service-detail-card">
+
+                            <span>
+                                Category
+                            </span>
+
+                            <strong>
+                                {categoryName}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="service-detail-card">
+
+                            <span>
+                                Base Price
+                            </span>
+
+                            <strong>
+                                {formatPrice(basePrice)}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="service-detail-card">
+
+                            <span>
+                                Estimated Duration
+                            </span>
+
+                            <strong>
+                                {formatHours(estimatedHours)}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="service-detail-card">
+
+                            <span>
+                                Status
+                            </span>
+
+                            <strong
+                                className={
+                                    isActive
+                                        ? "service-detail-active"
+                                        : "service-detail-inactive"
+                                }
+                            >
+                                {isActive
+                                    ? "Active"
+                                    : "Inactive"
+                                }
+                            </strong>
+
+                        </div>
+
+
+                        <div className="service-detail-card service-detail-card-full">
+
+                            <span>
+                                Description
+                            </span>
+
+                            <div className="service-detail-description">
+                                {description}
+                            </div>
+
+                        </div>
+
+
+                        <div className="service-detail-card">
+
+                            <span>
+                                Created
+                            </span>
+
+                            <strong>
+                                {formatDate(createdAt)}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="service-detail-card">
+
+                            <span>
+                                Last Updated
+                            </span>
+
+                            <strong>
+                                {formatDate(updatedAt)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div className="service-modal-footer">
+
+                    <button
+                        type="button"
+                        className="service-modal-btn service-modal-btn-secondary"
+                        onClick={onClose}
+                    >
+
+                        <i className="bi bi-x-lg"></i>
+
+                        Close
+
+                    </button>
 
                 </div>
 
@@ -494,7 +469,6 @@ function ServiceDetailsModal({
 
         </div>
 
-    </div>
     );
 
 }

@@ -1,30 +1,35 @@
 import api from "./api";
 
 const customerService = {
+
+    // Get all registered users
     getAll: async () => {
-        const response = await api.get("/Customers");
+        const response = await api.get("/Users");
         return response.data;
     },
 
-    getById: async (id) => {
-        const response = await api.get(`/Customers/${id}`);
+    // Get one user
+    getById: async (userId) => {
+        const response = await api.get(`/Users/${userId}`);
         return response.data;
     },
 
-    create: async (customer) => {
-        const response = await api.post("/Customers", customer);
+    // Delete user account
+    delete: async (userId) => {
+        const response = await api.delete(`/Users/${userId}`);
         return response.data;
     },
 
-    update: async (id, customer) => {
-        const response = await api.put(`/Customers/${id}`, customer);
-        return response.data;
-    },
+    // Update user
+    update: async (userId, data) => {
+        const response = await api.put(
+            `/Users/${userId}`,
+            data
+        );
 
-    delete: async (id) => {
-        const response = await api.delete(`/Customers/${id}`);
         return response.data;
     }
+
 };
 
 export default customerService;

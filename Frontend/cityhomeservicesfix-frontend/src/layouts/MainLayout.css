@@ -1,0 +1,195 @@
+/* ============================================================
+   ADMIN MAIN LAYOUT
+============================================================ */
+
+:root {
+
+    --admin-navbar-height: 80px;
+
+    --admin-sidebar-open-width: 250px;
+
+    --admin-sidebar-closed-width: 72px;
+
+}
+
+
+/* ============================================================
+   RESET
+============================================================ */
+
+.admin-layout {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    margin: 0;
+
+    padding: 0;
+
+    background: #fff9f2;
+
+    overflow-x: hidden;
+
+}
+
+
+/* ============================================================
+   MAIN CONTENT
+============================================================ */
+
+.admin-content {
+
+    position: relative;
+
+    min-height: calc(
+        100vh - var(--admin-navbar-height)
+    );
+
+    margin: 0;
+
+    padding: 0;
+
+    padding-top: var(--admin-navbar-height);
+
+    background: #fff9f2;
+
+    box-sizing: border-box;
+
+    transition:
+        margin-left 0.25s ease,
+        width 0.25s ease;
+
+}
+
+
+/* ============================================================
+   SIDEBAR OPEN
+============================================================ */
+
+.admin-content.sidebar-open {
+
+    margin-left:
+        var(--admin-sidebar-open-width);
+
+    width:
+        calc(
+            100% -
+            var(--admin-sidebar-open-width)
+        );
+
+}
+
+
+/* ============================================================
+   SIDEBAR CLOSED
+============================================================ */
+
+.admin-content.sidebar-close {
+
+    margin-left:
+        var(--admin-sidebar-closed-width);
+
+    width:
+        calc(
+            100% -
+            var(--admin-sidebar-closed-width)
+        );
+
+}
+
+
+/* ============================================================
+   REMOVE DEFAULT SPACING FROM DIRECT CONTENT
+============================================================ */
+
+.admin-content > * {
+
+    margin-top: 0;
+
+}
+
+
+/* ============================================================
+   SIDEBAR OVERLAY
+============================================================ */
+
+.sidebar-overlay {
+
+    position: fixed;
+
+    top: var(--admin-navbar-height);
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 0;
+
+    background: rgba(
+        0,
+        0,
+        0,
+        0.35
+    );
+
+    z-index: 1050;
+
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 991px) {
+
+    .admin-content {
+
+        margin-left: 0 !important;
+
+        width: 100% !important;
+
+        padding-top:
+            var(--admin-navbar-height);
+
+    }
+
+}
+
+
+/* ============================================================
+   SMALL MOBILE
+============================================================ */
+
+@media (max-width: 576px) {
+
+    :root {
+
+        --admin-navbar-height: 70px;
+
+    }
+
+
+    .admin-content {
+
+        min-height:
+            calc(
+                100vh -
+                var(--admin-navbar-height)
+            );
+
+        padding-top:
+            var(--admin-navbar-height);
+
+    }
+
+
+    .sidebar-overlay {
+
+        top:
+            var(--admin-navbar-height);
+
+    }
+
+}

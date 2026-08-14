@@ -114,12 +114,20 @@ function RecentBookings({ bookings = [] }) {
 
             ) : (
 
-                <div className="table-responsive">
+                <div
+                    className="table-responsive"
+                    style={{
+                        overflowX: "auto",
+                        WebkitOverflowScrolling: "touch"
+                    }}
+                >
 
                     <table
                         className="table align-middle"
                         style={{
-                            marginBottom: 0
+                            marginBottom: 0,
+                            minWidth: "900px",
+                            tableLayout: "auto"
                         }}
                     >
 
@@ -131,15 +139,73 @@ function RecentBookings({ bookings = [] }) {
 
                             <tr>
 
-                                <th className="border-0">Service</th>
+                                <th
+                                    className="border-0"
+                                    style={{
+                                        minWidth: "300px",
+                                        whiteSpace: "nowrap",
+                                        color: "#164B73",
+                                        fontWeight: 800,
+                                        fontSize: "14px",
+                                        padding: "18px 14px"
+                                    }}
+                                >
+                                    Service
+                                </th>
 
-                                <th className="border-0">Booking Date</th>
+                                <th
+                                    className="border-0"
+                                    style={{
+                                        minWidth: "145px",
+                                        whiteSpace: "nowrap",
+                                        color: "#164B73",
+                                        fontWeight: 800,
+                                        fontSize: "14px",
+                                        padding: "18px 14px"
+                                    }}
+                                >
+                                    Booking Date
+                                </th>
 
-                                <th className="border-0">Amount</th>
+                                <th
+                                    className="border-0"
+                                    style={{
+                                        minWidth: "120px",
+                                        whiteSpace: "nowrap",
+                                        color: "#164B73",
+                                        fontWeight: 800,
+                                        fontSize: "14px",
+                                        padding: "18px 14px"
+                                    }}
+                                >
+                                    Amount
+                                </th>
 
-                                <th className="border-0">Status</th>
+                                <th
+                                    className="border-0"
+                                    style={{
+                                        minWidth: "125px",
+                                        whiteSpace: "nowrap",
+                                        color: "#164B73",
+                                        fontWeight: 800,
+                                        fontSize: "14px",
+                                        padding: "18px 14px"
+                                    }}
+                                >
+                                    Status
+                                </th>
 
-                                <th className="border-0 text-center">
+                                <th
+                                    className="border-0 text-center"
+                                    style={{
+                                        minWidth: "210px",
+                                        whiteSpace: "nowrap",
+                                        color: "#164B73",
+                                        fontWeight: 800,
+                                        fontSize: "14px",
+                                        padding: "18px 14px"
+                                    }}
+                                >
                                     Action
                                 </th>
 
@@ -153,19 +219,31 @@ function RecentBookings({ bookings = [] }) {
                                 <tr
                                     key={booking.serviceRequestId}
                                     style={{
-                                        verticalAlign: "middle"
+                                        verticalAlign: "middle",
+                                        minHeight: "92px"
                                     }}
                                 >
 
-                                    <td>
+                                    <td
+                                        style={{
+                                            minWidth: "300px",
+                                            padding: "14px"
+                                        }}
+                                    >
 
-                                        <div className="d-flex align-items-center">
+                                        <div
+                                            className="d-flex align-items-center"
+                                            style={{
+                                                minWidth: 0
+                                            }}
+                                        >
 
                                             <div
                                                 className="d-flex justify-content-center align-items-center me-3"
                                                 style={{
-                                                    width: "52px",
-                                                    height: "52px",
+                                                    width: "56px",
+                                                    height: "56px",
+                                                    minWidth: "56px",
                                                     borderRadius: "12px",
                                                     background: "#FFF4E8"
                                                 }}
@@ -186,7 +264,11 @@ function RecentBookings({ bookings = [] }) {
                                                 <div
                                                     className="fw-bold"
                                                     style={{
-                                                        color: "#0B2E4F"
+                                                        color: "#0B2E4F",
+                                                        fontSize: "16px",
+                                                        lineHeight: 1.35,
+                                                        maxWidth: "190px",
+                                                        overflowWrap: "break-word"
                                                     }}
                                                 >
                                                     {booking.serviceName}
@@ -206,9 +288,21 @@ function RecentBookings({ bookings = [] }) {
 
                                     </td>
 
-                                    <td>
+                                    <td
+                                        style={{
+                                            minWidth: "145px",
+                                            padding: "14px"
+                                        }}
+                                    >
 
-                                        <span className="fw-semibold">
+                                        <span
+                                            className="fw-semibold"
+                                            style={{
+                                                whiteSpace: "nowrap",
+                                                color: "#16324F",
+                                                fontSize: "15px"
+                                            }}
+                                        >
 
                                             {formatDate(booking.bookingDate)}
 
@@ -216,13 +310,19 @@ function RecentBookings({ bookings = [] }) {
 
                                     </td>
 
-                                    <td>
+                                    <td
+                                        style={{
+                                            minWidth: "120px",
+                                            padding: "14px"
+                                        }}
+                                    >
 
                                         <span
                                             className="fw-bold"
                                             style={{
                                                 color: "#F7941D",
-                                                fontSize: "18px"
+                                                fontSize: "18px",
+                                                whiteSpace: "nowrap"
                                             }}
                                         >
 
@@ -232,7 +332,12 @@ function RecentBookings({ bookings = [] }) {
 
                                     </td>
 
-                                    <td>
+                                    <td
+                                        style={{
+                                            minWidth: "125px",
+                                            padding: "14px"
+                                        }}
+                                    >
 
                                         <span
                                             className={`badge bg-${getBadge(
@@ -251,18 +356,38 @@ function RecentBookings({ bookings = [] }) {
 
                                     </td>
 
-                                    <td className="text-center">
+                                    <td
+                                        className="text-center"
+                                        style={{
+                                            minWidth: "210px",
+                                            padding: "14px"
+                                        }}
+                                    >
 
-                                        <div className="d-flex justify-content-center gap-2">
+                                        <div
+                                            className="d-flex justify-content-center gap-2"
+                                            style={{
+                                                flexWrap: "nowrap"
+                                            }}
+                                        >
 
                                             <Link
                                                 to={`/customer/bookings/${booking.serviceRequestId}`}
                                                 className="btn btn-sm"
                                                 style={{
+                                                    minWidth: "96px",
+                                                    height: "42px",
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    whiteSpace: "nowrap",
                                                     background: "#0B2E4F",
                                                     color: "#fff",
-                                                    borderRadius: "8px",
-                                                    padding: "6px 16px"
+                                                    border: "1px solid #0B2E4F",
+                                                    borderRadius: "9px",
+                                                    padding: "0 15px",
+                                                    fontWeight: 700,
+                                                    fontSize: "14px"
                                                 }}
                                             >
 
@@ -274,7 +399,16 @@ function RecentBookings({ bookings = [] }) {
                                                 className="btn btn-sm btn-outline-warning"
                                                 disabled
                                                 style={{
-                                                    borderRadius: "8px"
+                                                    minWidth: "96px",
+                                                    height: "42px",
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    whiteSpace: "nowrap",
+                                                    borderRadius: "9px",
+                                                    padding: "0 15px",
+                                                    fontWeight: 700,
+                                                    fontSize: "14px"
                                                 }}
                                             >
 

@@ -1,338 +1,694 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+
 import serviceCategoryService from "../../../services/serviceCategoryService";
 
+import "./CategoryModal.css";
+
 function EditCategoryModal({
-
     show,
-
     category,
-
     onClose,
-
     onSuccess
-
 }) {
 
-    const [loading, setLoading] = useState(false);
+    const [categoryName, setCategoryName] = useState("");
+    const [description, setDescription] = useState("");
+    const [isActive, setIsActive] = useState(true);
 
     const [saving, setSaving] = useState(false);
+    const [error, setError] = useState("");
 
-    const [errors, setErrors] = useState({});
 
-    const [form, setForm] = useState({
-
-        categoryId: 0,
-
-        categoryName: "",
-
-        description: ""
-
-    });
+    /* ============================================================
+       LOAD CATEGORY
+    ============================================================ */
 
     useEffect(() => {
 
-        if (!show || !category)
+        if (!show || !category) {
             return;
+        }
 
-        loadCategory();
+        setCategoryName(
+            category.categoryName || ""
+        );
+
+        setDescription(
+            category.description || ""
+        );
+
+        setIsActive(
+            category.isActive !== false
+        );
+
+        setError("");
 
     }, [show, category]);
 
-    const loadCategory = async () => {
 
-        setLoading(true);
+    /* ============================================================
+       LOCK BACKGROUND
+    ============================================================ */
 
-        setErrors({});
+    useEffect(() => {
+
+        if (!show) {
+            return;
+        }
+
+        document.body.classList.add(
+            "category-modal-open"
+        );
+
+        document.body.classList.add(
+            "category-modal-lock"
+        );
+
+
+        const handleEscape = (event) => {
+
+            if (
+                event.key === "Escape" &&
+                !saving
+            ) {
+
+                onClose();
+
+            }
+
+        };
+
+
+        document.addEventListener(
+            "keydown",
+            handleEscape
+        );
+
+
+        return () => {
+
+            document.body.classList.remove(
+                "category-modal-open"
+            );
+
+            document.body.classList.remove(
+                "category-modal-lock"
+            );
+
+            document.removeEventListener(
+                "keydown",
+                handleEscape
+            );
+
+        };
+
+    }, [
+        show,
+        saving,
+        onClose
+    ]);
+
+
+    /* ============================================================
+       UPDATE CATEGORY
+    ============================================================ */
+
+    const handleSubmit = async (event) => {
+
+        event.preventDefault();
+
+        setError("");
+
+
+        const trimmedName =
+            categoryName.trim();
+
+        const trimmedDescription =
+            description.trim();
+
+
+        if (!trimmedName) {
+
+            setError(
+                "Category name is required."
+            );
+
+            return;
+
+        }
+
+
+        if (!category?.categoryId) {
+
+            setError(
+                "Category ID is missing."
+            );
+
+            return;
+
+        }
+
 
         try {
 
-            const data = await serviceCategoryService.getById(
+            setSaving(true);
 
-                category.categoryId
 
+            /*
+             * IMPORTANT:
+             * isActive is sent to the backend together
+             * with the category information.
+             */
+
+            const payload = {
+
+                categoryName:
+                    trimmedName,
+
+                description:
+                    trimmedDescription,
+
+                isActive:
+                    isActive
+
+            };
+
+
+            console.log(
+                "UPDATING CATEGORY:",
+                category.categoryId,
+                payload
             );
 
-            setForm({
 
-                categoryId: data.categoryId,
+            await serviceCategoryService.update(
+                category.categoryId,
+                payload
+            );
 
-                categoryName: data.categoryName || "",
 
-                description: data.description || ""
+            /*
+             * Tell parent page to refresh
+             * the category list.
+             */
 
-            });
+            if (onSuccess) {
 
-        }
-        catch (err) {
+                await onSuccess();
 
-            console.error(err);
+            }
 
-            alert("Failed to load category.");
 
-        }
-        finally {
+        } catch (err) {
 
-            setLoading(false);
+            console.error(
+                "UPDATE CATEGORY ERROR:",
+                err
+            );
+
+
+            let message =
+                "Unable to update the category.";
+
+
+            if (
+                err?.response?.data?.message
+            ) {
+
+                message =
+                    err.response.data.message;
+
+            } else if (
+                err?.response?.data?.title
+            ) {
+
+                message =
+                    err.response.data.title;
+
+            } else if (
+                err?.response?.status === 400
+            ) {
+
+                message =
+                    "Invalid category information. Please check the entered details.";
+
+            } else if (
+                err?.response?.status === 404
+            ) {
+
+                message =
+                    "Category was not found.";
+
+            } else if (
+                err?.response?.status === 401 ||
+                err?.response?.status === 403
+            ) {
+
+                message =
+                    "You are not authorized to update this category.";
+
+            }
+
+
+            setError(message);
+
+        } finally {
+
+            setSaving(false);
 
         }
 
     };
 
-    const handleChange = (e) => {
 
-        setForm({
+    /* ============================================================
+       CLOSE
+    ============================================================ */
 
-            ...form,
+    const handleOverlayClick = (event) => {
 
-            [e.target.name]: e.target.value
+        if (
+            event.target === event.currentTarget &&
+            !saving
+        ) {
 
-        });
-
-    };
-
-    const validate = () => {
-
-        const validationErrors = {};
-
-        if (!form.categoryName.trim()) {
-
-            validationErrors.categoryName =
-                "Category Name is required.";
+            onClose();
 
         }
 
-        setErrors(validationErrors);
-
-        return Object.keys(validationErrors).length === 0;
-
     };
 
-    if (!show)
+
+    /* ============================================================
+       HIDDEN
+    ============================================================ */
+
+    if (
+        !show ||
+        !category
+    ) {
+
         return null;
 
-    return (
+    }
+
+
+    /* ============================================================
+       MODAL
+    ============================================================ */
+
+    return createPortal(
 
         <div
-            className="modal fade show"
-            style={{
-                display: "block",
-                background: "rgba(0,0,0,.45)"
-            }}
+            className="category-modal-overlay"
+            onMouseDown={handleOverlayClick}
         >
 
-            <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div
+                className="category-edit-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="edit-category-title"
+            >
 
-                <div
-                    className="modal-content border-0 shadow-lg"
-                    style={{
-                        borderRadius: "20px"
-                    }}
-                >
 
-                    <div
-                        className="modal-header"
-                        style={{
-                            background: "#0B2E4F",
-                            color: "#fff"
-                        }}
-                    >
+                {/* ====================================================
+                    HEADER
+                ==================================================== */}
 
-                        <h4 className="fw-bold mb-0">
+                <div className="category-modal-header">
 
-                            Edit Category
+                    <div className="category-modal-header-left">
 
-                        </h4>
+                        <div className="category-modal-icon">
 
-                        <button
-                            className="btn-close btn-close-white"
-                            onClick={onClose}
-                        ></button>
-
-                    </div>
-
-                    <div className="modal-body p-4">
-                                            {loading ? (
-
-                        <div className="text-center py-5">
-
-                            <div
-                                className="spinner-border text-warning"
-                                style={{
-                                    width: "3rem",
-                                    height: "3rem"
-                                }}
-                            ></div>
-
-                            <h5 className="mt-3">
-
-                                Loading Category...
-
-                            </h5>
+                            <i className="bi bi-pencil-square"></i>
 
                         </div>
 
-                    ) : (
 
-                        <form>
+                        <div>
 
-                            <div className="row">
+                            <span>
+                                CATEGORY MANAGEMENT
+                            </span>
 
-                                <div className="col-12">
+                            <h2 id="edit-category-title">
+                                Edit Category
+                            </h2>
 
-                                    <div
-                                        className="card border shadow-sm"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        className="category-modal-close"
+                        onClick={onClose}
+                        disabled={saving}
+                    >
+
+                        <i className="bi bi-x-lg"></i>
+
+                    </button>
+
+                </div>
+
+
+                {/* ====================================================
+                    FORM
+                ==================================================== */}
+
+                <form
+                    className="category-modal-form"
+                    onSubmit={handleSubmit}
+                >
+
+
+                    {/* ==================================================
+                        BODY
+                    ================================================== */}
+
+                    <div className="category-modal-body">
+
+
+                        {/* ERROR */}
+
+                        {error && (
+
+                            <div className="category-modal-error">
+
+                                <i className="bi bi-exclamation-circle-fill"></i>
+
+                                <span>
+                                    {error}
+                                </span>
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setError("")
+                                    }
+                                >
+
+                                    <i className="bi bi-x"></i>
+
+                                </button>
+
+                            </div>
+
+                        )}
+
+
+                        {/* ==================================================
+                            CATEGORY INFORMATION
+                        ================================================== */}
+
+                        <div className="category-form-section">
+
+                            <div className="category-form-section-title">
+
+                                <i className="bi bi-grid-fill"></i>
+
+                                Category Information
+
+                            </div>
+
+
+                            {/* CATEGORY NAME */}
+
+                            <div className="category-form-group">
+
+                                <label htmlFor="category-name">
+
+                                    Category Name
+
+                                    <span>
+                                        *
+                                    </span>
+
+                                </label>
+
+
+                                <input
+                                    id="category-name"
+                                    type="text"
+                                    value={categoryName}
+                                    onChange={(event) =>
+                                        setCategoryName(
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="Enter category name"
+                                    disabled={saving}
+                                    autoComplete="off"
+                                />
+
+                            </div>
+
+
+                            {/* DESCRIPTION */}
+
+                            <div className="category-form-group">
+
+                                <label htmlFor="category-description">
+
+                                    Description
+
+                                </label>
+
+
+                                <textarea
+                                    id="category-description"
+                                    value={description}
+                                    onChange={(event) =>
+                                        setDescription(
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="Enter category description"
+                                    disabled={saving}
+                                    rows={5}
+                                />
+
+
+                                <small>
+                                    Update the description
+                                    for this service category.
+                                </small>
+
+                            </div>
+
+
+                            {/* ==================================================
+                                STATUS
+                            ================================================== */}
+
+                            <div className="category-form-group">
+
+                                <label>
+
+                                    Category Status
+
+                                </label>
+
+
+                                <div className="category-status-selector">
+
+
+                                    {/* ACTIVE */}
+
+                                    <button
+                                        type="button"
+                                        className={`category-status-option active-option ${
+                                            isActive
+                                                ? "selected"
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            setIsActive(true)
+                                        }
+                                        disabled={saving}
                                     >
 
-                                        <div className="card-body">
+                                        <div className="status-option-icon">
 
-                                            <h5
-                                                className="fw-bold mb-4"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
-
-                                                Category Information
-
-                                            </h5>
-
-                                            <div className="mb-4">
-
-                                                <label className="form-label fw-semibold">
-
-                                                    Category Name
-
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="categoryName"
-                                                    className={`form-control ${
-                                                        errors.categoryName
-                                                            ? "is-invalid"
-                                                            : ""
-                                                    }`}
-                                                    value={form.categoryName}
-                                                    onChange={handleChange}
-                                                    placeholder="Enter Category Name"
-                                                />
-
-                                                <div className="invalid-feedback">
-
-                                                    {errors.categoryName}
-
-                                                </div>
-
-                                            </div>
-
-                                            <div className="mb-3">
-
-                                                <label className="form-label fw-semibold">
-
-                                                    Description
-
-                                                </label>
-
-                                                <textarea
-                                                    rows="5"
-                                                    name="description"
-                                                    className="form-control"
-                                                    value={form.description}
-                                                    onChange={handleChange}
-                                                    placeholder="Enter Category Description..."
-                                                ></textarea>
-
-                                                <small className="text-muted">
-
-                                                    Update the description for this service category.
-
-                                                </small>
-
-                                            </div>
+                                            <i className="bi bi-check-circle-fill"></i>
 
                                         </div>
 
-                                    </div>
+
+                                        <div className="status-option-content">
+
+                                            <strong>
+                                                Active
+                                            </strong>
+
+                                            <span>
+                                                Category is available
+                                                for customers.
+                                            </span>
+
+                                        </div>
+
+
+                                        <div className="status-radio">
+
+                                            {isActive && (
+
+                                                <i className="bi bi-check"></i>
+
+                                            )}
+
+                                        </div>
+
+                                    </button>
+
+
+                                    {/* INACTIVE */}
+
+                                    <button
+                                        type="button"
+                                        className={`category-status-option inactive-option ${
+                                            !isActive
+                                                ? "selected"
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            setIsActive(false)
+                                        }
+                                        disabled={saving}
+                                    >
+
+                                        <div className="status-option-icon">
+
+                                            <i className="bi bi-pause-circle-fill"></i>
+
+                                        </div>
+
+
+                                        <div className="status-option-content">
+
+                                            <strong>
+                                                Inactive
+                                            </strong>
+
+                                            <span>
+                                                Category is disabled
+                                                for customers.
+                                            </span>
+
+                                        </div>
+
+
+                                        <div className="status-radio">
+
+                                            {!isActive && (
+
+                                                <i className="bi bi-check"></i>
+
+                                            )}
+
+                                        </div>
+
+                                    </button>
+
 
                                 </div>
 
                             </div>
 
-                        </form>
 
-                    )}
-                                        <div
-                        className="modal-footer"
-                        style={{
-                            background: "#F8F9FA"
-                        }}
-                    >
+                        </div>
+
+
+                        {/* ==================================================
+                            CATEGORY INFORMATION SUMMARY
+                        ================================================== */}
+
+                        <div className="category-edit-meta">
+
+
+                            <div>
+
+                                <span>
+                                    Category ID
+                                </span>
+
+                                <strong>
+                                    #{category.categoryId}
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Current Status
+                                </span>
+
+
+                                <strong
+                                    className={
+                                        isActive
+                                            ? "active"
+                                            : "inactive"
+                                    }
+                                >
+
+                                    <i className="bi bi-circle-fill"></i>
+
+                                    {isActive
+                                        ? "Active"
+                                        : "Inactive"
+                                    }
+
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    {/* ====================================================
+                        FOOTER
+                    ==================================================== */}
+
+                    <div className="category-modal-footer">
+
 
                         <button
                             type="button"
-                            className="btn btn-secondary"
+                            className="category-modal-btn cancel"
                             onClick={onClose}
                             disabled={saving}
                         >
 
-                            <i className="bi bi-x-circle me-2"></i>
+                            <i className="bi bi-x-circle"></i>
 
                             Cancel
 
                         </button>
 
+
                         <button
-                            type="button"
-                            className="btn"
-                            style={{
-                                background: "#0B2E4F",
-                                color: "#fff"
-                            }}
+                            type="submit"
+                            className="category-modal-btn update"
                             disabled={saving}
-                            onClick={async () => {
-
-                                if (!validate())
-                                    return;
-
-                                setSaving(true);
-
-                                try {
-
-                                    await serviceCategoryService.update(form);
-
-                                    alert("Category updated successfully.");
-
-                                    onSuccess();
-
-                                    onClose();
-
-                                }
-                                catch (err) {
-
-                                    console.error(err);
-
-                                    alert("Failed to update category.");
-
-                                }
-                                finally {
-
-                                    setSaving(false);
-
-                                }
-
-                            }}
                         >
 
                             {saving ? (
 
                                 <>
 
-                                    <span
-                                        className="spinner-border spinner-border-sm me-2"
-                                    ></span>
+                                    <span className="category-button-spinner"></span>
 
                                     Updating...
 
@@ -342,7 +698,7 @@ function EditCategoryModal({
 
                                 <>
 
-                                    <i className="bi bi-check-circle me-2"></i>
+                                    <i className="bi bi-check-circle"></i>
 
                                     Update Category
 
@@ -352,17 +708,20 @@ function EditCategoryModal({
 
                         </button>
 
+
                     </div>
 
-                </div>
+
+                </form>
 
             </div>
 
-        </div>
+        </div>,
 
-    </div>);
+        document.body
+
+    );
 
 }
 
 export default EditCategoryModal;
-                    

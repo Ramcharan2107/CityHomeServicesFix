@@ -358,7 +358,7 @@
         block;
 
     color:
-        #9099a4;
+        #4c6e97;
 
     font-size:
         6px;
@@ -392,10 +392,12 @@
 
 .summary-card small {
     color:
-        #818b96;
+        #eb9936;
 
     font-size:
-        7px;
+        8px;
+    
+    font-weight: 600;
 }
 
 .summary-message {
@@ -464,7 +466,7 @@
         0;
 
     color:
-        #7e8893;
+        #d2863e;
 
     font-size:
         8px;
@@ -729,10 +731,12 @@
 
 .address-label span {
     color:
-        #9099a3;
+        #e39842;
 
     font-size:
         7px;
+
+    font-weight: 600;
 }
 
 .default-badge {
@@ -918,10 +922,10 @@
         2px;
 
     color:
-        #949da7;
+        #354052;
 
     font-size:
-        6px;
+        8px;
 
     font-weight:
         800;
@@ -2504,4 +2508,230 @@
     .modal-save-btn {
         font-size: 13px;
     }
+}
+
+/* =========================================================
+   SHARED CITY HOME SERVICES EFFECTS
+   Added without changing the existing address-page structure
+========================================================= */
+
+/* Blue + orange hero treatment */
+.addresses-header {
+    border: 1px solid rgba(247,148,29,.45);
+    background: linear-gradient(135deg, #0b1f3a 0%, #173b60 58%, #e67e0b 145%);
+    box-shadow: 0 12px 28px rgba(11,31,58,.14);
+}
+
+.addresses-header::before {
+    width: 5px;
+    background: linear-gradient(180deg, #f4b400, #f7941d);
+}
+
+.addresses-title-area h1 {
+    color: #ffffff;
+}
+
+.addresses-title-area p {
+    color: rgba(255,255,255,.84);
+}
+
+.page-eyebrow {
+    color: #fa9e35;
+}
+
+.addresses-title-icon {
+    border-color: rgba(255,255,255,.35);
+    background: rgba(255,255,255,.12);
+    color: #ffb45e;
+}
+
+/* Summary cards */
+.summary-card,
+.summary-message {
+    border-color: rgba(247,148,29,.22);
+    box-shadow: 0 5px 18px rgba(11,31,58,.05);
+}
+
+.summary-card:hover,
+.summary-message:hover {
+    transform: translateY(-3px);
+    border-color: #f7941d;
+    box-shadow: 0 10px 24px rgba(247,148,29,.12);
+}
+
+/* Address cards */
+.address-card {
+    border-color: rgba(247,148,29,.25);
+    box-shadow: 0 5px 18px rgba(11,31,58,.05);
+}
+
+.address-card:hover {
+    transform: translateY(-4px);
+    border-color: #f7941d;
+    box-shadow: 0 10px 25px rgba(247,148,29,.12);
+}
+
+.address-card:hover .address-label-icon {
+    background: #f7941d;
+    color: #ffffff;
+    transform: scale(1.04);
+}
+
+.address-label-icon {
+    transition: .2s ease;
+}
+
+/* Buttons */
+.primary-address-btn,
+.modal-save-btn {
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.primary-address-btn:hover,
+.modal-save-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 20px rgba(247,148,29,.24);
+}
+
+.make-default-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background: #fff1db;
+    border-color: #f7941d;
+}
+
+.edit-address-btn:hover {
+    transform: translateY(-2px);
+    border-color: #f7941d;
+    background: #fffaf3;
+    color: #0b2e4f;
+}
+
+.delete-address-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    border-color: #dc3545;
+    background: #fff2f3;
+}
+
+/* Address information */
+.address-row > i {
+    transition: .2s ease;
+}
+
+.address-row:hover > i {
+    background: #fff4e6;
+    transform: scale(1.04);
+}
+
+/* Section headings */
+.address-section-title h2 {
+    color: #0b1f3a;
+}
+
+/* Modal detail interactions */
+.address-modal {
+    border: 2px solid #f7941d;
+}
+
+.modal-close:hover:not(:disabled) {
+    transform: rotate(90deg) scale(1.03);
+    background: #f7941d;
+    border-color: #f7941d;
+    color: #ffffff;
+}
+
+/* Readable medium-size typography */
+.address-row p {
+    color: #415f86;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.address-row span {
+    color: #0b1f3a;
+    font-size: 12px;
+}
+
+.address-label h3 {
+    color: #0b1f3a;
+    font-size: 17px;
+}
+
+.address-label span {
+    font-size: 12px;
+}
+
+.address-section-title h2 {
+    font-size: 22px;
+}
+
+.address-section-title > div:first-child span {
+    font-size: 11px;
+}
+
+.primary-address-btn {
+    font-size: 14px;
+}
+
+.edit-address-btn,
+.delete-address-btn {
+    font-size: 13px;
+}
+
+.make-default-btn,
+.default-badge {
+    font-size: 12px;
+}
+
+.booking-ready {
+    font-size: 12px;
+}
+
+.summary-card span {
+    font-size: 11px;
+}
+
+.summary-card strong {
+    font-size: 25px;
+}
+
+.summary-card small {
+    font-size: 12px;
+}
+
+.summary-message strong {
+    font-size: 15px;
+}
+
+.summary-message p {
+    font-size: 13px;
+}
+
+/* Form readability */
+.form-group label {
+    font-size: 13px;
+}
+
+.form-group input {
+    font-size: 14px;
+}
+
+.type-option {
+    font-size: 13px;
+}
+
+.coordinates-section summary {
+    font-size: 13px;
+}
+
+.default-checkbox strong {
+    font-size: 13px;
+}
+
+.default-checkbox small {
+    font-size: 12px;
+}
+
+.modal-cancel-btn,
+.modal-save-btn {
+    font-size: 13px;
 }

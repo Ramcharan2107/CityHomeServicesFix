@@ -35,7 +35,7 @@ function Sidebar({ sidebarOpen, closeSidebar, isMobile }) {
                 {
                     name: "Customers",
                     icon: "bi-people",
-                    path: "/customers"
+                    path: "/admin/customers"
                 },
                 {
                     name: "Categories",

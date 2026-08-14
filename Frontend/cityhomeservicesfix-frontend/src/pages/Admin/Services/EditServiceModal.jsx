@@ -1,489 +1,541 @@
 import { useEffect, useState } from "react";
 import serviceService from "../../../services/serviceService";
+import "./ServiceModal.css";
 
 function EditServiceModal({
-
     show,
-
     service,
-
-    categories,
-
+    categories = [],
     onClose,
-
     onSuccess
-
 }) {
 
-    const [loading, setLoading] = useState(false);
+    const [form, setForm] = useState({
+        categoryId: "",
+        serviceName: "",
+        serviceCode: "",
+        description: "",
+        estimatedHours: "",
+        basePrice: "",
+        isActive: true
+    });
 
     const [saving, setSaving] = useState(false);
-
-    const [errors, setErrors] = useState({});
-
-    const [form, setForm] = useState({
-
-        serviceId: 0,
-
-        categoryId: "",
-
-        serviceName: "",
-
-        serviceCode: "",
-
-        description: "",
-
-        estimatedHours: "",
-
-        basePrice: "",
-
-        isActive: true
-
-    });
+    const [error, setError] = useState("");
 
     useEffect(() => {
 
-        if (!show || !service)
-            return;
+        if (!show || !service) return;
 
-        loadService();
+        const categoryId =
+            service?.categoryId ??
+            service?.CategoryId ??
+            service?.category?.categoryId ??
+            service?.category?.CategoryId ??
+            "";
+
+        const serviceName =
+            service?.serviceName ??
+            service?.ServiceName ??
+            service?.name ??
+            "";
+
+        const serviceCode =
+            service?.serviceCode ??
+            service?.ServiceCode ??
+            service?.code ??
+            "";
+
+        const description =
+            service?.description ??
+            service?.Description ??
+            "";
+
+        const estimatedHours =
+            service?.estimatedHours ??
+            service?.EstimatedHours ??
+            service?._hours ??
+            "";
+
+        const basePrice =
+            service?.basePrice ??
+            service?.BasePrice ??
+            service?._price ??
+            "";
+
+        const isActive =
+            service?.isActive ??
+            service?.IsActive ??
+            service?._active ??
+            false;
+
+        setForm({
+            categoryId: categoryId ?? "",
+            serviceName: serviceName ?? "",
+            serviceCode: serviceCode ?? "",
+            description: description ?? "",
+            estimatedHours: estimatedHours ?? "",
+            basePrice: basePrice ?? "",
+            isActive: Boolean(isActive)
+        });
+
+        setError("");
 
     }, [show, service]);
 
-    const loadService = async () => {
 
-        setLoading(true);
+    useEffect(() => {
 
-        setErrors({});
+        if (!show) return;
 
-        try {
+        const previousOverflow =
+            document.body.style.overflow;
 
-            const data = await serviceService.getById(
+        document.body.style.overflow = "hidden";
 
-                service.serviceId
+        const handleKeyDown = (event) => {
 
+            if (
+                event.key === "Escape" &&
+                !saving
+            ) {
+                onClose();
+            }
+
+        };
+
+        document.addEventListener(
+            "keydown",
+            handleKeyDown
+        );
+
+        return () => {
+
+            document.body.style.overflow =
+                previousOverflow;
+
+            document.removeEventListener(
+                "keydown",
+                handleKeyDown
             );
 
-            setForm({
+        };
 
-                serviceId: data.serviceId,
+    }, [show, saving, onClose]);
 
-                categoryId: data.categoryId,
 
-                serviceName: data.serviceName || "",
+    if (!show || !service) {
+        return null;
+    }
 
-                serviceCode: data.serviceCode || "",
 
-                description: data.description || "",
+    const serviceId =
+        service?.serviceId ??
+        service?.ServiceId ??
+        service?.id;
 
-                estimatedHours: data.estimatedHours || "",
 
-                basePrice: data.basePrice || "",
+    const updateField = (event) => {
 
-                isActive: data.isActive
+        const {
+            name,
+            value,
+            type,
+            checked
+        } = event.target;
 
-            });
-
-        }
-        catch (err) {
-
-            console.error(err);
-
-            alert("Failed to load service details.");
-
-        }
-        finally {
-
-            setLoading(false);
-
-        }
-
-    };
-
-    const handleChange = (e) => {
-
-        const { name, value, type, checked } = e.target;
-
-        setForm({
-
-            ...form,
-
+        setForm(current => ({
+            ...current,
             [name]:
                 type === "checkbox"
                     ? checked
                     : value
-
-        });
-
-    };
-
-    const validate = () => {
-
-        const validationErrors = {};
-
-        if (!form.categoryId)
-            validationErrors.categoryId =
-                "Category is required.";
-
-        if (!form.serviceName.trim())
-            validationErrors.serviceName =
-                "Service Name is required.";
-
-        if (!form.serviceCode.trim())
-            validationErrors.serviceCode =
-                "Service Code is required.";
-
-        if (!form.basePrice)
-            validationErrors.basePrice =
-                "Base Price is required.";
-
-        if (!form.estimatedHours)
-            validationErrors.estimatedHours =
-                "Estimated Hours is required.";
-
-        setErrors(validationErrors);
-
-        return Object.keys(validationErrors).length === 0;
+        }));
 
     };
 
-    if (!show)
-        return null;
+
+    const getErrorMessage = (err) =>
+        err?.response?.data?.message ||
+        err?.response?.data?.Message ||
+        err?.response?.data?.title ||
+        err?.message ||
+        "Unable to update service.";
+
+
+    const handleSubmit = async (event) => {
+
+        event.preventDefault();
+
+        if (
+            serviceId === null ||
+            serviceId === undefined ||
+            serviceId === ""
+        ) {
+            setError("Service ID is missing.");
+            return;
+        }
+
+        if (!form.categoryId) {
+            setError("Please select a category.");
+            return;
+        }
+
+        if (!form.serviceName.trim()) {
+            setError("Service name is required.");
+            return;
+        }
+
+        if (!form.serviceCode.trim()) {
+            setError("Service code is required.");
+            return;
+        }
+
+        const hours =
+            Number(form.estimatedHours);
+
+        const price =
+            Number(form.basePrice);
+
+        if (
+            !Number.isFinite(hours) ||
+            hours <= 0
+        ) {
+            setError(
+                "Estimated hours must be greater than 0."
+            );
+            return;
+        }
+
+        if (
+            !Number.isFinite(price) ||
+            price < 0
+        ) {
+            setError(
+                "Base price must be a valid amount."
+            );
+            return;
+        }
+
+        try {
+
+            setSaving(true);
+            setError("");
+
+            await serviceService.update(
+                serviceId,
+                {
+                    categoryId:
+                        Number(form.categoryId),
+
+                    serviceName:
+                        form.serviceName.trim(),
+
+                    serviceCode:
+                        form.serviceCode.trim(),
+
+                    description:
+                        form.description.trim(),
+
+                    estimatedHours:
+                        hours,
+
+                    basePrice:
+                        price,
+
+                    isActive:
+                        Boolean(form.isActive)
+                }
+            );
+
+            onSuccess?.();
+
+        } catch (err) {
+
+            console.error(
+                "UPDATE SERVICE ERROR:",
+                err
+            );
+
+            setError(
+                getErrorMessage(err)
+            );
+
+        } finally {
+
+            setSaving(false);
+
+        }
+
+    };
+
+
+    const handleBackdrop = (event) => {
+
+        if (
+            event.target ===
+                event.currentTarget &&
+            !saving
+        ) {
+            onClose();
+        }
+
+    };
+
 
     return (
 
         <div
-            className="modal fade show"
-            style={{
-                display: "block",
-                background: "rgba(0,0,0,.45)"
-            }}
+            className="service-modal-backdrop"
+            onMouseDown={handleBackdrop}
         >
 
-            <div className="modal-dialog modal-xl modal-dialog-centered">
+            <div
+                className="service-modal service-modal-large"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="edit-service-title"
+                onMouseDown={(event) =>
+                    event.stopPropagation()
+                }
+            >
 
-                <div
-                    className="modal-content border-0 shadow-lg"
-                    style={{
-                        borderRadius: "20px"
-                    }}
-                >
+                <div className="service-modal-header">
 
-                    <div
-                        className="modal-header"
-                        style={{
-                            background: "#0B2E4F",
-                            color: "#fff"
-                        }}
-                    >
+                    <div className="service-modal-title">
 
-                        <h4 className="fw-bold mb-0">
+                        <div className="service-modal-title-icon">
 
-                            Edit Service
-
-                        </h4>
-
-                        <button
-                            className="btn-close btn-close-white"
-                            onClick={onClose}
-                        ></button>
-
-                    </div>
-
-                    <div className="modal-body p-4">
-                                            {loading ? (
-
-                        <div className="text-center py-5">
-
-                            <div
-                                className="spinner-border text-warning"
-                                style={{
-                                    width: "3rem",
-                                    height: "3rem"
-                                }}
-                            ></div>
-
-                            <h5 className="mt-3">
-
-                                Loading Service...
-
-                            </h5>
+                            <i className="bi bi-pencil-square"></i>
 
                         </div>
 
-                    ) : (
+                        <div className="service-modal-title-content">
 
-                        <form>
+                            <span className="service-modal-eyebrow">
+                                SERVICE MANAGEMENT
+                            </span>
 
-                            <div className="row g-4">
+                            <h2 id="edit-service-title">
+                                Edit Service
+                            </h2>
 
-                                <div className="col-lg-6">
+                            <p>
+                                Update service information and status.
+                            </p>
 
-                                    <div
-                                        className="card border shadow-sm h-100"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        className="service-modal-close"
+                        onClick={onClose}
+                        disabled={saving}
+                        aria-label="Close"
+                    >
+
+                        <i className="bi bi-x-lg"></i>
+
+                    </button>
+
+                </div>
+
+
+                <form onSubmit={handleSubmit}>
+
+                    <div className="service-modal-body">
+
+                        {error && (
+
+                            <div className="service-modal-error">
+
+                                <i className="bi bi-exclamation-triangle-fill me-2"></i>
+
+                                {error}
+
+                            </div>
+
+                        )}
+
+
+                        <div className="service-modal-form">
+
+                            <div className="service-modal-form-grid">
+
+                                <div className="service-modal-form-group">
+
+                                    <label htmlFor="edit-category">
+                                        Category <span>*</span>
+                                    </label>
+
+                                    <select
+                                        id="edit-category"
+                                        name="categoryId"
+                                        value={form.categoryId}
+                                        onChange={updateField}
+                                        disabled={saving}
+                                        required
                                     >
 
-                                        <div className="card-body">
+                                        <option value="">
+                                            Select category
+                                        </option>
 
-                                            <h5
-                                                className="fw-bold mb-4"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
+                                        {categories.map(
+                                            category => {
 
-                                                Basic Information
+                                                const id =
+                                                    category?.categoryId ??
+                                                    category?.CategoryId ??
+                                                    category?.id;
 
-                                            </h5>
+                                                const name =
+                                                    category?.categoryName ??
+                                                    category?.CategoryName ??
+                                                    category?.name ??
+                                                    "Unnamed Category";
 
-                                            <div className="mb-3">
+                                                return (
 
-                                                <label className="form-label fw-semibold">
-
-                                                    Category
-
-                                                </label>
-
-                                                <select
-                                                    name="categoryId"
-                                                    className={`form-select ${
-                                                        errors.categoryId
-                                                            ? "is-invalid"
-                                                            : ""
-                                                    }`}
-                                                    value={form.categoryId}
-                                                    onChange={handleChange}
-                                                >
-
-                                                    <option value="">
-
-                                                        Select Category
-
+                                                    <option
+                                                        key={
+                                                            id ??
+                                                            name
+                                                        }
+                                                        value={id}
+                                                    >
+                                                        {name}
                                                     </option>
 
-                                                    {categories.map(category => (
+                                                );
 
-                                                        <option
-                                                            key={category.categoryId}
-                                                            value={category.categoryId}
-                                                        >
+                                            }
+                                        )}
 
-                                                            {category.categoryName}
-
-                                                        </option>
-
-                                                    ))}
-
-                                                </select>
-
-                                                <div className="invalid-feedback">
-
-                                                    {errors.categoryId}
-
-                                                </div>
-
-                                            </div>
-
-                                            <div className="mb-3">
-
-                                                <label className="form-label fw-semibold">
-
-                                                    Service Name
-
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="serviceName"
-                                                    className={`form-control ${
-                                                        errors.serviceName
-                                                            ? "is-invalid"
-                                                            : ""
-                                                    }`}
-                                                    value={form.serviceName}
-                                                    onChange={handleChange}
-                                                />
-
-                                                <div className="invalid-feedback">
-
-                                                    {errors.serviceName}
-
-                                                </div>
-
-                                            </div>
-
-                                            <div>
-
-                                                <label className="form-label fw-semibold">
-
-                                                    Service Code
-
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="serviceCode"
-                                                    className={`form-control ${
-                                                        errors.serviceCode
-                                                            ? "is-invalid"
-                                                            : ""
-                                                    }`}
-                                                    value={form.serviceCode}
-                                                    onChange={handleChange}
-                                                />
-
-                                                <div className="invalid-feedback">
-
-                                                    {errors.serviceCode}
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
+                                    </select>
 
                                 </div>
 
-                                <div className="col-lg-6">
 
-                                    <div
-                                        className="card border shadow-sm h-100"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
-                                    >
+                                <div className="service-modal-form-group">
 
-                                        <div className="card-body">
+                                    <label htmlFor="edit-service-code">
+                                        Service Code <span>*</span>
+                                    </label>
 
-                                            <h5
-                                                className="fw-bold mb-4"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
-
-                                                Pricing & Duration
-
-                                            </h5>
-
-                                            <div className="mb-3">
-
-                                                <label className="form-label fw-semibold">
-
-                                                    Base Price (₹)
-
-                                                </label>
-
-                                                <input
-                                                    type="number"
-                                                    name="basePrice"
-                                                    className={`form-control ${
-                                                        errors.basePrice
-                                                            ? "is-invalid"
-                                                            : ""
-                                                    }`}
-                                                    value={form.basePrice}
-                                                    onChange={handleChange}
-                                                />
-
-                                                <div className="invalid-feedback">
-
-                                                    {errors.basePrice}
-
-                                                </div>
-
-                                            </div>
-
-                                            <div className="mb-3">
-
-                                                <label className="form-label fw-semibold">
-
-                                                    Estimated Hours
-
-                                                </label>
-
-                                                <input
-                                                    type="number"
-                                                    step="0.5"
-                                                    name="estimatedHours"
-                                                    className={`form-control ${
-                                                        errors.estimatedHours
-                                                            ? "is-invalid"
-                                                            : ""
-                                                    }`}
-                                                    value={form.estimatedHours}
-                                                    onChange={handleChange}
-                                                />
-
-                                                <div className="invalid-feedback">
-
-                                                    {errors.estimatedHours}
-
-                                                </div>
-
-                                            </div>
-
-                                            <div className="form-check form-switch mt-4">
-
-                                                <input
-                                                    className="form-check-input"
-                                                    type="checkbox"
-                                                    name="isActive"
-                                                    checked={form.isActive}
-                                                    onChange={handleChange}
-                                                />
-
-                                                <label className="form-check-label fw-semibold">
-
-                                                    Active Service
-
-                                                </label>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
+                                    <input
+                                        id="edit-service-code"
+                                        name="serviceCode"
+                                        value={form.serviceCode}
+                                        onChange={updateField}
+                                        maxLength={50}
+                                        disabled={saving}
+                                        required
+                                    />
 
                                 </div>
 
-                                <div className="col-12">
 
-                                    <div
-                                        className="card border shadow-sm"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
-                                    >
+                                <div className="service-modal-form-group full">
 
-                                        <div className="card-body">
+                                    <label htmlFor="edit-service-name">
+                                        Service Name <span>*</span>
+                                    </label>
 
-                                            <h5
-                                                className="fw-bold mb-3"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
+                                    <input
+                                        id="edit-service-name"
+                                        name="serviceName"
+                                        value={form.serviceName}
+                                        onChange={updateField}
+                                        maxLength={150}
+                                        disabled={saving}
+                                        required
+                                    />
 
-                                                Service Description
+                                </div>
 
-                                            </h5>
 
-                                            <textarea
-                                                rows="5"
-                                                name="description"
-                                                className="form-control"
-                                                value={form.description}
-                                                onChange={handleChange}
-                                                placeholder="Enter Service Description..."
-                                            ></textarea>
+                                <div className="service-modal-form-group">
 
-                                        </div>
+                                    <label htmlFor="edit-hours">
+                                        Estimated Hours <span>*</span>
+                                    </label>
+
+                                    <input
+                                        id="edit-hours"
+                                        name="estimatedHours"
+                                        type="number"
+                                        min="0.1"
+                                        step="0.1"
+                                        value={form.estimatedHours}
+                                        onChange={updateField}
+                                        disabled={saving}
+                                        required
+                                    />
+
+                                </div>
+
+
+                                <div className="service-modal-form-group">
+
+                                    <label htmlFor="edit-price">
+                                        Base Price <span>*</span>
+                                    </label>
+
+                                    <input
+                                        id="edit-price"
+                                        name="basePrice"
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        value={form.basePrice}
+                                        onChange={updateField}
+                                        disabled={saving}
+                                        required
+                                    />
+
+                                </div>
+
+
+                                <div className="service-modal-form-group full">
+
+                                    <label htmlFor="edit-description">
+                                        Description
+                                    </label>
+
+                                    <textarea
+                                        id="edit-description"
+                                        name="description"
+                                        value={form.description}
+                                        onChange={updateField}
+                                        maxLength={1000}
+                                        disabled={saving}
+                                    />
+
+                                </div>
+
+
+                                <div className="service-modal-form-group full">
+
+                                    <div className="service-modal-checkbox">
+
+                                        <input
+                                            id="edit-active"
+                                            name="isActive"
+                                            type="checkbox"
+                                            checked={
+                                                form.isActive
+                                            }
+                                            onChange={updateField}
+                                            disabled={saving}
+                                        />
+
+                                        <label htmlFor="edit-active">
+                                            Service is Active
+                                        </label>
 
                                     </div>
 
@@ -491,113 +543,40 @@ function EditServiceModal({
 
                             </div>
 
-                        </form>
+                        </div>
 
-                    )}
-                                        <div
-                        className="modal-footer"
-                        style={{
-                            background: "#F8F9FA"
-                        }}
-                    >
+                    </div>
+
+
+                    <div className="service-modal-footer">
 
                         <button
                             type="button"
-                            className="btn btn-secondary"
+                            className="service-modal-btn service-modal-btn-secondary"
                             onClick={onClose}
                             disabled={saving}
                         >
-
-                            <i className="bi bi-x-circle me-2"></i>
-
                             Cancel
-
                         </button>
 
                         <button
-                            type="button"
-                            className="btn"
-                            style={{
-                                background: "#0B2E4F",
-                                color: "#fff"
-                            }}
+                            type="submit"
+                            className="service-modal-btn service-modal-btn-primary"
                             disabled={saving}
-                            onClick={async () => {
-
-                                if (!validate())
-                                    return;
-
-                                setSaving(true);
-
-                                try {
-
-                                    await serviceService.update(
-
-                                        form.serviceId,
-
-                                        {
-
-                                            categoryId: Number(form.categoryId),
-
-                                            serviceName: form.serviceName,
-
-                                            serviceCode: form.serviceCode,
-
-                                            description: form.description,
-
-                                            estimatedHours: Number(form.estimatedHours),
-
-                                            basePrice: Number(form.basePrice),
-
-                                            isActive: form.isActive
-
-                                        }
-
-                                    );
-
-                                    alert("Service updated successfully.");
-
-                                    onSuccess();
-
-                                    onClose();
-
-                                }
-                                catch (err) {
-
-                                    console.error(err);
-
-                                    alert("Failed to update service.");
-
-                                }
-                                finally {
-
-                                    setSaving(false);
-
-                                }
-
-                            }}
                         >
 
                             {saving ? (
 
                                 <>
-
-                                    <span
-                                        className="spinner-border spinner-border-sm me-2"
-                                    ></span>
-
+                                    <span className="service-modal-spinner"></span>
                                     Updating...
-
                                 </>
 
                             ) : (
 
                                 <>
-
-                                    <i className="bi bi-check-circle me-2"></i>
-
-                                    Update Service
-
+                                    <i className="bi bi-check-lg"></i>
+                                    Save Changes
                                 </>
 
                             )}
@@ -606,13 +585,13 @@ function EditServiceModal({
 
                     </div>
 
-                </div>
+                </form>
 
             </div>
 
         </div>
 
-    </div>);
+    );
 
 }
 

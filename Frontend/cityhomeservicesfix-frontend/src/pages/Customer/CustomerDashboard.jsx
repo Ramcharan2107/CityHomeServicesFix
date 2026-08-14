@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import customerDashboardService from "../../services/customerDashboardService";
 
 import DashboardHeader from "../../components/customer/dashboard/DashboardHeader";
@@ -16,6 +17,8 @@ import "./CustomerDashboard.css";
 
 function CustomerDashboard() {
 
+    const navigate = useNavigate();
+
     const [dashboard, setDashboard] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -32,6 +35,12 @@ function CustomerDashboard() {
 
     }, []);
 
+
+    const recommendedServices = Array.isArray(dashboard?.recommendedServices)
+        ? dashboard.recommendedServices
+        : [];
+
+    const visibleRecommendedServices = recommendedServices.slice(0, 4);
 
     const loadDashboard = async (isRefresh = false) => {
 
@@ -189,9 +198,7 @@ function CustomerDashboard() {
                 <span className="dashboard-grid-pattern"></span>
 
             </div>
-
-
-            <PageContainer>
+<PageContainer>
 
                 {/* =================================================
                     WELCOME HEADER
@@ -202,13 +209,13 @@ function CustomerDashboard() {
                     <div className="welcome-content">
 
                         <div className="welcome-label">
-                            CUSTOMER DASHBOARD
+                            <span>DASHBOARD</span>
                         </div>
 
-                        <h1>
+                        <h2><b>
                             Your Home,
-                            <span> Your Services.</span>
-                        </h1>
+                            <span> Your Services.</span></b>
+                        </h2>
 
                         <p>
                             Manage your bookings, discover trusted
@@ -414,7 +421,7 @@ function CustomerDashboard() {
 
                         {/* QUICK ACTIONS */}
 
-                        <div className="dashboard-panel quick-actions-panel">
+                        <div className="dashboard-panel dashboard-compact-panel quick-actions-panel">
 
                             <div className="dashboard-panel-header">
 
@@ -455,7 +462,7 @@ function CustomerDashboard() {
 
                         {/* NOTIFICATIONS */}
 
-                        <div className="dashboard-panel">
+                        <div className="dashboard-panel dashboard-compact-panel notifications-panel">
 
                             <div className="dashboard-panel-header">
 
@@ -506,7 +513,7 @@ function CustomerDashboard() {
                     RECOMMENDED SERVICES
                 ================================================= */}
 
-                <section className="dashboard-panel recommended-panel">
+                <section className="dashboard-panel recommended-panel recommended-services-section">
 
                     <div className="dashboard-panel-header">
 
@@ -540,11 +547,41 @@ function CustomerDashboard() {
 
                     <div className="dashboard-panel-body">
 
-                        <RecommendedServices
-                            services={
-                                dashboard.recommendedServices
-                            }
-                        />
+                        {visibleRecommendedServices.length > 0 ? (
+                            <RecommendedServices
+                                services={visibleRecommendedServices}
+                            />
+                        ) : (
+                            <div className="dashboard-empty-services">
+                                <div className="dashboard-empty-services-icon">
+                                    <i className="bi bi-tools"></i>
+                                </div>
+                                <h4>No recommended services yet</h4>
+                                <p>
+                                    Browse our available home services and find
+                                    the right professional for your needs.
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="recommended-services-footer">
+                            <div className="recommended-services-count">
+                                <i className="bi bi-grid-3x3-gap-fill"></i>
+                                <span>
+                                    Showing {visibleRecommendedServices.length} of{" "}
+                                    {recommendedServices.length} recommended services
+                                </span>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="recommended-view-all-button"
+                                onClick={() => navigate("/services")}
+                            >
+                                View All Services
+                                <i className="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
 
                     </div>
 
@@ -585,14 +622,12 @@ function CustomerDashboard() {
                     <button
                         type="button"
                         className="dashboard-cta-button"
-                        onClick={() => {
-                            window.location.href = "/services";
-                        }}
+                        onClick={() => navigate("/services")}
                     >
 
                         Book a Service
 
-                        <i className="bi bi-arrow-right"></i>
+                        <i className="bi bi-arrow-right" aria-hidden="true"></i>
 
                     </button>
 

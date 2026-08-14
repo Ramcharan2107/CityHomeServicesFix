@@ -6,7 +6,6 @@ import PersonalInformation from "../../components/customer/profile/PersonalInfor
 import AdditionalInformation from "../../components/customer/profile/AdditionalInformation";
 import AccountStatus from "../../components/customer/profile/AccountStatus";
 import ChangePasswordCard from "../../components/customer/profile/ChangePasswordCard";
-import QuickActions from "../../components/customer/profile/QuickActions";
 import PageContainer from "../../components/common/PageContainer";
 
 import "./CustomerProfile.css";
@@ -108,14 +107,16 @@ function CustomerProfile() {
 
             setMessage("");
 
-            await userService.updateProfile(
-                profile
-            );
+            const updated = await userService.updateProfile(profile);
 
+            if (updated && typeof updated === "object") {
+                const nextProfile = updated?.data || updated?.result || updated;
+                if (nextProfile && typeof nextProfile === "object") {
+                    setProfile(prev => ({ ...prev, ...nextProfile }));
+                }
+            }
 
-            setMessage(
-                "Profile updated successfully."
-            );
+            setMessage("Profile updated successfully.");
 
             setMessageType("success");
 
@@ -128,7 +129,9 @@ function CustomerProfile() {
             );
 
             setMessage(
-                "Failed to update profile."
+                error?.response?.data?.message ||
+                error?.response?.data?.title ||
+                "Unable to save your profile. Please try again."
             );
 
             setMessageType("danger");
@@ -142,6 +145,64 @@ function CustomerProfile() {
 
     };
 
+
+    /* =====================================================
+       ACCOUNT ACTIONS
+    ===================================================== */
+
+    const logout = () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = "/";
+    };
+
+    const deactivateAccount = async () => {
+        if (!profile || saving) return;
+
+        const confirmed = window.confirm(
+            "Are you sure you want to deactivate your account? You can contact support to reactivate it later."
+        );
+
+        if (!confirmed) return;
+
+        try {
+            setSaving(true);
+            setMessage("");
+
+            const updated = await userService.updateProfile({
+                ...profile,
+                isActive: false
+            });
+
+            const nextProfile =
+                updated?.data ||
+                updated?.result ||
+                updated;
+
+            if (nextProfile && typeof nextProfile === "object") {
+                setProfile(prev => ({ ...prev, ...nextProfile }));
+            } else {
+                setProfile(prev => ({ ...prev, isActive: false }));
+            }
+
+            setMessage("Your account has been deactivated successfully.");
+            setMessageType("success");
+        }
+        catch (error) {
+            console.error("Failed to deactivate account:", error);
+
+            setMessage(
+                error?.response?.data?.message ||
+                error?.response?.data?.title ||
+                "Unable to deactivate your account. Please try again."
+            );
+
+            setMessageType("danger");
+        }
+        finally {
+            setSaving(false);
+        }
+    };
 
     /* =====================================================
        LOADING
@@ -247,26 +308,49 @@ function CustomerProfile() {
                     PAGE HEADER
                 ================================================= */}
 
-                <div className="customer-profile-heading">
+                <section className="customer-profile-heading" aria-labelledby="profile-page-title">
 
-                    <div>
-
+                    <div className="customer-profile-hero-content">
                         <span className="profile-section-label">
-                            ACCOUNT
+                            CUSTOMER ACCOUNT
                         </span>
 
-                        <h1>
+                        <h1 id="profile-page-title">
                             My Profile
                         </h1>
 
                         <p>
-                            Manage your personal information
-                            and account preferences.
+                            Manage your personal information, account details,
+                            security and preferences from one place.
                         </p>
 
+                        <div className="profile-hero-meta">
+                            <span>
+                                <i className="bi bi-shield-check"></i>
+                                Secure account
+                            </span>
+                            <span>
+                                <i className="bi bi-person-check"></i>
+                                Profile management
+                            </span>
+                        </div>
                     </div>
 
-                </div>
+                    <div className="customer-profile-hero-actions">
+                        <button
+                            type="button"
+                            className="profile-hero-action profile-hero-action-light"
+                            onClick={() => {
+                                localStorage.clear();
+                                window.location.href = "/";
+                            }}
+                        >
+                            <i className="bi bi-box-arrow-right"></i>
+                            Logout
+                        </button>
+                    </div>
+
+                </section>
 
 
                 {/* =================================================
@@ -315,178 +399,119 @@ function CustomerProfile() {
                     PROFILE HEADER
                 ================================================= */}
 
-                <div className="profile-section-card">
+                <section className="profile-section-card profile-overview-card">
 
-                    <ProfileHeader
-                        profile={profile}
-                    />
+                    <div className="profile-overview-actions">
+                        <button
+                            type="button"
+                            className="profile-overview-btn profile-overview-logout"
+                            onClick={logout}
+                            title="Sign out of your account"
+                        >
+                            <i className="bi bi-box-arrow-right"></i>
+                            Logout
+                        </button>
 
-                </div>
+                        <button
+                            type="button"
+                            className="profile-overview-btn profile-overview-deactivate"
+                            onClick={deactivateAccount}
+                            disabled={saving || profile?.isActive === false}
+                            title={
+                                profile?.isActive === false
+                                    ? "Account is already inactive"
+                                    : "Deactivate your account"
+                            }
+                        >
+                            <i className="bi bi-person-x"></i>
+                            {profile?.isActive === false ? "Deactivated" : "Deactivate"}
+                        </button>
+                    </div>
+
+                    <ProfileHeader profile={profile} />
+
+                </section>
 
 
                 {/* =================================================
                     MAIN PROFILE CONTENT
                 ================================================= */}
 
-                <div className="row g-4 mt-1">
+                <div className="profile-main-grid">
 
+                    <section className="profile-section-card profile-content-card profile-personal-card">
+                        <div className="profile-card-heading">
+                            <span className="profile-card-step">01</span>
 
-                    {/* =================================================
-                        LEFT COLUMN
-                    ================================================= */}
-
-                    <div className="col-lg-8">
-
-
-                        <div className="profile-section-card">
-
-                            <div className="profile-card-heading">
-
-                                <div className="profile-card-heading-icon">
-
-                                    <i className="bi bi-person-lines-fill"></i>
-
-                                </div>
-
-                                <div>
-
-                                    <h3>
-                                        Personal Information
-                                    </h3>
-
-                                    <p>
-                                        Update your basic account
-                                        information.
-                                    </p>
-
-                                </div>
-
+                            <div className="profile-card-heading-icon">
+                                <i className="bi bi-person-lines-fill"></i>
                             </div>
 
-                            <PersonalInformation
-                                profile={profile}
-                                onChange={handleChange}
-                            />
-
+                            <div>
+                                <h3>Personal Information</h3>
+                                <p>Update your basic account information.</p>
+                            </div>
                         </div>
 
+                        <PersonalInformation
+                            profile={profile}
+                            onChange={handleChange}
+                        />
+                    </section>
 
-                        <div className="profile-section-card mt-4">
+                    <section className="profile-section-card profile-content-card profile-status-card">
+                        <div className="profile-card-heading profile-card-heading-status">
+                            <span className="profile-card-step">03</span>
 
-                            <div className="profile-card-heading">
-
-                                <div className="profile-card-heading-icon">
-
-                                    <i className="bi bi-card-text"></i>
-
-                                </div>
-
-                                <div>
-
-                                    <h3>
-                                        Additional Information
-                                    </h3>
-
-                                    <p>
-                                        Manage additional details
-                                        associated with your account.
-                                    </p>
-
-                                </div>
-
+                            <div className="profile-card-heading-icon">
+                                <i className="bi bi-activity"></i>
                             </div>
 
-                            <AdditionalInformation
-                                profile={profile}
-                                onChange={handleChange}
-                            />
-
+                            <div>
+                                <h3>Account Status</h3>
+                                <p>Current account activity and status.</p>
+                            </div>
                         </div>
 
+                        <AccountStatus profile={profile} />
+                    </section>
 
-                    </div>
+                    <section className="profile-section-card profile-content-card profile-additional-card">
+                        <div className="profile-card-heading">
+                            <span className="profile-card-step">02</span>
 
-
-                    {/* =================================================
-                        RIGHT COLUMN
-                    ================================================= */}
-
-                    <div className="col-lg-4">
-
-
-                        <div className="profile-section-card">
-
-                            <AccountStatus
-                                profile={profile}
-                            />
-
-                        </div>
-
-
-                        <div className="profile-section-card mt-4">
-
-                            <div className="profile-card-heading">
-
-                                <div className="profile-card-heading-icon">
-
-                                    <i className="bi bi-lightning-charge-fill"></i>
-
-                                </div>
-
-                                <div>
-
-                                    <h3>
-                                        Quick Actions
-                                    </h3>
-
-                                    <p>
-                                        Frequently used account actions.
-                                    </p>
-
-                                </div>
-
+                            <div className="profile-card-heading-icon">
+                                <i className="bi bi-card-text"></i>
                             </div>
 
-                            <QuickActions />
-
+                            <div>
+                                <h3>Additional Information</h3>
+                                <p>Manage additional details associated with your account.</p>
+                            </div>
                         </div>
 
+                        <AdditionalInformation
+                            profile={profile}
+                            onChange={handleChange}
+                        />
+                    </section>
 
-                    </div>
+                    <section className="profile-section-card profile-content-card profile-security-card">
+                        <div className="profile-card-heading">
+                            <span className="profile-card-step">04</span>
 
-                </div>
+                            <div className="profile-card-heading-icon">
+                                <i className="bi bi-shield-lock-fill"></i>
+                            </div>
 
-
-                {/* =================================================
-                    CHANGE PASSWORD
-                ================================================= */}
-
-                <div className="profile-section-card mt-4">
-
-                    <div className="profile-card-heading">
-
-                        <div className="profile-card-heading-icon">
-
-                            <i className="bi bi-shield-lock-fill"></i>
-
+                            <div>
+                                <h3>Security</h3>
+                                <p>Keep your account secure by maintaining a strong password.</p>
+                            </div>
                         </div>
 
-                        <div>
-
-                            <h3>
-                                Security
-                            </h3>
-
-                            <p>
-                                Keep your account secure by
-                                maintaining a strong password.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <ChangePasswordCard />
+                        <ChangePasswordCard />
+                    </section>
 
                 </div>
 

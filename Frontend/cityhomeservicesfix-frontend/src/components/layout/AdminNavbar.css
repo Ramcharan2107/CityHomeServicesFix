@@ -1,79 +1,944 @@
-/* ==========================================
+/* =========================================================
+   CITY HOME SERVICES
    ADMIN NAVBAR
-========================================== */
+   MATCHES HOME PAGE NAVBAR
+========================================================= */
 
-.admin-navbar{
 
-    position:fixed;
+/* =========================================================
+   NAVBAR SHELL
+========================================================= */
 
-    top:0;
+.admin-navbar-shell {
 
-    left:0;
+    position: relative;
 
-    right:0;
+    width: 100%;
 
-    height:80px;
+    height: 82px;
 
-    background:#ffdd78;   /* Same as website */
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    padding:0 24px;
-
-    border-bottom:1px solid #E5E7EB;
-
-    z-index:1100;
+    z-index: 1100;
 
 }
 
-.admin-navbar-left{
 
-    display:flex;
+/* =========================================================
+   NORMAL NAVBAR
+========================================================= */
 
-    align-items:center;
+.admin-navbar {
 
-    gap:16px;
+    position: relative;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 100%;
+
+    height: 82px;
+
+    background: #ffe9a8;
+
+    border-radius: 0;
+
+    border-bottom:
+        1px solid rgba(11, 31, 58, 0.06);
+
+    box-shadow: none;
+
+    z-index: 1100;
+
+    transition:
+        width 0.45s ease,
+        height 0.45s ease,
+        top 0.45s ease,
+        border-radius 0.45s ease,
+        background 0.45s ease,
+        box-shadow 0.45s ease,
+        backdrop-filter 0.45s ease;
 
 }
 
-.admin-navbar-center{
 
-    display:flex;
+/* =========================================================
+   SCROLLED NAVBAR
+   FLOATING CAPSULE
+========================================================= */
 
-    align-items:center;
+.admin-navbar-scrolled {
 
-    gap:28px;
+    position: fixed;
+
+    top: 14px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 94%;
+
+    max-width: 1380px;
+
+    height: 72px;
+
+    background:
+        #ffe9a8;
+
+    border-radius: 999px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.75);
+
+    backdrop-filter: blur(18px);
+
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 10px 30px
+        rgba(11, 31, 58, 0.13);
 
 }
 
-.nav-link-custom{
 
-    text-decoration:none;
+/* =========================================================
+   SHELL WHEN SCROLLED
+   Keeps original space so content doesn't jump
+========================================================= */
 
-    color:#0B2E4F;
+.admin-navbar-shell-scrolled {
 
-    font-weight:600;
-
-    transition:.25s;
-
-}
-
-.nav-link-custom:hover{
-
-    color:#F7941D;
+    height: 82px;
 
 }
 
-.admin-navbar-right{
 
-    display:flex;
+.admin-navbar-container {
 
-    align-items:center;
+    width: 100%;
 
-    gap:12px;
+    height: 100%;
 
+    padding:
+        8px 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+}
+
+
+.admin-navbar-scrolled
+.admin-navbar-container {
+
+    padding:
+        6px 20px;
+
+}
+
+/* Smaller logo when floating */
+
+.admin-navbar-scrolled
+.admin-navbar-logo {
+
+    width: 40px;
+
+    height: 40px;
+
+}
+
+
+/* Smaller brand text when floating */
+
+.admin-navbar-scrolled
+.admin-navbar-brand-text h3 {
+
+    font-size: 1.02rem;
+
+}
+
+
+.admin-navbar-scrolled
+.admin-navbar-brand-text small {
+
+    font-size: 0.62rem;
+
+}
+
+.admin-navbar-scrolled
+.admin-user-button {
+
+    padding:
+        8px 12px;
+
+    font-size: 13px;
+
+}
+
+
+/* =========================================================
+   LEFT SECTION
+========================================================= */
+
+.admin-navbar-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   SIDEBAR TOGGLE
+========================================================= */
+
+.admin-sidebar-toggle {
+
+    width: 42px;
+
+    height: 42px;
+
+    padding: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #ffe9a8;
+
+    color: #0B1F3A;
+
+    font-size: 21px;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.admin-sidebar-toggle:hover {
+
+    background: #FFF3D6;
+
+    color: #F7941D;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.admin-navbar-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    text-decoration: none;
+
+    flex-shrink: 0;
+}
+
+
+.admin-navbar-logo {
+
+    width: 55px;
+
+    height: 55px;
+
+    object-fit: contain;
+
+    flex-shrink: 0;
+
+    transition:
+        width 0.4s ease,
+        height 0.4s ease,
+        transform 0.3s ease;
+}
+
+
+.admin-navbar-brand:hover
+.admin-navbar-logo {
+
+    transform:
+        scale(1.04);
+}
+
+
+/* =========================================================
+   BRAND TEXT
+========================================================= */
+
+.admin-navbar-brand-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+.admin-navbar-brand-text h3 {
+
+    margin: 0;
+
+    color: #0B1F3A;
+
+    font-size: 1.3rem;
+
+    font-weight: 750;
+
+    line-height: 1.1;
+
+    white-space: nowrap;
+}
+
+
+.admin-navbar-brand-text small {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: #6B7280;
+
+    font-size: 0.70rem;
+
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   NAVIGATION LINKS
+========================================================= */
+
+.admin-navbar-links {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 2px;
+
+    flex: 1;
+
+    margin:
+        0 10px;
+}
+
+
+.admin-nav-link {
+
+    position: relative;
+
+    padding:
+        9px 14px;
+
+    color: #0B1F3A !important;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    border-radius: 999px;
+
+    white-space: nowrap;
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.admin-nav-link:hover {
+
+    color: #F7941D !important;
+
+    background: #FFF3D6;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   ADMIN ACTIONS
+========================================================= */
+
+.admin-navbar-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   ICON BUTTON
+========================================================= */
+
+.admin-icon-button {
+
+    width: 42px;
+
+    height: 42px;
+
+    padding: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    position: relative;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: #0B1F3A;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.admin-icon-button:hover {
+
+    background: #FFF3D6;
+
+    color: #F7941D;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   NOTIFICATION DOT
+========================================================= */
+
+.admin-notification-dot {
+
+    position: absolute;
+
+    top: 7px;
+
+    right: 7px;
+
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #F7941D;
+
+    border:
+        2px solid #FFF8E6;
+}
+
+
+/* =========================================================
+   USER DROPDOWN
+========================================================= */
+
+.admin-user-dropdown {
+
+    position: relative;
+}
+
+
+.admin-user-button {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        10px 14px;
+
+    border:
+        1.3px solid #0B1F3A;
+
+    border-radius: 999px;
+
+    background: transparent;
+
+    color: #0B1F3A;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.admin-user-button:hover {
+
+    background: #FFF3D6;
+
+    border-color: #F7941D;
+
+    color: #0B1F3A;
+
+    transform:
+        translateY(-1px);
+}
+
+
+.admin-user-button
+.bi-person-circle {
+
+    font-size: 17px;
+}
+
+
+.admin-user-chevron {
+
+    font-size: 10px;
+
+    margin-left: 1px;
+}
+
+
+/* =========================================================
+   USER MENU
+========================================================= */
+
+.admin-user-menu {
+
+    position: absolute;
+
+    top:
+        calc(100% + 11px);
+
+    right: 0;
+
+    width: 215px;
+
+    padding: 7px;
+
+    background: #FFFFFF;
+
+    border:
+        1px solid rgba(11, 31, 58, 0.08);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 15px 40px
+        rgba(11, 31, 58, 0.15);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+        translateY(-8px)
+        scale(0.97);
+
+    transform-origin:
+        top right;
+
+    transition:
+        opacity 0.22s ease,
+        visibility 0.22s ease,
+        transform 0.22s ease;
+}
+
+
+.admin-user-dropdown:hover
+.admin-user-menu {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+.admin-user-menu button {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        11px 12px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #0B1F3A;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.admin-user-menu button:hover {
+
+    background: #FFF3D6;
+
+    color: #F7941D;
+}
+
+
+.admin-user-menu i {
+
+    width: 18px;
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.admin-menu-divider {
+
+    height: 1px;
+
+    margin:
+        7px 0;
+
+    background:
+        rgba(11, 31, 58, 0.08);
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+.admin-user-menu
+.admin-logout-button {
+
+    color: #DC3545;
+}
+
+
+.admin-user-menu
+.admin-logout-button:hover {
+
+    background: #FFF1F1;
+
+    color: #DC3545;
+}
+
+
+/* =========================================================
+   MOBILE TOGGLE
+========================================================= */
+
+.admin-mobile-toggle {
+
+    display: none;
+
+    width: 42px;
+
+    height: 42px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #FFF3D6;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+}
+
+
+.admin-mobile-toggle span {
+
+    width: 19px;
+
+    height: 2px;
+
+    background: #0B1F3A;
+
+    border-radius: 10px;
+
+    transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .admin-navbar-container {
+
+        padding-left: 22px;
+
+        padding-right: 22px;
+    }
+
+
+    .admin-navbar-brand-text h3 {
+
+        font-size: 1.08rem;
+    }
+
+
+    .admin-navbar-links {
+
+        margin:
+            0 5px;
+    }
+
+
+    .admin-nav-link {
+
+        padding:
+            8px 10px;
+
+        font-size: 14px;
+    }
+
+
+    .admin-user-button {
+
+        padding:
+            9px 11px;
+
+        font-size: 13px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE / TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .admin-navbar-shell {
+
+        height: 68px;
+    }
+
+
+    .admin-navbar {
+
+        height: 68px;
+
+        background: #FFF8E6;
+    }
+
+
+    .admin-navbar-container {
+
+        padding:
+            7px 15px;
+    }
+
+
+    .admin-navbar-links,
+    .admin-navbar-actions {
+
+        display: none;
+    }
+
+
+    .admin-mobile-toggle {
+
+        display: flex;
+    }
+
+
+    .admin-navbar-logo {
+
+        width: 44px;
+
+        height: 44px;
+    }
+
+
+    .admin-navbar-brand-text h3 {
+
+        font-size: 1rem;
+    }
+
+
+    .admin-navbar-brand-text small {
+
+        font-size: 0.63rem;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .admin-navbar-shell {
+
+        height: 64px;
+    }
+
+
+    .admin-navbar {
+
+        height: 64px;
+    }
+
+
+    .admin-navbar-container {
+
+        padding:
+            6px 11px;
+    }
+
+
+    .admin-navbar-logo {
+
+        width: 40px;
+
+        height: 40px;
+    }
+
+
+    .admin-navbar-brand-text h3 {
+
+        font-size: 0.92rem;
+    }
+
+
+    .admin-navbar-brand-text small {
+
+        display: none;
+    }
+
+
+    .admin-sidebar-toggle {
+
+        width: 39px;
+
+        height: 39px;
+    }
+
+
+    .admin-mobile-toggle {
+
+        width: 39px;
+
+        height: 39px;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .admin-navbar,
+    .admin-navbar-logo,
+    .admin-nav-link,
+    .admin-user-button,
+    .admin-user-menu,
+    .admin-icon-button {
+
+        transition: none !important;
+    }
 }

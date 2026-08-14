@@ -1,48 +1,130 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import serviceService from "../../../services/serviceService";
+import "./ServiceModal.css";
 
 function DeleteServiceModal({
-
     show,
-
     service,
-
     onClose,
-
     onSuccess
-
 }) {
 
     const [deleting, setDeleting] = useState(false);
+    const [error, setError] = useState("");
 
-    if (!show || !service)
+    useEffect(() => {
+
+        if (!show) {
+            setError("");
+            setDeleting(false);
+            return undefined;
+        }
+
+        const previousOverflow =
+            document.body.style.overflow;
+
+        document.body.style.overflow = "hidden";
+
+        const handleKeyDown = (event) => {
+
+            if (
+                event.key === "Escape" &&
+                !deleting
+            ) {
+                onClose();
+            }
+
+        };
+
+        document.addEventListener(
+            "keydown",
+            handleKeyDown
+        );
+
+        return () => {
+
+            document.body.style.overflow =
+                previousOverflow;
+
+            document.removeEventListener(
+                "keydown",
+                handleKeyDown
+            );
+
+        };
+
+    }, [show, deleting, onClose]);
+
+
+    if (!show || !service) {
         return null;
+    }
+
+
+    const serviceId =
+        service?.serviceId ??
+        service?.ServiceId ??
+        service?.id;
+
+
+    const serviceName =
+        service?.serviceName ??
+        service?.ServiceName ??
+        service?.name ??
+        "this service";
+
+
+    const serviceCode =
+        service?.serviceCode ??
+        service?.ServiceCode ??
+        service?.code ??
+        "";
+
+
+    const getErrorMessage = (err) =>
+        err?.response?.data?.message ||
+        err?.response?.data?.Message ||
+        err?.response?.data?.title ||
+        err?.message ||
+        "Unable to delete service.";
+
 
     const handleDelete = async () => {
 
-        setDeleting(true);
+        if (
+            serviceId === null ||
+            serviceId === undefined ||
+            serviceId === ""
+        ) {
+            setError(
+                "Service ID is missing."
+            );
+            return;
+        }
 
         try {
 
-            await serviceService.delete(
+            setDeleting(true);
+            setError("");
 
-                service.serviceId
-
+            await serviceService.remove(
+                serviceId
             );
 
-            onSuccess();
+            onSuccess?.();
 
-            onClose();
+        } catch (err) {
 
-        }
-        catch (err) {
+            console.error(
+                "DELETE SERVICE ERROR:",
+                err
+            );
 
-            console.error(err);
+            setError(
+                getErrorMessage(err)
+            );
 
-            alert("Failed to delete service.");
-
-        }
-        finally {
+        } finally {
 
             setDeleting(false);
 
@@ -50,305 +132,192 @@ function DeleteServiceModal({
 
     };
 
+
+    const handleBackdrop = (event) => {
+
+        if (
+            event.target ===
+                event.currentTarget &&
+            !deleting
+        ) {
+            onClose();
+        }
+
+    };
+
+
     return (
 
         <div
-            className="modal fade show"
-            style={{
-                display: "block",
-                background: "rgba(0,0,0,.45)"
-            }}
+            className="service-modal-backdrop"
+            onMouseDown={handleBackdrop}
         >
 
-            <div className="modal-dialog modal-dialog-centered">
+            <div
+                className="service-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="delete-service-title"
+                onMouseDown={(event) =>
+                    event.stopPropagation()
+                }
+            >
 
-                <div
-                    className="modal-content border-0 shadow-lg"
-                    style={{
-                        borderRadius: "20px"
-                    }}
-                >
+                <div className="service-modal-header">
 
-                    <div
-                        className="modal-header"
-                        style={{
-                            background: "#DC3545",
-                            color: "#fff"
-                        }}
-                    >
+                    <div className="service-modal-title">
 
-                        <h4 className="fw-bold mb-0">
-
-                            Delete Service
-
-                        </h4>
-
-                        <button
-                            className="btn-close btn-close-white"
-                            onClick={onClose}
-                            disabled={deleting}
-                        ></button>
-
-                    </div>
-
-                    <div className="modal-body text-center p-4">
-                                            <div
-                        className="mx-auto mb-4 d-flex justify-content-center align-items-center rounded-circle"
-                        style={{
-                            width: "100px",
-                            height: "100px",
-                            background: "#FDECEC"
-                        }}
-                    >
-
-                        <i
-                            className="bi bi-exclamation-triangle-fill"
+                        <div
+                            className="service-modal-title-icon"
                             style={{
-                                fontSize: "50px",
-                                color: "#DC3545"
+                                background: "#FEF2F2",
+                                color: "#DC2626"
                             }}
-                        ></i>
+                        >
 
-                    </div>
+                            <i className="bi bi-trash3"></i>
 
-                    <h3
-                        className="fw-bold mb-3"
-                        style={{
-                            color: "#0B2E4F"
-                        }}
-                    >
+                        </div>
 
-                        Are you sure?
+                        <div className="service-modal-title-content">
 
-                    </h3>
+                            <span
+                                className="service-modal-eyebrow"
+                                style={{
+                                    color: "#DC2626"
+                                }}
+                            >
+                                SERVICE MANAGEMENT
+                            </span>
 
-                    <p
-                        className="text-muted mb-4"
-                        style={{
-                            fontSize: "16px"
-                        }}
-                    >
+                            <h2 id="delete-service-title">
+                                Delete Service
+                            </h2>
 
-                        You are about to permanently delete the following
-                        service.
-
-                    </p>
-
-                    <div
-                        className="card border shadow-sm text-start"
-                        style={{
-                            borderRadius: "15px"
-                        }}
-                    >
-
-                        <div className="card-body">
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Service ID
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    #{service.serviceId}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Service Name
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {service.serviceName}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Service Code
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {service.serviceCode}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Category
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {service.categoryName}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Base Price
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    ₹ {service.basePrice}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Estimated Hours
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {service.estimatedHours} hrs
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Status
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {service.isActive ? (
-
-                                        <span className="badge bg-success">
-
-                                            Active
-
-                                        </span>
-
-                                    ) : (
-
-                                        <span className="badge bg-danger">
-
-                                            Inactive
-
-                                        </span>
-
-                                    )}
-
-                                </div>
-
-                            </div>
+                            <p>
+                                Confirm this permanent action.
+                            </p>
 
                         </div>
 
                     </div>
 
-                    <div className="alert alert-warning mt-4 mb-0">
 
-                        <i className="bi bi-exclamation-circle me-2"></i>
-
-                        This action cannot be undone. Deleting this service may
-                        affect existing service requests that reference it.
-
-                    </div>
-                                        <div
-                        className="modal-footer"
-                        style={{
-                            background: "#F8F9FA"
-                        }}
+                    <button
+                        type="button"
+                        className="service-modal-close"
+                        onClick={onClose}
+                        disabled={deleting}
+                        aria-label="Close"
                     >
 
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={onClose}
-                            disabled={deleting}
-                        >
+                        <i className="bi bi-x-lg"></i>
 
-                            <i className="bi bi-x-circle me-2"></i>
+                    </button>
 
-                            Cancel
+                </div>
 
-                        </button>
 
-                        <button
-                            type="button"
-                            className="btn btn-danger"
-                            onClick={handleDelete}
-                            disabled={deleting}
-                        >
+                <div className="service-modal-body">
 
-                            {deleting ? (
+                    <div className="service-delete-icon">
 
-                                <>
-
-                                    <span
-                                        className="spinner-border spinner-border-sm me-2"
-                                    ></span>
-
-                                    Deleting...
-
-                                </>
-
-                            ) : (
-
-                                <>
-
-                                    <i className="bi bi-trash me-2"></i>
-
-                                    Delete Service
-
-                                </>
-
-                            )}
-
-                        </button>
+                        <i className="bi bi-exclamation-triangle-fill"></i>
 
                     </div>
+
+
+                    <div className="service-delete-content">
+
+                        <h3>
+                            Are you sure?
+                        </h3>
+
+                        <p>
+                            You are about to delete this service.
+                            This action cannot be undone.
+                        </p>
+
+
+                        <div className="service-delete-service-name">
+
+                            {serviceName}
+
+                            {serviceCode && (
+                                <div
+                                    style={{
+                                        marginTop: "3px",
+                                        color: "#64748B",
+                                        fontSize: "11px",
+                                        fontWeight: 600
+                                    }}
+                                >
+                                    {serviceCode}
+                                </div>
+                            )}
+
+                        </div>
+
+
+                        {error && (
+
+                            <div
+                                className="service-modal-error"
+                                style={{
+                                    marginTop: "14px",
+                                    textAlign: "left"
+                                }}
+                            >
+
+                                <i className="bi bi-exclamation-triangle-fill me-2"></i>
+
+                                {error}
+
+                            </div>
+
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div className="service-modal-footer">
+
+                    <button
+                        type="button"
+                        className="service-modal-btn service-modal-btn-secondary"
+                        onClick={onClose}
+                        disabled={deleting}
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="button"
+                        className="service-modal-btn service-modal-btn-danger"
+                        onClick={handleDelete}
+                        disabled={deleting}
+                    >
+
+                        {deleting ? (
+
+                            <>
+                                <span className="service-modal-spinner"></span>
+                                Deleting...
+                            </>
+
+                        ) : (
+
+                            <>
+                                <i className="bi bi-trash3"></i>
+                                Delete Service
+                            </>
+
+                        )}
+
+                    </button>
 
                 </div>
 
@@ -356,7 +325,7 @@ function DeleteServiceModal({
 
         </div>
 
-    </div>);
+    );
 
 }
 

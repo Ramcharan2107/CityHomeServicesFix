@@ -1,348 +1,331 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import technicianService from "../../../services/technicianService";
 
 function DeleteTechnicianModal({
-
     show,
-
     technician,
-
     onClose,
-
     onSuccess
-
 }) {
-
     const [deleting, setDeleting] = useState(false);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
-    if (!show || !technician)
-        return null;
+    useEffect(() => {
+        if (!show) return;
 
-    const handleDelete = async () => {
+        setDeleting(false);
+        setError("");
+        setSuccess("");
 
-        setDeleting(true);
+        const handleEscape = (event) => {
+            if (event.key === "Escape" && !deleting) {
+                onClose();
+            }
+        };
 
-        try {
+        document.addEventListener(
+            "keydown",
+            handleEscape
+        );
 
-            await technicianService.delete(
+        document.body.style.overflow = "hidden";
 
-                technician.technicianId
-
+        return () => {
+            document.removeEventListener(
+                "keydown",
+                handleEscape
             );
 
-            onSuccess();
+            document.body.style.overflow = "";
+        };
+    }, [show, onClose]);
 
-            onClose();
+    if (!show || !technician) {
+        return null;
+    }
 
+    const technicianId =
+        technician.technicianId ??
+        technician.TechnicianId;
+
+    const firstName =
+        technician.firstName ??
+        technician.FirstName ??
+        technician.user?.firstName ??
+        technician.user?.FirstName ??
+        "";
+
+    const lastName =
+        technician.lastName ??
+        technician.LastName ??
+        technician.user?.lastName ??
+        technician.user?.LastName ??
+        "";
+
+    const technicianName =
+        `${firstName} ${lastName}`.trim() ||
+        technician.employeeCode ||
+        technician.EmployeeCode ||
+        "this technician";
+
+    const employeeCode =
+        technician.employeeCode ??
+        technician.EmployeeCode ??
+        "—";
+
+    const department =
+        technician.department ??
+        technician.Department ??
+        "—";
+
+    const designation =
+        technician.designation ??
+        technician.Designation ??
+        "—";
+
+    const handleDelete = async () => {
+        if (!technicianId) {
+            setError(
+                "Technician ID is missing. Unable to delete this technician."
+            );
+            return;
         }
-        catch (err) {
 
-            console.error(err);
-
-            alert("Failed to delete technician.");
-
+        if (
+            typeof technicianService.delete !==
+            "function"
+        ) {
+            setError(
+                "Delete operation is not available in technicianService."
+            );
+            return;
         }
-        finally {
 
+        setDeleting(true);
+        setError("");
+        setSuccess("");
+
+        try {
+            await technicianService.delete(
+                technicianId
+            );
+
+            setSuccess(
+                "Technician deleted successfully."
+            );
+
+            if (onSuccess) {
+                await onSuccess();
+            }
+
+            setTimeout(() => {
+                onClose();
+            }, 700);
+
+        } catch (error) {
+            console.error(
+                "DELETE TECHNICIAN ERROR:",
+                error
+            );
+
+            const message =
+                error?.response?.data?.message ||
+                error?.response?.data?.Message ||
+                error?.response?.data?.error ||
+                "Unable to delete technician.";
+
+            setError(message);
+
+        } finally {
             setDeleting(false);
-
         }
+    };
 
+    const handleBackdropClick = (event) => {
+        if (
+            event.target ===
+            event.currentTarget &&
+            !deleting
+        ) {
+            onClose();
+        }
     };
 
     return (
-
         <div
-            className="modal fade show"
-            style={{
-                display: "block",
-                background: "rgba(0,0,0,.45)"
-            }}
+            className="technician-modal-overlay"
+            onMouseDown={handleBackdropClick}
         >
-
-            <div className="modal-dialog modal-dialog-centered">
-
-                <div
-                    className="modal-content border-0 shadow-lg"
-                    style={{
-                        borderRadius: "20px"
-                    }}
-                >
-
-                    <div
-                        className="modal-header"
-                        style={{
-                            background: "#DC3545",
-                            color: "#fff"
-                        }}
-                    >
-
-                        <h4 className="fw-bold mb-0">
-
-                            Delete Technician
-
-                        </h4>
-
-                        <button
-                            className="btn-close btn-close-white"
-                            onClick={onClose}
-                            disabled={deleting}
-                        ></button>
-
-                    </div>
-
-                    <div className="modal-body text-center p-4">
-                                            <div
-                        className="mx-auto mb-4 d-flex justify-content-center align-items-center rounded-circle"
-                        style={{
-                            width: "100px",
-                            height: "100px",
-                            background: "#FDECEC"
-                        }}
-                    >
-
-                        <i
-                            className="bi bi-exclamation-triangle-fill"
-                            style={{
-                                fontSize: "50px",
-                                color: "#DC3545"
-                            }}
-                        ></i>
-
-                    </div>
-
-                    <h3
-                        className="fw-bold mb-3"
-                        style={{
-                            color: "#0B2E4F"
-                        }}
-                    >
-
-                        Are you sure?
-
-                    </h3>
-
-                    <p
-                        className="text-muted mb-4"
-                        style={{
-                            fontSize: "16px"
-                        }}
-                    >
-
-                        You are about to permanently delete the following technician.
-
-                    </p>
-
-                    <div
-                        className="card border shadow-sm text-start"
-                        style={{
-                            borderRadius: "15px"
-                        }}
-                    >
-
-                        <div className="card-body">
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Employee Code
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {technician.employeeCode}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Name
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {technician.user?.firstName} {technician.user?.lastName}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Department
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {technician.department || "-"}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Designation
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {technician.designation || "-"}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Experience
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {technician.experienceYears ?? 0} Years
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Hourly Rate
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    ₹ {technician.hourlyRate ?? 0}
-
-                                </div>
-
-                            </div>
-
-                            <hr />
-
-                            <div className="row">
-
-                                <div className="col-5 fw-semibold">
-
-                                    Status
-
-                                </div>
-
-                                <div className="col-7">
-
-                                    {technician.isAvailable ? (
-
-                                        <span className="badge bg-success">
-
-                                            {technician.currentStatus}
-
-                                        </span>
-
-                                    ) : (
-
-                                        <span className="badge bg-danger">
-
-                                            Inactive
-
-                                        </span>
-
-                                    )}
-
-                                </div>
-
-                            </div>
-
+            <div
+                className="technician-modal technician-delete-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="delete-technician-title"
+                onMouseDown={(event) =>
+                    event.stopPropagation()
+                }
+            >
+
+                {/* HEADER */}
+
+                <div className="technician-modal-header">
+
+                    <div className="technician-modal-heading">
+
+                        <div className="technician-modal-icon delete">
+                            <i className="bi bi-trash3"></i>
+                        </div>
+
+                        <div>
+                            <h3 id="delete-technician-title">
+                                Delete Technician
+                            </h3>
+
+                            <p>
+                                Confirm technician removal
+                            </p>
                         </div>
 
                     </div>
 
-                    <div className="alert alert-warning mt-4 mb-0">
+                    <button
+                        type="button"
+                        className="technician-modal-close"
+                        onClick={onClose}
+                        disabled={deleting}
+                        aria-label="Close"
+                    >
+                        <i className="bi bi-x-lg"></i>
+                    </button>
 
-                        <i className="bi bi-exclamation-circle me-2"></i>
+                </div>
 
-                        This action cannot be undone. Deleting this technician
-                        may affect job assignments and service request history.
+                {/* BODY */}
+
+                <div className="technician-modal-body">
+
+                    {error && (
+                        <div className="technician-alert error">
+                            <i className="bi bi-exclamation-triangle-fill"></i>
+
+                            <span>
+                                {error}
+                            </span>
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="technician-alert success">
+                            <i className="bi bi-check-circle-fill"></i>
+
+                            <span>
+                                {success}
+                            </span>
+                        </div>
+                    )}
+
+                    <div className="technician-delete-content">
+
+                        <div className="technician-delete-icon">
+                            <i className="bi bi-exclamation-triangle"></i>
+                        </div>
+
+                        <h3>
+                            Are you sure?
+                        </h3>
+
+                        <p>
+                            You are about to delete
+                            <strong>
+                                {" "}
+                                {technicianName}
+                            </strong>.
+                        </p>
+
+                        <p className="technician-delete-warning">
+                            This action cannot be undone
+                            if the backend allows permanent
+                            deletion.
+                        </p>
 
                     </div>
-                                        <div
-                        className="modal-footer"
-                        style={{
-                            background: "#F8F9FA"
-                        }}
-                    >
+
+                    {/* TECHNICIAN SUMMARY */}
+
+                    <div className="technician-delete-summary">
+
+                        <div>
+                            <span>
+                                Employee Code
+                            </span>
+
+                            <strong>
+                                {employeeCode}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>
+                                Department
+                            </span>
+
+                            <strong>
+                                {department}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>
+                                Designation
+                            </span>
+
+                            <strong>
+                                {designation}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    {/* FOOTER */}
+
+                    <div className="technician-modal-footer">
 
                         <button
                             type="button"
-                            className="btn btn-secondary"
+                            className="technician-btn secondary"
                             onClick={onClose}
                             disabled={deleting}
                         >
-
-                            <i className="bi bi-x-circle me-2"></i>
-
+                            <i className="bi bi-x-lg"></i>
                             Cancel
-
                         </button>
 
                         <button
                             type="button"
-                            className="btn btn-danger"
+                            className="technician-btn danger"
                             onClick={handleDelete}
-                            disabled={deleting}
+                            disabled={
+                                deleting ||
+                                Boolean(success)
+                            }
                         >
 
                             {deleting ? (
-
                                 <>
-
                                     <span
-                                        className="spinner-border spinner-border-sm me-2"
+                                        className="spinner-border spinner-border-sm"
+                                        role="status"
+                                        aria-hidden="true"
                                     ></span>
 
                                     Deleting...
-
                                 </>
-
                             ) : (
-
                                 <>
-
-                                    <i className="bi bi-trash me-2"></i>
-
+                                    <i className="bi bi-trash3"></i>
                                     Delete Technician
-
                                 </>
-
                             )}
 
                         </button>
@@ -352,11 +335,8 @@ function DeleteTechnicianModal({
                 </div>
 
             </div>
-
         </div>
-
-    </div>);
-
+    );
 }
 
 export default DeleteTechnicianModal;

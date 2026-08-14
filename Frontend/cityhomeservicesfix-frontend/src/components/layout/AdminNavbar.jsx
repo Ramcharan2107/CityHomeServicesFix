@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import logo from "../../assets/images/logo.png";
 import "./AdminNavbar.css";
 
@@ -6,8 +7,51 @@ function AdminNavbar({ toggleSidebar }) {
 
     const navigate = useNavigate();
 
+    const [isScrolled, setIsScrolled] = useState(false);
+
     const userName =
         localStorage.getItem("userName") || "Administrator";
+
+
+    /* ==========================================
+       SCROLL DETECTION
+    ========================================== */
+
+    useEffect(() => {
+
+        const handleScroll = () => {
+
+            if (window.scrollY > 20) {
+
+                setIsScrolled(true);
+
+            } else {
+
+                setIsScrolled(false);
+
+            }
+
+        };
+
+        window.addEventListener(
+            "scroll",
+            handleScroll,
+            { passive: true }
+        );
+
+        handleScroll();
+
+        return () => {
+
+            window.removeEventListener(
+                "scroll",
+                handleScroll
+            );
+
+        };
+
+    }, []);
+
 
     const logout = () => {
 
@@ -19,188 +63,250 @@ function AdminNavbar({ toggleSidebar }) {
 
     };
 
+
     return (
 
-        <header className="admin-navbar">
+        <header
+            className={
+                `admin-navbar-shell ${
+                    isScrolled
+                        ? "admin-navbar-shell-scrolled"
+                        : ""
+                }`
+            }
+        >
 
-            {/* Left */}
+            <nav
+                className={
+                    `admin-navbar ${
+                        isScrolled
+                            ? "admin-navbar-scrolled"
+                            : ""
+                    }`
+                }
+            >
 
-            <div className="admin-navbar-left">
+                <div className="admin-navbar-container">
 
-                <button
-                    className="menu-btn"
-                    onClick={toggleSidebar}
-                >
-                    <i className="bi bi-list"></i>
-                </button>
+                    {/* =========================
+                        LEFT
+                    ========================= */}
 
-                <Link
-                    to="/"
-                    className="admin-logo text-decoration-none"
-                >
+                    <div className="admin-navbar-left">
 
-                    <img
-                        src={logo}
-                        alt="City Home Services"
-                        className="admin-logo-img"
-                    />
+                        <button
+                            type="button"
+                            className="admin-sidebar-toggle"
+                            onClick={toggleSidebar}
+                            aria-label="Toggle admin sidebar"
+                        >
 
-                    <div>
+                            <i className="bi bi-list"></i>
 
-                        <h5 className="mb-0 fw-bold">
+                        </button>
 
-                            City Home Services
 
-                        </h5>
+                        <Link
+                            to="/"
+                            className="admin-navbar-brand"
+                        >
 
-                        <small>
+                            <img
+                                src={logo}
+                                alt="City Home Services"
+                                className="admin-navbar-logo"
+                            />
 
-                            We Care, You Relax
 
-                        </small>
+                            <div className="admin-navbar-brand-text">
+
+                                <h3>
+                                    City Home Services
+                                </h3>
+
+                                <small>
+                                    We Care, You Relax
+                                </small>
+
+                            </div>
+
+                        </Link>
 
                     </div>
 
-                </Link>
 
-            </div>
+                    {/* =========================
+                        CENTER NAVIGATION
+                    ========================= */}
 
-            {/* Center */}
+                    <div className="admin-navbar-links">
 
-            <nav className="admin-navbar-center">
+                        <Link
+                            to="/"
+                            className="admin-nav-link"
+                        >
+                            Home
+                        </Link>
 
-                <Link
-                    to="/"
-                    className="nav-link-custom"
-                >
-                    Home
-                </Link>
+                        <Link
+                            to="/services"
+                            className="admin-nav-link"
+                        >
+                            Services
+                        </Link>
 
-                <Link
-                    to="/services"
-                    className="nav-link-custom"
-                >
-                    Services
-                </Link>
+                        <Link
+                            to="/categories"
+                            className="admin-nav-link"
+                        >
+                            Categories
+                        </Link>
 
-                <Link
-                    to="/categories"
-                    className="nav-link-custom"
-                >
-                    Categories
-                </Link>
+                        <Link
+                            to="/about"
+                            className="admin-nav-link"
+                        >
+                            About
+                        </Link>
 
-                <Link
-                    to="/about"
-                    className="nav-link-custom"
-                >
-                    About
-                </Link>
+                        <Link
+                            to="/contact"
+                            className="admin-nav-link"
+                        >
+                            Contact
+                        </Link>
 
-                <Link
-                    to="/contact"
-                    className="nav-link-custom"
-                >
-                    Contact
-                </Link>
+                    </div>
 
-            </nav>
 
-            {/* Right */}
+                    {/* =========================
+                        ADMIN ACTIONS
+                    ========================= */}
 
-            <div className="admin-navbar-right">
+                    <div className="admin-navbar-actions">
 
-                <button className="icon-btn">
+                        <button
+                            type="button"
+                            className="admin-icon-button"
+                            aria-label="Notifications"
+                        >
 
-                    <i className="bi bi-bell"></i>
+                            <i className="bi bi-bell"></i>
 
-                    <span className="badge-dot"></span>
+                            <span className="admin-notification-dot"></span>
 
-                </button>
+                        </button>
 
-                <button className="icon-btn">
 
-                    <i className="bi bi-gear"></i>
+                        <button
+                            type="button"
+                            className="admin-icon-button"
+                            aria-label="Settings"
+                        >
 
-                </button>
+                            <i className="bi bi-gear"></i>
 
-                <div className="dropdown">
+                        </button>
+
+
+                        {/* ADMIN PROFILE */}
+
+                        <div className="admin-user-dropdown">
+
+                            <button
+                                type="button"
+                                className="admin-user-button"
+                            >
+
+                                <i className="bi bi-person-circle"></i>
+
+                                <span className="admin-user-name">
+                                    {userName}
+                                </span>
+
+                                <i className="bi bi-chevron-down admin-user-chevron"></i>
+
+                            </button>
+
+
+                            <div className="admin-user-menu">
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        navigate("/dashboard")
+                                    }
+                                >
+
+                                    <i className="bi bi-grid"></i>
+
+                                    Dashboard
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                >
+
+                                    <i className="bi bi-person"></i>
+
+                                    My Profile
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                >
+
+                                    <i className="bi bi-gear"></i>
+
+                                    Settings
+
+                                </button>
+
+
+                                <div className="admin-menu-divider"></div>
+
+
+                                <button
+                                    type="button"
+                                    className="admin-logout-button"
+                                    onClick={logout}
+                                >
+
+                                    <i className="bi bi-box-arrow-right"></i>
+
+                                    Logout
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* MOBILE */}
 
                     <button
-
-                        className="profile-btn dropdown-toggle"
-
-                        data-bs-toggle="dropdown"
-
+                        type="button"
+                        className="admin-mobile-toggle"
+                        onClick={toggleSidebar}
+                        aria-label="Open admin menu"
                     >
 
-                        <i className="bi bi-person-circle me-2"></i>
-
-                        {userName}
+                        <span></span>
+                        <span></span>
+                        <span></span>
 
                     </button>
 
-                    <ul className="dropdown-menu dropdown-menu-end">
-
-                        <li>
-
-                            <button
-
-                                className="dropdown-item"
-
-                                onClick={() => navigate("/dashboard")}
-
-                            >
-
-                                Dashboard
-
-                            </button>
-
-                        </li>
-
-                        <li>
-
-                            <button
-
-                                className="dropdown-item"
-
-                            >
-
-                                My Profile
-
-                            </button>
-
-                        </li>
-
-                        <li>
-
-                            <hr className="dropdown-divider" />
-
-                        </li>
-
-                        <li>
-
-                            <button
-
-                                className="dropdown-item text-danger"
-
-                                onClick={logout}
-
-                            >
-
-                                <i className="bi bi-box-arrow-right me-2"></i>
-
-                                Logout
-
-                            </button>
-
-                        </li>
-
-                    </ul>
-
                 </div>
 
-            </div>
+            </nav>
 
         </header>
 

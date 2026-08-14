@@ -1,0 +1,1005 @@
+/* ============================================================
+   SERVICE MODALS
+   City Home Services Admin
+============================================================ */
+
+
+/* ============================================================
+   BACKDROP
+============================================================ */
+
+.service-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    width: 100vw;
+    height: 100vh;
+
+    padding: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(11, 46, 79, 0.42);
+
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+
+    overflow: hidden;
+
+    animation: serviceModalBackdropIn .18s ease-out;
+}
+
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+.service-modal {
+    position: relative;
+    z-index: 100000;
+
+    width: min(600px, 100%);
+    max-height: calc(100vh - 48px);
+
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffff;
+
+    border: 1px solid rgba(226, 232, 240, .95);
+    border-radius: 20px;
+
+    box-shadow:
+        0 30px 80px rgba(15, 23, 42, .28),
+        0 8px 30px rgba(15, 23, 42, .12);
+
+    overflow: hidden;
+
+    animation: serviceModalIn .22s ease-out;
+}
+
+
+.service-modal-large {
+    width: min(760px, 100%);
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.service-modal-header {
+    flex-shrink: 0;
+
+    min-height: 82px;
+
+    padding: 16px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    border-bottom: 1px solid #E5E7EB;
+
+    background: #ffffff;
+}
+
+
+.service-modal-title {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.service-modal-title-icon {
+    width: 46px;
+    height: 46px;
+
+    flex: 0 0 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: #FFF4E6;
+    color: #F7941D;
+
+    font-size: 19px;
+}
+
+
+.service-modal-title-content {
+    min-width: 0;
+}
+
+
+.service-modal-eyebrow {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #F7941D;
+
+    font-size: 9px;
+    line-height: 1.2;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.service-modal-title-content h2 {
+    margin: 0;
+
+    color: #0B2E4F;
+
+    font-size: 19px;
+    line-height: 1.25;
+    font-weight: 800;
+}
+
+
+.service-modal-title-content p {
+    margin: 3px 0 0;
+
+    color: #64748B;
+
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+
+/* ============================================================
+   CLOSE BUTTON
+============================================================ */
+
+.service-modal-close {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    padding: 0;
+
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+
+    background: #F8FAFC;
+    color: #64748B;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+
+.service-modal-close:hover {
+    background: #FEF2F2;
+    border-color: #FECACA;
+    color: #DC2626;
+
+    transform: rotate(3deg);
+}
+
+
+.service-modal-close:active {
+    transform: scale(.94);
+}
+
+
+/* ============================================================
+   BODY
+============================================================ */
+
+.service-modal-body {
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 20px;
+
+    overflow-y: auto;
+
+    background: #ffffff;
+
+    overscroll-behavior: contain;
+}
+
+
+.service-modal-body::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+.service-modal-body::-webkit-scrollbar-track {
+    background: #F8FAFC;
+}
+
+
+.service-modal-body::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 20px;
+}
+
+
+.service-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+}
+
+
+/* ============================================================
+   SERVICE SUMMARY
+============================================================ */
+
+.service-details-summary {
+    min-height: 76px;
+
+    margin-bottom: 16px;
+    padding: 12px 14px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    border: 1px solid #FED7AA;
+    border-radius: 14px;
+
+    background: #FFFBF5;
+}
+
+
+.service-details-summary-icon {
+    width: 44px;
+    height: 44px;
+
+    flex: 0 0 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #FFF4E6;
+    color: #F7941D;
+
+    font-size: 18px;
+}
+
+
+.service-details-summary > div:nth-child(2) {
+    min-width: 0;
+    flex: 1;
+}
+
+
+.service-details-summary h3 {
+    margin: 0;
+
+    color: #0B2E4F;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.service-details-summary p {
+    margin: 3px 0 0;
+
+    color: #64748B;
+
+    font-size: 11px;
+}
+
+
+/* ============================================================
+   STATUS
+============================================================ */
+
+.service-modal-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 6px 9px;
+
+    border-radius: 30px;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.service-modal-status > span {
+    width: 6px;
+    height: 6px;
+
+    flex: 0 0 6px;
+
+    border-radius: 50%;
+}
+
+
+.service-modal-status.active {
+    background: #ECFDF3;
+    color: #15803D;
+}
+
+
+.service-modal-status.active > span {
+    background: #16A34A;
+}
+
+
+.service-modal-status.inactive {
+    background: #FEF2F2;
+    color: #B91C1C;
+}
+
+
+.service-modal-status.inactive > span {
+    background: #DC2626;
+}
+
+
+/* ============================================================
+   DETAILS GRID
+============================================================ */
+
+.service-details-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+
+.service-detail-card {
+    min-width: 0;
+
+    padding: 13px 14px;
+
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    transition:
+        border-color .18s ease,
+        background .18s ease;
+}
+
+
+.service-detail-card:hover {
+    border-color: #FED7AA;
+    background: #FFFCF8;
+}
+
+
+.service-detail-card-full {
+    grid-column: 1 / -1;
+}
+
+
+.service-detail-card > span:first-child {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #94A3B8;
+
+    font-size: 10px;
+    line-height: 1.3;
+    font-weight: 800;
+
+    letter-spacing: .45px;
+
+    text-transform: uppercase;
+}
+
+
+.service-detail-card strong {
+    display: block;
+
+    color: #0B2E4F;
+
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 750;
+
+    overflow-wrap: anywhere;
+}
+
+
+.service-detail-active {
+    color: #15803D !important;
+}
+
+
+.service-detail-inactive {
+    color: #B91C1C !important;
+}
+
+
+/* ============================================================
+   DESCRIPTION
+============================================================ */
+
+.service-detail-description {
+    min-height: 70px;
+
+    padding: 10px 11px;
+
+    border-radius: 9px;
+
+    background: #F8FAFC;
+
+    color: #475569;
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
+.service-modal-footer {
+    flex-shrink: 0;
+
+    min-height: 66px;
+
+    padding: 12px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    border-top: 1px solid #E5E7EB;
+
+    background: #ffffff;
+}
+
+
+.service-modal-btn {
+    min-height: 38px;
+
+    padding: 0 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    border-radius: 9px;
+
+    font-size: 12px;
+    font-weight: 750;
+
+    cursor: pointer;
+
+    transition:
+        transform .18s ease,
+        background .18s ease,
+        border-color .18s ease,
+        color .18s ease;
+}
+
+
+.service-modal-btn:hover {
+    transform: translateY(-1px);
+}
+
+
+.service-modal-btn:active {
+    transform: scale(.98);
+}
+
+
+.service-modal-btn-secondary {
+    border: 1px solid #CBD5E1;
+
+    background: #F8FAFC;
+
+    color: #475569;
+}
+
+
+.service-modal-btn-secondary:hover {
+    border-color: #F7941D;
+
+    background: #FFF4E6;
+
+    color: #C2410C;
+}
+
+
+/* ============================================================
+   COMMON FORM STYLES
+   Used by Add/Edit modals
+============================================================ */
+
+.service-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+.service-modal-form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 13px;
+}
+
+
+.service-modal-form-group {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+
+.service-modal-form-group.full {
+    grid-column: 1 / -1;
+}
+
+
+.service-modal-form-group label {
+    color: #334155;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.service-modal-form-group label span {
+    color: #DC2626;
+}
+
+
+.service-modal-form-group input,
+.service-modal-form-group select,
+.service-modal-form-group textarea {
+    width: 100%;
+
+    border: 1px solid #CBD5E1;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #0F172A;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+
+.service-modal-form-group input,
+.service-modal-form-group select {
+    height: 42px;
+
+    padding: 0 11px;
+}
+
+
+.service-modal-form-group textarea {
+    min-height: 95px;
+
+    padding: 10px 11px;
+
+    resize: vertical;
+}
+
+
+.service-modal-form-group input:focus,
+.service-modal-form-group select:focus,
+.service-modal-form-group textarea:focus {
+    border-color: #F7941D;
+
+    box-shadow:
+        0 0 0 3px rgba(247, 148, 29, .10);
+}
+
+
+.service-modal-form-group input::placeholder,
+.service-modal-form-group textarea::placeholder {
+    color: #94A3B8;
+}
+
+
+/* ============================================================
+   CHECKBOX / ACTIVE STATUS
+============================================================ */
+
+.service-modal-checkbox {
+    min-height: 42px;
+
+    padding: 9px 11px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    border: 1px solid #E2E8F0;
+    border-radius: 9px;
+
+    background: #F8FAFC;
+}
+
+
+.service-modal-checkbox input {
+    width: 17px !important;
+    height: 17px !important;
+
+    margin: 0;
+
+    accent-color: #F7941D;
+}
+
+
+.service-modal-checkbox label {
+    margin: 0;
+
+    color: #334155;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+/* ============================================================
+   FORM ERROR
+============================================================ */
+
+.service-modal-error {
+    padding: 10px 12px;
+
+    border: 1px solid #FECACA;
+    border-radius: 9px;
+
+    background: #FEF2F2;
+    color: #B91C1C;
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   DELETE MODAL
+============================================================ */
+
+.service-delete-icon {
+    width: 58px;
+    height: 58px;
+
+    margin: 4px auto 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    background: #FEF2F2;
+    color: #DC2626;
+
+    font-size: 25px;
+}
+
+
+.service-delete-content {
+    text-align: center;
+}
+
+
+.service-delete-content h3 {
+    margin: 0;
+
+    color: #0B2E4F;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+
+.service-delete-content p {
+    margin: 8px auto 0;
+
+    max-width: 430px;
+
+    color: #64748B;
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+.service-delete-service-name {
+    margin: 12px 0 0;
+
+    padding: 10px 12px;
+
+    border-radius: 9px;
+
+    background: #F8FAFC;
+
+    color: #0B2E4F;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.service-modal-btn-danger {
+    border: 1px solid #DC2626;
+
+    background: #DC2626;
+
+    color: #ffffff;
+}
+
+
+.service-modal-btn-danger:hover {
+    border-color: #B91C1C;
+
+    background: #B91C1C;
+}
+
+
+/* ============================================================
+   LOADING BUTTON
+============================================================ */
+
+.service-modal-btn:disabled {
+    opacity: .55;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+.service-modal-spinner {
+    width: 14px;
+    height: 14px;
+
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+
+    border-radius: 50%;
+
+    animation: serviceModalSpin .7s linear infinite;
+}
+
+
+/* ============================================================
+   ANIMATIONS
+============================================================ */
+
+@keyframes serviceModalBackdropIn {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+@keyframes serviceModalIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+@keyframes serviceModalSpin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* ============================================================
+   TABLET
+============================================================ */
+
+@media (max-width: 700px) {
+
+    .service-modal-backdrop {
+        padding: 15px;
+    }
+
+    .service-modal {
+        max-height: calc(100vh - 30px);
+        border-radius: 17px;
+    }
+
+    .service-modal-header {
+        min-height: 72px;
+        padding: 13px 15px;
+    }
+
+    .service-modal-body {
+        padding: 15px;
+    }
+
+    .service-modal-footer {
+        padding: 10px 15px;
+    }
+
+    .service-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .service-detail-card-full {
+        grid-column: auto;
+    }
+
+    .service-modal-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .service-modal-form-group.full {
+        grid-column: auto;
+    }
+
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 480px) {
+
+    .service-modal-backdrop {
+        padding: 8px;
+        align-items: center;
+    }
+
+    .service-modal {
+        width: 100%;
+        max-height: calc(100vh - 16px);
+        border-radius: 15px;
+    }
+
+    .service-modal-header {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .service-modal-title-icon {
+        width: 39px;
+        height: 39px;
+        flex-basis: 39px;
+        border-radius: 10px;
+        font-size: 16px;
+    }
+
+    .service-modal-title-content h2 {
+        font-size: 16px;
+    }
+
+    .service-modal-title-content p {
+        font-size: 10px;
+    }
+
+    .service-modal-close {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+    }
+
+    .service-modal-body {
+        padding: 12px;
+    }
+
+    .service-details-summary {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .service-details-summary > .service-modal-status {
+        margin-left: 56px;
+    }
+
+    .service-modal-footer {
+        padding: 9px 12px;
+    }
+
+    .service-modal-btn {
+        flex: 1;
+    }
+
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .service-modal-backdrop,
+    .service-modal,
+    .service-modal-btn,
+    .service-modal-close,
+    .service-detail-card {
+        animation: none;
+        transition: none;
+    }
+
+    .service-modal-spinner {
+        animation: none;
+    }
+
+}

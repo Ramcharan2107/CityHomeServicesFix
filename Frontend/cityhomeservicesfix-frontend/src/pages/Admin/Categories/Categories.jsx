@@ -1,19 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 import serviceCategoryService from "../../../services/serviceCategoryService";
 
-import CategoryDetailsModal from "./CategoryDetailsModal";
 import AddCategoryModal from "./AddCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 
 import PageContainer from "../../../components/common/PageContainer";
 
+import "./Categories.css";
+
+
 function Categories() {
 
     const [categories, setCategories] = useState([]);
 
     const [loading, setLoading] = useState(true);
+
+    const [refreshing, setRefreshing] = useState(false);
 
     const [search, setSearch] = useState("");
 
@@ -29,103 +34,328 @@ function Categories() {
 
     const [showDelete, setShowDelete] = useState(false);
 
+    const [message, setMessage] = useState("");
+
+    const [messageType, setMessageType] = useState("success");
+
+
+    /* ============================================================
+       LOAD CATEGORIES
+    ============================================================ */
+
     useEffect(() => {
 
         loadCategories();
 
     }, []);
 
-    const loadCategories = async () => {
 
-        setLoading(true);
+    const loadCategories = async (showRefreshMessage = false) => {
 
         try {
 
-            const data = await serviceCategoryService.getAll();
+            if (showRefreshMessage) {
+                setRefreshing(true);
+            } else {
+                setLoading(true);
+            }
 
-            setCategories(data);
+            const response =
+                await serviceCategoryService.getAll();
 
-        }
-        catch (error) {
+            let data = [];
 
-            console.error(error);
+            if (Array.isArray(response)) {
 
-        }
-        finally {
+                data = response;
+
+            } else if (Array.isArray(response?.data)) {
+
+                data = response.data;
+
+            } else if (
+                Array.isArray(response?.data?.data)
+            ) {
+
+                data = response.data.data;
+
+            }
+
+            setCategories(
+                Array.isArray(data)
+                    ? data
+                    : []
+            );
+
+
+            if (showRefreshMessage) {
+
+                showMessage(
+                    "Categories refreshed successfully.",
+                    "success"
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "CATEGORY LOAD ERROR:",
+                error
+            );
+
+            const errorMessage =
+                error?.response?.data?.message ||
+                error?.response?.data?.title ||
+                "Unable to load categories from the server.";
+
+            showMessage(
+                errorMessage,
+                "error"
+            );
+
+        } finally {
 
             setLoading(false);
 
+            setRefreshing(false);
+
         }
 
     };
 
-    const filteredCategories = useMemo(() => {
 
-        return categories.filter(category => {
+    /* ============================================================
+       MESSAGE
+    ============================================================ */
 
-            const keyword = search.toLowerCase();
+    const showMessage = (
+        text,
+        type = "success"
+    ) => {
 
-            const matchesSearch =
+        setMessage(text);
 
-                category.categoryName
-                    ?.toLowerCase()
-                    .includes(keyword)
+        setMessageType(type);
 
-                ||
+        window.clearTimeout(
+            window.__categoryMessageTimer
+        );
 
-                category.description
-                    ?.toLowerCase()
-                    .includes(keyword);
+        window.__categoryMessageTimer =
+            window.setTimeout(() => {
 
-            const matchesStatus =
+                setMessage("");
 
-                statusFilter === "All"
-
-                ||
-
-                (statusFilter === "Active" && category.isActive)
-
-                ||
-
-                (statusFilter === "Inactive" && !category.isActive);
-
-            return matchesSearch && matchesStatus;
-
-        });
-
-    }, [categories, search, statusFilter]);
-
-    const totalCategories = categories.length;
-
-    const activeCategories =
-
-        categories.filter(x => x.isActive).length;
-
-    const inactiveCategories =
-
-        categories.filter(x => !x.isActive).length;
-
-    const totalServices =
-
-        categories.reduce((sum, category) => {
-
-            return sum + (category.services?.length || 0);
-
-        }, 0);
-
-    const handleRefresh = () => {
-
-        loadCategories();
+            }, 4000);
 
     };
 
-    const handleView = (category) => {
+
+    /* ============================================================
+       FILTER
+    ============================================================ */
+
+    const filteredCategories = useMemo(() => {
+
+        const keyword =
+            String(search || "")
+                .trim()
+                .toLowerCase();
+
+        return categories.filter(
+            category => {
+
+                const categoryName =
+                    String(
+                        category?.categoryName || ""
+                    ).toLowerCase();
+
+                const description =
+                    String(
+                        category?.description || ""
+                    ).toLowerCase();
+
+                const matchesSearch =
+                    !keyword ||
+                    categoryName.includes(keyword) ||
+                    description.includes(keyword);
+
+                const matchesStatus =
+
+                    statusFilter === "All" ||
+
+                    (
+                        statusFilter === "Active" &&
+                        category?.isActive === true
+                    ) ||
+
+                    (
+                        statusFilter === "Inactive" &&
+                        category?.isActive !== true
+                    );
+
+                return (
+                    matchesSearch &&
+                    matchesStatus
+                );
+
+            }
+        );
+
+    }, [
+        categories,
+        search,
+        statusFilter
+    ]);
+
+
+    /* ============================================================
+       STATISTICS
+    ============================================================ */
+
+    const totalCategories =
+        categories.length;
+
+    const activeCategories =
+        categories.filter(
+            category =>
+                category?.isActive === true
+        ).length;
+
+    const inactiveCategories =
+        categories.filter(
+            category =>
+                category?.isActive !== true
+        ).length;
+
+    const totalServices =
+        categories.reduce(
+            (sum, category) => {
+
+                if (
+                    Array.isArray(
+                        category?.services
+                    )
+                ) {
+
+                    return (
+                        sum +
+                        category.services.length
+                    );
+
+                }
+
+                return sum;
+
+            },
+            0
+        );
+
+
+    /* ============================================================
+       DETAILS POPUP
+    ============================================================ */
+
+    const openDetails = category => {
 
         setSelectedCategory(category);
 
         setShowDetails(true);
 
+        document.body.classList.add(
+            "category-modal-open"
+        );
+
+        /*
+         * Prevent background page scrolling while
+         * the category details popup is open.
+         */
+        document.body.classList.add(
+            "category-details-lock"
+        );
+
     };
+
+
+    const closeDetails = () => {
+
+        setShowDetails(false);
+
+        setSelectedCategory(null);
+
+        document.body.classList.remove(
+            "category-modal-open"
+        );
+
+        document.body.classList.remove(
+            "category-details-lock"
+        );
+
+    };
+
+
+    /* ============================================================
+       ESC KEY
+    ============================================================ */
+
+    useEffect(() => {
+
+        if (!showDetails) {
+            return;
+        }
+
+        const handleEscape = event => {
+
+            if (event.key === "Escape") {
+
+                closeDetails();
+
+            }
+
+        };
+
+        document.addEventListener(
+            "keydown",
+            handleEscape
+        );
+
+        return () => {
+
+            document.removeEventListener(
+                "keydown",
+                handleEscape
+            );
+
+        };
+
+    }, [showDetails]);
+
+
+    /* ============================================================
+       CLEANUP
+    ============================================================ */
+
+    useEffect(() => {
+
+        return () => {
+
+            document.body.classList.remove(
+                "category-modal-open"
+            );
+
+            document.body.classList.remove(
+                "category-details-lock"
+            );
+
+        };
+
+    }, []);
+
+
+    /* ============================================================
+       ADD
+    ============================================================ */
 
     const handleAdd = () => {
 
@@ -133,7 +363,12 @@ function Categories() {
 
     };
 
-    const handleEdit = (category) => {
+
+    /* ============================================================
+       EDIT
+    ============================================================ */
+
+    const handleEdit = category => {
 
         setSelectedCategory(category);
 
@@ -141,344 +376,954 @@ function Categories() {
 
     };
 
-    const handleDelete = (category) => {
+
+    /* ============================================================
+       DELETE
+    ============================================================ */
+
+    const handleDelete = category => {
 
         setSelectedCategory(category);
 
         setShowDelete(true);
 
     };
-    return (
 
-    <>
 
-        <PageContainer>
+    /* ============================================================
+       CLOSE MODALS
+    ============================================================ */
 
-            {/* ================= Header ================= */}
+    const closeAdd = () => {
 
-            <div className="d-flex justify-content-between align-items-center mb-4">
+        setShowAdd(false);
 
-                <div>
+    };
 
-                    <h2
-                        className="fw-bold mb-1"
-                        style={{
-                            color: "#0B2E4F"
-                        }}
-                    >
-                        Category Management
-                    </h2>
 
-                    <p className="text-muted mb-0">
-                        Manage all service categories used across the platform.
-                    </p>
+    const closeEdit = () => {
 
-                </div>
+        setShowEdit(false);
 
-                <div className="d-flex gap-2">
+        setSelectedCategory(null);
 
-                    <button
-                        className="btn btn-outline-secondary"
-                        onClick={handleRefresh}
-                    >
+    };
 
-                        <i className="bi bi-arrow-clockwise me-2"></i>
 
-                        Refresh
+    const closeDelete = () => {
 
-                    </button>
+        setShowDelete(false);
 
-                    <button
-                        className="btn btn-outline-success"
-                    >
+        setSelectedCategory(null);
 
-                        <i className="bi bi-download me-2"></i>
+    };
 
-                        Export
 
-                    </button>
+    /* ============================================================
+       SUCCESS
+    ============================================================ */
 
-                    <button
-                        className="btn"
-                        style={{
-                            background: "#F7941D",
-                            color: "#fff"
-                        }}
-                        onClick={handleAdd}
-                    >
+    const handleAddSuccess = async () => {
 
-                        <i className="bi bi-plus-circle me-2"></i>
+        setShowAdd(false);
 
-                        Add Category
+        showMessage(
+            "Category added successfully.",
+            "success"
+        );
 
-                    </button>
+        await loadCategories();
 
-                </div>
+    };
 
-            </div>
 
-            {/* ================= Statistics ================= */}
+    const handleEditSuccess = async () => {
 
-            <div className="row g-4 mb-4">
+        setShowEdit(false);
 
-                <div className="col-lg-3 col-md-6">
+        setSelectedCategory(null);
 
-                    <div
-                        className="card border shadow-sm h-100"
-                        style={{
-                            borderRadius: "18px"
-                        }}
-                    >
+        showMessage(
+            "Category updated successfully.",
+            "success"
+        );
 
-                        <div className="card-body">
+        await loadCategories();
 
-                            <div className="d-flex justify-content-between">
+    };
 
-                                <div>
 
-                                    <small className="text-muted">
+    const handleDeleteSuccess = async () => {
 
-                                        Total Categories
+        setShowDelete(false);
 
-                                    </small>
+        setSelectedCategory(null);
 
-                                    <h2
-                                        className="fw-bold mt-2"
-                                        style={{
-                                            color: "#0B2E4F"
-                                        }}
-                                    >
+        showMessage(
+            "Category deleted successfully.",
+            "success"
+        );
 
-                                        {totalCategories}
+        await loadCategories();
 
-                                    </h2>
+    };
 
-                                </div>
 
-                                <i
-                                    className="bi bi-grid-fill"
-                                    style={{
-                                        fontSize: "45px",
-                                        color: "#F7941D"
-                                    }}
-                                ></i>
+    /* ============================================================
+       REFRESH
+    ============================================================ */
 
-                            </div>
+    const handleRefresh = async () => {
 
-                        </div>
+        await loadCategories(true);
+
+    };
+
+
+    /* ============================================================
+       CLEAR FILTERS
+    ============================================================ */
+
+    const handleClearFilters = () => {
+
+        setSearch("");
+
+        setStatusFilter("All");
+
+        showMessage(
+            "Filters cleared.",
+            "success"
+        );
+
+    };
+
+
+    /* ============================================================
+       EXPORT
+    ============================================================ */
+
+    const handleExport = () => {
+
+        if (
+            filteredCategories.length === 0
+        ) {
+
+            showMessage(
+                "There are no categories to export.",
+                "error"
+            );
+
+            return;
+
+        }
+
+        const headers = [
+            "Category ID",
+            "Category Name",
+            "Description",
+            "Status",
+            "Created At"
+        ];
+
+        const rows =
+            filteredCategories.map(
+                category => [
+
+                    category?.categoryId ?? "",
+
+                    category?.categoryName ?? "",
+
+                    category?.description ?? "",
+
+                    category?.isActive
+                        ? "Active"
+                        : "Inactive",
+
+                    category?.createdAt
+                        ? new Date(
+                            category.createdAt
+                        ).toLocaleDateString(
+                            "en-IN"
+                        )
+                        : ""
+
+                ]
+            );
+
+        const csv = [
+            headers,
+            ...rows
+        ]
+            .map(
+                row =>
+                    row
+                        .map(
+                            value =>
+                                `"${String(value)
+                                    .replace(
+                                        /"/g,
+                                        '""'
+                                    )}"`
+                        )
+                        .join(",")
+            )
+            .join("\n");
+
+        const blob =
+            new Blob(
+                [csv],
+                {
+                    type:
+                        "text/csv;charset=utf-8;"
+                }
+            );
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
+
+        link.download =
+            `city-home-services-categories-${new Date()
+                .toISOString()
+                .slice(0, 10)}.csv`;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+
+        showMessage(
+            `${filteredCategories.length} categories exported successfully.`,
+            "success"
+        );
+
+    };
+
+
+    /* ============================================================
+       HELPERS
+    ============================================================ */
+
+    const safeValue = (
+        value,
+        fallback = "Not available"
+    ) => {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+
+            return fallback;
+
+        }
+
+        return String(value);
+
+    };
+
+
+    const formatDate = value => {
+
+        if (!value) {
+
+            return "Not available";
+
+        }
+
+        const date =
+            new Date(value);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return "Not available";
+
+        }
+
+        return date.toLocaleDateString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+    };
+
+
+    /* ============================================================
+       LOADING
+    ============================================================ */
+
+    if (loading) {
+
+        return (
+
+            <PageContainer>
+
+                <div className="category-page">
+
+                    <div className="category-loading">
+
+                        <div className="category-spinner"></div>
+
+                        <h4>
+                            Loading Categories
+                        </h4>
+
+                        <p>
+                            Fetching service categories...
+                        </p>
 
                     </div>
 
                 </div>
 
-                <div className="col-lg-3 col-md-6">
+            </PageContainer>
+
+        );
+
+    }
+
+
+    /* ============================================================
+       DETAILS POPUP CONTENT
+       IMPORTANT:
+       This is rendered using createPortal() below.
+       Therefore it is NOT trapped inside admin-content.
+    ============================================================ */
+
+    const detailsPopup =
+
+        showDetails &&
+        selectedCategory
+            ? createPortal(
+
+                <div
+                    className="category-details-overlay"
+                    onMouseDown={event => {
+
+                        if (
+                            event.target ===
+                            event.currentTarget
+                        ) {
+
+                            closeDetails();
+
+                        }
+
+                    }}
+                >
 
                     <div
-                        className="card border shadow-sm h-100"
-                        style={{
-                            borderRadius: "18px"
-                        }}
+                        className="category-details-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="category-details-title"
                     >
 
-                        <div className="card-body">
+                        {/* HEADER */}
 
-                            <div className="d-flex justify-content-between">
+                        <div className="category-details-header">
+
+                            <div className="category-details-title-wrap">
+
+                                <div className="category-details-icon">
+
+                                    <i className="bi bi-grid-fill"></i>
+
+                                </div>
 
                                 <div>
 
-                                    <small className="text-muted">
+                                    <span>
+                                        CATEGORY DETAILS
+                                    </span>
 
-                                        Active
+                                    <h2 id="category-details-title">
 
-                                    </small>
-
-                                    <h2 className="fw-bold text-success mt-2">
-
-                                        {activeCategories}
+                                        {safeValue(
+                                            selectedCategory?.categoryName,
+                                            "Unnamed Category"
+                                        )}
 
                                     </h2>
 
                                 </div>
 
-                                <i
-                                    className="bi bi-check-circle-fill"
-                                    style={{
-                                        fontSize: "45px",
-                                        color: "#198754"
-                                    }}
-                                ></i>
-
                             </div>
+
+
+                            <button
+                                type="button"
+                                className="category-details-close"
+                                onClick={closeDetails}
+                                aria-label="Close category details"
+                            >
+
+                                <i className="bi bi-x-lg"></i>
+
+                            </button>
 
                         </div>
 
-                    </div>
 
-                </div>
+                        {/* BODY */}
 
-                <div className="col-lg-3 col-md-6">
+                        <div className="category-details-body">
 
-                    <div
-                        className="card border shadow-sm h-100"
-                        style={{
-                            borderRadius: "18px"
-                        }}
-                    >
+                            <div className="category-details-status-row">
 
-                        <div className="card-body">
+                                <span className="category-details-label">
+                                    Current Status
+                                </span>
 
-                            <div className="d-flex justify-content-between">
+                                <span
+                                    className={
+                                        selectedCategory?.isActive
+                                            ? "category-details-status active"
+                                            : "category-details-status inactive"
+                                    }
+                                >
 
-                                <div>
+                                    <i className="bi bi-circle-fill"></i>
 
-                                    <small className="text-muted">
-
-                                        Inactive
-
-                                    </small>
-
-                                    <h2 className="fw-bold text-danger mt-2">
-
-                                        {inactiveCategories}
-
-                                    </h2>
-
-                                </div>
-
-                                <i
-                                    className="bi bi-x-circle-fill"
-                                    style={{
-                                        fontSize: "45px",
-                                        color: "#DC3545"
-                                    }}
-                                ></i>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div className="col-lg-3 col-md-6">
-
-                    <div
-                        className="card border shadow-sm h-100"
-                        style={{
-                            borderRadius: "18px"
-                        }}
-                    >
-
-                        <div className="card-body">
-
-                            <div className="d-flex justify-content-between">
-
-                                <div>
-
-                                    <small className="text-muted">
-
-                                        Total Services
-
-                                    </small>
-
-                                    <h2
-                                        className="fw-bold mt-2"
-                                        style={{
-                                            color: "#0B2E4F"
-                                        }}
-                                    >
-
-                                        {totalServices}
-
-                                    </h2>
-
-                                </div>
-
-                                <i
-                                    className="bi bi-tools"
-                                    style={{
-                                        fontSize: "45px",
-                                        color: "#0B2E4F"
-                                    }}
-                                ></i>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            {/* ================= Search & Filter ================= */}
-
-            <div
-                className="card border shadow-sm mb-4"
-                style={{
-                    borderRadius: "18px"
-                }}
-            >
-
-                <div className="card-body">
-
-                    <div className="row g-3">
-
-                        <div className="col-lg-8">
-
-                            <div className="input-group">
-
-                                <span className="input-group-text bg-white">
-
-                                    <i className="bi bi-search"></i>
+                                    {selectedCategory?.isActive
+                                        ? "Active"
+                                        : "Inactive"
+                                    }
 
                                 </span>
 
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Search Category Name or Description..."
-                                    value={search}
-                                    onChange={(e) =>
-                                        setSearch(e.target.value)
-                                    }
-                                />
+                            </div>
+
+
+                            <div className="category-details-grid">
+
+                                <div className="category-detail-item">
+
+                                    <span>
+                                        Category ID
+                                    </span>
+
+                                    <strong>
+
+                                        #
+
+                                        {safeValue(
+                                            selectedCategory?.categoryId
+                                        )}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div className="category-detail-item">
+
+                                    <span>
+                                        Category Name
+                                    </span>
+
+                                    <strong>
+
+                                        {safeValue(
+                                            selectedCategory?.categoryName,
+                                            "Unnamed Category"
+                                        )}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div className="category-detail-item">
+
+                                    <span>
+                                        Created Date
+                                    </span>
+
+                                    <strong>
+
+                                        {formatDate(
+                                            selectedCategory?.createdAt
+                                        )}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div className="category-detail-item">
+
+                                    <span>
+                                        Updated Date
+                                    </span>
+
+                                    <strong>
+
+                                        {formatDate(
+                                            selectedCategory?.updatedAt
+                                        )}
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div className="category-details-section">
+
+                                <div className="category-details-section-title">
+
+                                    <i className="bi bi-card-text"></i>
+
+                                    Description
+
+                                </div>
+
+
+                                <div className="category-details-description">
+
+                                    {safeValue(
+                                        selectedCategory?.description,
+                                        "No description has been provided for this category."
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                            <div className="category-details-section">
+
+                                <div className="category-details-section-title">
+
+                                    <i className="bi bi-tools"></i>
+
+                                    Linked Services
+
+                                    <span className="category-services-count">
+
+                                        {
+                                            Array.isArray(
+                                                selectedCategory?.services
+                                            )
+                                                ? selectedCategory.services.length
+                                                : 0
+                                        }
+
+                                    </span>
+
+                                </div>
+
+
+                                {Array.isArray(
+                                    selectedCategory?.services
+                                ) &&
+                                selectedCategory.services.length > 0 ? (
+
+                                    <div className="category-services-list">
+
+                                        {selectedCategory.services.map(
+                                            (
+                                                service,
+                                                index
+                                            ) => (
+
+                                                <div
+                                                    className="category-service-item"
+                                                    key={
+                                                        service?.serviceId ||
+                                                        service?.id ||
+                                                        index
+                                                    }
+                                                >
+
+                                                    <div className="category-service-icon">
+
+                                                        <i className="bi bi-tools"></i>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <strong>
+
+                                                            {safeValue(
+                                                                service?.serviceName ||
+                                                                service?.name,
+                                                                "Service"
+                                                            )}
+
+                                                        </strong>
+
+
+                                                        {service?.description && (
+
+                                                            <small>
+
+                                                                {
+                                                                    service.description
+                                                                }
+
+                                                            </small>
+
+                                                        )}
+
+                                                    </div>
+
+                                                </div>
+
+                                            )
+                                        )}
+
+                                    </div>
+
+                                ) : (
+
+                                    <div className="category-no-services">
+
+                                        <i className="bi bi-info-circle"></i>
+
+                                        <span>
+                                            No linked service details are available for this category.
+                                        </span>
+
+                                    </div>
+
+                                )}
 
                             </div>
 
                         </div>
 
-                        <div className="col-lg-4">
 
-                            <select
-                                className="form-select"
-                                value={statusFilter}
-                                onChange={(e) =>
-                                    setStatusFilter(e.target.value)
-                                }
+                        {/* FOOTER */}
+
+                        <div className="category-details-footer">
+
+                            <button
+                                type="button"
+                                className="category-btn category-btn-secondary"
+                                onClick={closeDetails}
                             >
 
-                                <option value="All">
+                                <i className="bi bi-x-lg"></i>
 
-                                    All Categories
+                                Close
 
-                                </option>
+                            </button>
 
-                                <option value="Active">
 
-                                    Active
+                            <button
+                                type="button"
+                                className="category-btn category-btn-primary"
+                                onClick={() => {
 
-                                </option>
+                                    const category =
+                                        selectedCategory;
 
-                                <option value="Inactive">
+                                    closeDetails();
 
-                                    Inactive
+                                    handleEdit(
+                                        category
+                                    );
 
-                                </option>
+                                }}
+                            >
 
-                            </select>
+                                <i className="bi bi-pencil-square"></i>
+
+                                Edit Category
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>,
+
+                document.body
+
+            )
+            : null;
+
+
+    /* ============================================================
+       MAIN PAGE
+    ============================================================ */
+
+    return (
+
+        <PageContainer>
+
+            <div className="category-page">
+
+                {/* HEADER */}
+
+                <div className="category-header">
+
+                    <div>
+
+                        <div className="category-eyebrow">
+                            SERVICE MANAGEMENT
+                        </div>
+
+                        <h1>
+                            Category Management
+                        </h1>
+
+                        <p>
+                            Manage service categories
+                            for City Home Services.
+                        </p>
+
+                    </div>
+
+
+                    <div className="category-header-actions">
+
+                        <button
+                            type="button"
+                            className="category-btn category-btn-secondary"
+                            onClick={handleRefresh}
+                            disabled={refreshing}
+                        >
+
+                            <i
+                                className={
+                                    refreshing
+                                        ? "bi bi-arrow-repeat category-spin"
+                                        : "bi bi-arrow-clockwise"
+                                }
+                            ></i>
+
+                            {refreshing
+                                ? "Refreshing..."
+                                : "Refresh"
+                            }
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            className="category-btn category-btn-outline"
+                            onClick={handleExport}
+                        >
+
+                            <i className="bi bi-download"></i>
+
+                            Export
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            className="category-btn category-btn-primary"
+                            onClick={handleAdd}
+                        >
+
+                            <i className="bi bi-plus-lg"></i>
+
+                            Add Category
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                {/* MESSAGE */}
+
+                {message && (
+
+                    <div
+                        className={
+                            `category-alert ${
+                                messageType === "error"
+                                    ? "category-alert-error"
+                                    : "category-alert-success"
+                            }`
+                        }
+                    >
+
+                        <div className="category-alert-icon">
+
+                            <i
+                                className={
+                                    messageType === "error"
+                                        ? "bi bi-exclamation-circle-fill"
+                                        : "bi bi-check-circle-fill"
+                                }
+                            ></i>
+
+                        </div>
+
+
+                        <div className="category-alert-content">
+
+                            <strong>
+
+                                {messageType === "error"
+                                    ? "Action Failed"
+                                    : "Success"
+                                }
+
+                            </strong>
+
+                            <span>
+                                {message}
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setMessage("")
+                            }
+                        >
+
+                            <i className="bi bi-x"></i>
+
+                        </button>
+
+                    </div>
+
+                )}
+
+
+                {/* STATISTICS */}
+
+                <div className="category-stat-grid">
+
+                    <div className="category-stat-card">
+
+                        <div>
+
+                            <span>
+                                Total Categories
+                            </span>
+
+                            <strong>
+                                {totalCategories}
+                            </strong>
+
+                            <small>
+                                All categories
+                            </small>
+
+                        </div>
+
+
+                        <div className="category-stat-icon orange">
+
+                            <i className="bi bi-grid-3x3-gap-fill"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div className="category-stat-card">
+
+                        <div>
+
+                            <span>
+                                Active Categories
+                            </span>
+
+                            <strong>
+                                {activeCategories}
+                            </strong>
+
+                            <small>
+                                Currently available
+                            </small>
+
+                        </div>
+
+
+                        <div className="category-stat-icon green">
+
+                            <i className="bi bi-check-circle-fill"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div className="category-stat-card">
+
+                        <div>
+
+                            <span>
+                                Inactive Categories
+                            </span>
+
+                            <strong>
+                                {inactiveCategories}
+                            </strong>
+
+                            <small>
+                                Currently disabled
+                            </small>
+
+                        </div>
+
+
+                        <div className="category-stat-icon red">
+
+                            <i className="bi bi-pause-circle-fill"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div className="category-stat-card">
+
+                        <div>
+
+                            <span>
+                                Linked Services
+                            </span>
+
+                            <strong>
+                                {totalServices}
+                            </strong>
+
+                            <small>
+                                Available service links
+                            </small>
+
+                        </div>
+
+
+                        <div className="category-stat-icon blue">
+
+                            <i className="bi bi-tools"></i>
 
                         </div>
 
@@ -486,251 +1331,401 @@ function Categories() {
 
                 </div>
 
-            </div>
 
-            {/* ================= Categories Table ================= */}
+                {/* SEARCH / FILTER */}
 
-            <div
-                className="card border shadow-sm"
-                style={{
-                    borderRadius: "18px"
-                }}
-            >
+                <div className="category-control-card">
 
-                <div className="card-body">
-                                        {loading ? (
+                    <div className="category-search-box">
 
-                        <div className="text-center py-5">
+                        <i className="bi bi-search"></i>
 
-                            <div
-                                className="spinner-border text-warning"
-                                style={{
-                                    width: "3rem",
-                                    height: "3rem"
-                                }}
-                            ></div>
 
-                            <h5 className="mt-3">
+                        <input
+                            type="search"
+                            value={search}
+                            placeholder="Search category..."
+                            onChange={event =>
+                                setSearch(
+                                    event.target.value
+                                )
+                            }
+                            autoComplete="off"
+                        />
 
-                                Loading Categories...
 
-                            </h5>
+                        {search && (
 
-                        </div>
+                            <button
+                                type="button"
+                                className="category-clear-search"
+                                onClick={() =>
+                                    setSearch("")
+                                }
+                                aria-label="Clear search"
+                            >
 
-                    ) : filteredCategories.length === 0 ? (
+                                <i className="bi bi-x-circle-fill"></i>
 
-                        <div className="text-center py-5">
+                            </button>
 
-                            <i
-                                className="bi bi-grid-3x3-gap"
-                                style={{
-                                    fontSize: "70px",
-                                    color: "#CED4DA"
-                                }}
-                            ></i>
+                        )}
 
-                            <h4 className="mt-3 fw-bold">
+                    </div>
 
-                                No Categories Found
 
-                            </h4>
+                    <div className="category-filter-group">
 
-                            <p className="text-muted">
+                        <label>
+                            Status
+                        </label>
 
-                                Click "Add Category" to create your first service category.
+
+                        <select
+                            value={statusFilter}
+                            onChange={event =>
+                                setStatusFilter(
+                                    event.target.value
+                                )
+                            }
+                        >
+
+                            <option value="All">
+                                All
+                            </option>
+
+                            <option value="Active">
+                                Active
+                            </option>
+
+                            <option value="Inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    {(search || statusFilter !== "All") && (
+
+                        <button
+                            type="button"
+                            className="category-clear-filter"
+                            onClick={
+                                handleClearFilters
+                            }
+                        >
+
+                            <i className="bi bi-funnel"></i>
+
+                            Clear Filters
+
+                        </button>
+
+                    )}
+
+                </div>
+
+
+                {/* TABLE */}
+
+                <div className="category-table-card">
+
+                    <div className="category-table-header">
+
+                        <div>
+
+                            <h3>
+                                Service Categories
+                            </h3>
+
+                            <p>
+
+                                Showing{" "}
+
+                                <strong>
+                                    {filteredCategories.length}
+                                </strong>
+
+                                {" "}of{" "}
+
+                                <strong>
+                                    {totalCategories}
+                                </strong>
 
                             </p>
 
                         </div>
 
+
+                        <div className="category-table-info">
+
+                            <i className="bi bi-database-check"></i>
+
+                            Live backend data
+
+                        </div>
+
+                    </div>
+
+
+                    {filteredCategories.length === 0 ? (
+
+                        <div className="category-empty">
+
+                            <div className="category-empty-icon">
+
+                                <i className="bi bi-grid-3x3-gap"></i>
+
+                            </div>
+
+
+                            <h3>
+                                No Categories Found
+                            </h3>
+
+
+                            <p>
+                                No categories match
+                                your current filters.
+                            </p>
+
+
+                            <button
+                                type="button"
+                                className="category-btn category-btn-secondary"
+                                onClick={
+                                    handleClearFilters
+                                }
+                            >
+
+                                <i className="bi bi-arrow-counterclockwise"></i>
+
+                                Clear Filters
+
+                            </button>
+
+                        </div>
+
                     ) : (
 
-                        <div className="table-responsive">
+                        <div className="category-table-wrapper">
 
-                            <table className="table table-hover align-middle">
+                            <table className="category-table">
 
-                                <thead className="table-light">
+                                <thead>
 
                                     <tr>
 
-                                        <th width="80">
-
+                                        <th>
                                             ID
-
                                         </th>
 
                                         <th>
-
-                                            Category Name
-
+                                            CATEGORY
                                         </th>
 
                                         <th>
-
-                                            Description
-
+                                            DESCRIPTION
                                         </th>
 
-                                        <th width="120">
-
-                                            Status
-
+                                        <th>
+                                            STATUS
                                         </th>
 
-                                        <th width="180">
-
-                                            Created
-
+                                        <th>
+                                            CREATED
                                         </th>
 
-                                        <th
-                                            className="text-center"
-                                            width="220"
-                                        >
-
-                                            Actions
-
+                                        <th className="text-center">
+                                            ACTIONS
                                         </th>
 
                                     </tr>
 
                                 </thead>
 
+
                                 <tbody>
 
-                                    {filteredCategories.map(category => (
+                                    {filteredCategories.map(
+                                        category => (
 
-                                        <tr key={category.categoryId}>
+                                            <tr
+                                                key={
+                                                    category?.categoryId
+                                                }
+                                            >
 
-                                            <td>
+                                                <td>
 
-                                                <strong>
+                                                    <span className="category-id">
 
-                                                    #{category.categoryId}
+                                                        #
 
-                                                </strong>
+                                                        {safeValue(
+                                                            category?.categoryId
+                                                        )}
 
-                                            </td>
+                                                    </span>
 
-                                            <td>
+                                                </td>
 
-                                                <div className="d-flex align-items-center">
 
-                                                    <div
-                                                        className="rounded-circle me-3 d-flex justify-content-center align-items-center"
-                                                        style={{
-                                                            width: "45px",
-                                                            height: "45px",
-                                                            background: "#E8F1FD",
-                                                            color: "#0B2E4F",
-                                                            fontWeight: "bold"
-                                                        }}
-                                                    >
+                                                <td>
 
-                                                        <i className="bi bi-grid-fill"></i>
+                                                    <div className="category-name-cell">
 
-                                                    </div>
+                                                        <div className="category-avatar">
 
-                                                    <div>
+                                                            <i className="bi bi-grid-fill"></i>
 
-                                                        <div className="fw-bold">
+                                                        </div>
 
-                                                            {category.categoryName}
+
+                                                        <div>
+
+                                                            <strong>
+
+                                                                {safeValue(
+                                                                    category?.categoryName,
+                                                                    "Unnamed Category"
+                                                                )}
+
+                                                            </strong>
+
+
+                                                            <small>
+                                                                Service Category
+                                                            </small>
 
                                                         </div>
 
                                                     </div>
 
-                                                </div>
+                                                </td>
 
-                                            </td>
 
-                                            <td>
+                                                <td>
 
-                                                {category.description || "-"}
+                                                    <div className="category-description">
 
-                                            </td>
+                                                        {safeValue(
+                                                            category?.description,
+                                                            "No description available"
+                                                        )}
 
-                                            <td>
+                                                    </div>
 
-                                                {category.isActive ? (
+                                                </td>
 
-                                                    <span className="badge bg-success">
 
-                                                        Active
+                                                <td>
+
+                                                    <span
+                                                        className={
+                                                            category?.isActive
+                                                                ? "category-status active"
+                                                                : "category-status inactive"
+                                                        }
+                                                    >
+
+                                                        <i className="bi bi-circle-fill"></i>
+
+                                                        {category?.isActive
+                                                            ? "Active"
+                                                            : "Inactive"
+                                                        }
 
                                                     </span>
 
-                                                ) : (
+                                                </td>
 
-                                                    <span className="badge bg-danger">
 
-                                                        Inactive
+                                                <td>
+
+                                                    <span className="category-date">
+
+                                                        <i className="bi bi-calendar3"></i>
+
+                                                        {formatDate(
+                                                            category?.createdAt
+                                                        )}
 
                                                     </span>
 
-                                                )}
+                                                </td>
 
-                                            </td>
 
-                                            <td>
+                                                <td>
 
-                                                {category.createdAt
-                                                    ? new Date(
-                                                          category.createdAt
-                                                      ).toLocaleDateString("en-IN")
-                                                    : "-"}
+                                                    <div className="category-actions">
 
-                                            </td>
+                                                        <button
+                                                            type="button"
+                                                            className="category-action view"
+                                                            onClick={() =>
+                                                                openDetails(
+                                                                    category
+                                                                )
+                                                            }
+                                                        >
 
-                                            <td>
+                                                            <i className="bi bi-eye"></i>
 
-                                                <div className="d-flex justify-content-center gap-2">
+                                                            <span>
+                                                                View
+                                                            </span>
 
-                                                    <button
-                                                        className="btn btn-sm btn-outline-primary"
-                                                        title="View"
-                                                        onClick={() =>
-                                                            handleView(category)
-                                                        }
-                                                    >
+                                                        </button>
 
-                                                        <i className="bi bi-eye"></i>
 
-                                                    </button>
+                                                        <button
+                                                            type="button"
+                                                            className="category-action edit"
+                                                            onClick={() =>
+                                                                handleEdit(
+                                                                    category
+                                                                )
+                                                            }
+                                                        >
 
-                                                    <button
-                                                        className="btn btn-sm btn-outline-warning"
-                                                        title="Edit"
-                                                        onClick={() =>
-                                                            handleEdit(category)
-                                                        }
-                                                    >
+                                                            <i className="bi bi-pencil-square"></i>
 
-                                                        <i className="bi bi-pencil-square"></i>
+                                                            <span>
+                                                                Edit
+                                                            </span>
 
-                                                    </button>
+                                                        </button>
 
-                                                    <button
-                                                        className="btn btn-sm btn-outline-danger"
-                                                        title="Delete"
-                                                        onClick={() =>
-                                                            handleDelete(category)
-                                                        }
-                                                    >
 
-                                                        <i className="bi bi-trash"></i>
+                                                        <button
+                                                            type="button"
+                                                            className="category-action delete"
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    category
+                                                                )
+                                                            }
+                                                        >
 
-                                                    </button>
+                                                            <i className="bi bi-trash3"></i>
 
-                                                </div>
+                                                            <span>
+                                                                Delete
+                                                            </span>
 
-                                            </td>
+                                                        </button>
 
-                                        </tr>
+                                                    </div>
 
-                                    ))}
+                                                </td>
+
+                                            </tr>
+
+                                        )
+                                    )}
 
                                 </tbody>
 
@@ -744,60 +1739,45 @@ function Categories() {
 
             </div>
 
+
+            {/* ADD */}
+
+            <AddCategoryModal
+                show={showAdd}
+                onClose={closeAdd}
+                onSuccess={handleAddSuccess}
+            />
+
+
+            {/* EDIT */}
+
+            <EditCategoryModal
+                show={showEdit}
+                category={selectedCategory}
+                onClose={closeEdit}
+                onSuccess={handleEditSuccess}
+            />
+
+
+            {/* DELETE */}
+
+            <DeleteCategoryModal
+                show={showDelete}
+                category={selectedCategory}
+                onClose={closeDelete}
+                onSuccess={handleDeleteSuccess}
+            />
+
+
+            {/* DETAILS PORTAL */}
+
+            {detailsPopup}
+
         </PageContainer>
 
-        <CategoryDetailsModal
-            show={showDetails}
-            category={selectedCategory}
-            onClose={() => {
-
-                setShowDetails(false);
-
-                setSelectedCategory(null);
-
-            }}
-        />
-
-        <AddCategoryModal
-            show={showAdd}
-            onClose={() => {
-
-                setShowAdd(false);
-
-            }}
-            onSuccess={loadCategories}
-        />
-
-        <EditCategoryModal
-            show={showEdit}
-            category={selectedCategory}
-            onClose={() => {
-
-                setShowEdit(false);
-
-                setSelectedCategory(null);
-
-            }}
-            onSuccess={loadCategories}
-        />
-
-        <DeleteCategoryModal
-            show={showDelete}
-            category={selectedCategory}
-            onClose={() => {
-
-                setShowDelete(false);
-
-                setSelectedCategory(null);
-
-            }}
-            onSuccess={loadCategories}
-        />
-
-    </>
-
-);
+    );
 
 }
+
 
 export default Categories;

@@ -46,6 +46,7 @@ import Notifications from "../pages/Admin/Notifications/Notifications";
 import Profiles from "../pages/Profiles/Profiles";
 import CustomerNotifications from "../pages/Customer/CustomerNotifications";
 import CategoryDetails from "../pages/Categories/CategoryDetails";
+import AdminCustomers from "../pages/Admin/Customers/Customers";
 function AppRoutes() {
     return (
         <BrowserRouter>
@@ -155,7 +156,7 @@ function AppRoutes() {
 
                     <Route
                         path="/customer/bookings/:id"
-                        element={<BookingDetails />}
+                        element={<MyBookings />}
                     />
 
                     <Route
@@ -195,8 +196,8 @@ function AppRoutes() {
                     />
 
                     <Route
-                        path="/customers"
-                        element={<Customers />}
+                        path="/admin/customers"
+                        element={<AdminCustomers />}
                     />
 
                     <Route

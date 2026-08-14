@@ -1,217 +1,169 @@
 /* =========================================================
-   CUSTOMER PROFILE
+   CUSTOMER PROFILE - PROFESSIONAL UI
 ========================================================= */
 
 .customer-profile-page {
     min-height: 100vh;
-
-    padding:
-        24px 0 50px;
-
+    padding: 24px 0 55px;
     background:
-        #f8fafc;
+        radial-gradient(circle at 90% 3%, rgba(247,148,29,.10), transparent 24%),
+        linear-gradient(180deg, #fff7ec 0%, #fffaf5 52%, #fffdfb 100%);
+    color: #0b1f3a;
 }
 
-
 /* =========================================================
-   PAGE HEADING
+   HERO
 ========================================================= */
 
 .customer-profile-heading {
+    position: relative;
+    overflow: hidden;
     display: flex;
-
-    align-items: flex-end;
-
+    align-items: center;
     justify-content: space-between;
+    min-height: 178px;
+    margin-bottom: 22px;
+    padding: 30px 34px;
+    border: 1px solid rgba(247,148,29,.35);
+    border-radius: 20px;
+    background:
+        linear-gradient(135deg, #091d35 0%, #123a60 57%, #d97706 150%);
+    box-shadow: 0 15px 35px rgba(11,31,58,.14);
+}
 
-    margin-bottom: 20px;
+.customer-profile-heading::before {
+    content: "";
+    position: absolute;
+    width: 330px;
+    height: 330px;
+    right: -145px;
+    top: -185px;
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 50%;
+}
+
+.customer-profile-heading::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    right: 90px;
+    bottom: -140px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 50%;
+}
+
+.customer-profile-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
 }
 
 .profile-section-label {
-    display: block;
-
-    margin-bottom: 4px;
-
-    color: #f7941d;
-
-    font-size: 8px;
-
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 7px;
+    color: #ffb65c;
+    font-size: 13px;
     font-weight: 800;
-
-    letter-spacing: 1.3px;
+    letter-spacing: 1.4px;
 }
 
 .customer-profile-heading h1 {
     margin: 0;
-
-    color: #0b2e4f;
-
-    font-size: 27px;
-
-    font-weight: 850;
+    color: #fff;
+    font-size: 34px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -.4px;
 }
 
 .customer-profile-heading p {
-    margin:
-        5px 0 0;
-
-    color: #7b8794;
-
-    font-size: 9px;
+    max-width: 650px;
+    margin: 9px 0 0;
+    color: rgba(255,255,255,.82);
+    font-size: 15px;
+    line-height: 1.55;
 }
 
-
-/* =========================================================
-   SECTION CARD
-========================================================= */
-
-.profile-section-card {
-    background: #ffffff;
-
-    border:
-        1px solid rgba(11, 46, 79, .10);
-
-    border-radius: 16px;
-
-    box-shadow:
-        0 6px 22px rgba(11, 46, 79, .045);
-
-    overflow: hidden;
-
-    transition:
-        border-color .25s ease,
-        box-shadow .25s ease;
-}
-
-.profile-section-card:hover {
-    border-color:
-        rgba(247, 148, 29, .20);
-
-    box-shadow:
-        0 9px 27px rgba(11, 46, 79, .065);
-}
-
-
-/* =========================================================
-   CARD HEADING
-========================================================= */
-
-.profile-card-heading {
+.profile-hero-meta {
     display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 17px;
+}
 
+.profile-hero-meta span {
+    display: inline-flex;
     align-items: center;
-
-    gap: 10px;
-
-    padding:
-        15px 17px;
-
-    border-bottom:
-        1px solid rgba(11, 46, 79, .075);
-
-    background:
-        linear-gradient(
-            180deg,
-            #ffffff,
-            #fcfdfe
-        );
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 999px;
+    background: rgba(255,255,255,.09);
+    color: rgba(255,255,255,.9);
+    font-size: 11px;
+    font-weight: 600;
 }
 
-.profile-card-heading-icon {
-    width: 34px;
-    height: 34px;
+.profile-hero-meta i {
+    color: #ffb65c;
+}
 
+.customer-profile-hero-icon {
+    position: relative;
+    z-index: 2;
+    width: 76px;
+    height: 76px;
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     flex-shrink: 0;
-
-    border-radius: 9px;
-
-    background: #fff4e6;
-
-    color: #f7941d;
-
-    border:
-        1px solid rgba(247, 148, 29, .14);
-
-    font-size: 13px;
+    margin-right: 10px;
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 18px;
+    background: rgba(255,255,255,.1);
+    color: #ffb65c;
+    font-size: 32px;
+    box-shadow: inset 0 0 20px rgba(255,255,255,.04);
 }
-
-.profile-card-heading h3 {
-    margin: 0;
-
-    color: #0b2e4f;
-
-    font-size: 11px;
-
-    font-weight: 800;
-}
-
-.profile-card-heading p {
-    margin:
-        2px 0 0;
-
-    color: #8a949e;
-
-    font-size: 6.5px;
-}
-
 
 /* =========================================================
-   MESSAGE
+   MESSAGES
 ========================================================= */
 
 .profile-message {
     display: flex;
-
     align-items: center;
-
-    gap: 9px;
-
-    margin-bottom: 15px;
-
-    padding:
-        10px 12px;
-
-    border-radius: 10px;
-
-    font-size: 8px;
-
-    font-weight: 650;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 13px 15px;
+    border-radius: 11px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 14px rgba(11,31,58,.04);
 }
 
 .profile-message-success {
     color: #146c43;
-
     background: #edf9f2;
-
-    border:
-        1px solid #c9ecd8;
+    border: 1px solid #c9ecd8;
 }
 
 .profile-message-danger {
     color: #b02a37;
-
     background: #fff0f1;
-
-    border:
-        1px solid #f3c9ce;
+    border: 1px solid #f3c9ce;
 }
 
 .profile-message-info {
     color: #055160;
-
     background: #effcff;
-
-    border:
-        1px solid #c5edf3;
+    border: 1px solid #c5edf3;
 }
 
 .profile-message-icon {
-    font-size: 12px;
+    font-size: 16px;
 }
 
 .profile-message span {
@@ -220,339 +172,637 @@
 
 .profile-message button {
     border: 0;
-
     background: transparent;
-
     color: inherit;
-
     cursor: pointer;
-
-    font-size: 15px;
-
+    font-size: 19px;
     line-height: 1;
 }
 
+/* =========================================================
+   PROFILE OVERVIEW + SECTION CARDS
+========================================================= */
+
+.profile-section-card {
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(11,46,79,.10);
+    border-radius: 16px;
+    box-shadow: 0 6px 22px rgba(11,31,58,.045);
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.profile-section-card:hover {
+    border-color: rgba(247,148,29,.38);
+    box-shadow: 0 11px 27px rgba(11,31,58,.075);
+}
+
+.profile-overview-card {
+    margin-bottom: 4px;
+}
+
+.profile-main-grid {
+    --bs-gutter-x: 1.25rem;
+    --bs-gutter-y: 1.25rem;
+}
 
 /* =========================================================
-   SAVE SECTION
+   SECTION HEADERS
+========================================================= */
+
+.profile-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 70px;
+    padding: 14px 19px;
+    border-bottom: 1px solid rgba(11,46,79,.08);
+    background:
+        linear-gradient(135deg, #edf4fa 0%, #fffaf3 100%);
+}
+
+.profile-card-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border: 1px solid rgba(247,148,29,.25);
+    border-radius: 8px;
+    background: #fff;
+    color: #e67e0b;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.profile-card-heading-icon {
+    width: 39px;
+    height: 39px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(247,148,29,.20);
+    border-radius: 10px;
+    background: #fff4e6;
+    color: #f7941d;
+    font-size: 17px;
+    transition: .2s ease;
+}
+
+.profile-section-card:hover .profile-card-heading-icon {
+    background: #f7941d;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.profile-card-heading h3 {
+    margin: 0;
+    color: #0b1f3a;
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.profile-card-heading p {
+    margin: 3px 0 0;
+    color: #687789;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* =========================================================
+   CHILD COMPONENT FORM SUPPORT
+========================================================= */
+
+.profile-section-card label {
+    color: #0b1f3a;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.profile-section-card input,
+.profile-section-card select,
+.profile-section-card textarea {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid rgba(11,46,79,.18);
+    border-radius: 8px;
+    background: #fff;
+    color: #0b1f3a;
+    font-size: 14px;
+    font-weight: 400;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.profile-section-card input:hover,
+.profile-section-card select:hover,
+.profile-section-card textarea:hover {
+    border-color: rgba(247,148,29,.48);
+}
+
+.profile-section-card input:focus,
+.profile-section-card select:focus,
+.profile-section-card textarea:focus {
+    border-color: #f7941d;
+    box-shadow: 0 0 0 3px rgba(247,148,29,.11);
+}
+
+.profile-section-card textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* =========================================================
+   SAVE BAR
 ========================================================= */
 
 .profile-save-section {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
-    gap: 15px;
-
+    gap: 18px;
     margin-top: 20px;
-
-    padding:
-        14px 16px;
-
-    background: #ffffff;
-
-    border:
-        1px solid rgba(11, 46, 79, .10);
-
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid rgba(247,148,29,.24);
     border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(11,31,58,.045);
+    transition: .2s ease;
+}
 
-    box-shadow:
-        0 5px 18px rgba(11, 46, 79, .04);
+.profile-save-section:hover {
+    border-color: #f7941d;
+    box-shadow: 0 9px 22px rgba(247,148,29,.10);
 }
 
 .profile-save-info {
     display: flex;
-
     align-items: center;
-
-    gap: 9px;
+    gap: 11px;
 }
 
 .profile-save-info > i {
-    width: 34px;
-    height: 34px;
-
+    width: 40px;
+    height: 40px;
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    border-radius: 9px;
-
+    border-radius: 10px;
     background: #edf9f2;
-
     color: #198754;
-
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .profile-save-info strong {
     display: block;
-
-    color: #344054;
-
-    font-size: 8px;
+    color: #0b1f3a;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .profile-save-info span {
     display: block;
+    margin-top: 3px;
+    color: #6c7785;
+    font-size: 12px;
+}
 
-    margin-top: 2px;
-
-    color: #98a1aa;
-
-    font-size: 6.5px;
+.profile-save-btn,
+.profile-retry-btn {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid #f7941d;
+    border-radius: 9px;
+    background: linear-gradient(135deg,#f7941d,#f4b400);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
 }
 
 .profile-save-btn {
-    min-width: 150px;
-
-    min-height: 38px;
-
-    display: inline-flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 7px;
-
-    border:
-        1px solid #f7941d;
-
-    border-radius: 9px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #f7941d,
-            #f4b400
-        );
-
-    color: #ffffff;
-
-    font-size: 8px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 5px 14px rgba(247, 148, 29, .15);
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease;
+    min-width: 155px;
 }
 
-.profile-save-btn:hover:not(:disabled) {
+.profile-save-btn:hover:not(:disabled),
+.profile-retry-btn:hover {
     transform: translateY(-2px);
+    border-color: #e67e0b;
+    background: linear-gradient(135deg,#e67e0b,#f4b400);
+    box-shadow: 0 9px 20px rgba(247,148,29,.24);
+}
 
-    box-shadow:
-        0 8px 19px rgba(247, 148, 29, .22);
+.profile-save-btn:active:not(:disabled),
+.profile-retry-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(247,148,29,.18);
+}
+
+.profile-save-btn:focus-visible,
+.profile-retry-btn:focus-visible {
+    outline: 3px solid rgba(247,148,29,.25);
+    outline-offset: 2px;
 }
 
 .profile-save-btn:disabled {
     opacity: .65;
-
     cursor: not-allowed;
 }
 
-
 /* =========================================================
-   LOADING
+   LOADING / ERROR
 ========================================================= */
 
 .customer-profile-loading {
-    min-height: 70vh;
-
+    min-height: 65vh;
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
     justify-content: center;
-
     text-align: center;
 }
 
-.profile-loading-icon {
-    width: 65px;
-    height: 65px;
-
+.profile-loading-icon,
+.profile-error-icon {
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    margin-bottom: 14px;
-
     border-radius: 50%;
-
-    background: #fff4e6;
-
-    color: #f7941d;
-
-    font-size: 28px;
-
-    border:
-        1px solid rgba(247, 148, 29, .15);
 }
 
-.customer-profile-loading .spinner-border {
-    width: 24px;
-    height: 24px;
-
-    margin-bottom: 10px;
+.profile-loading-icon {
+    width: 68px;
+    height: 68px;
+    margin-bottom: 14px;
+    background: #fff4e6;
+    color: #f7941d;
+    font-size: 29px;
 }
 
 .customer-profile-loading h5 {
     margin: 0;
-
-    color: #0b2e4f;
-
-    font-size: 13px;
-
-    font-weight: 800;
+    color: #0b1f3a;
+    font-size: 18px;
+    font-weight: 750;
 }
 
 .customer-profile-loading p {
-    margin-top: 5px;
-
-    color: #8a949e;
-
-    font-size: 8px;
+    margin: 6px 0 0;
+    color: #6c7785;
+    font-size: 13px;
 }
 
-
-/* =========================================================
-   ERROR
-========================================================= */
-
 .profile-error-card {
-    max-width: 480px;
-
-    margin:
-        90px auto;
-
-    padding: 30px;
-
+    max-width: 500px;
+    margin: 90px auto;
+    padding: 34px;
     text-align: center;
-
-    background: #ffffff;
-
-    border:
-        1px solid rgba(220, 53, 69, .14);
-
+    background: #fff;
+    border: 1px solid rgba(247,148,29,.22);
     border-radius: 16px;
-
-    box-shadow:
-        0 10px 30px rgba(11, 46, 79, .06);
+    box-shadow: 0 10px 30px rgba(11,31,58,.06);
 }
 
 .profile-error-icon {
-    width: 65px;
-    height: 65px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    margin:
-        0 auto 13px;
-
-    border-radius: 50%;
-
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 14px;
     background: #fff0f1;
-
     color: #dc3545;
-
-    font-size: 27px;
+    font-size: 28px;
 }
 
 .profile-error-card h3 {
-    margin-bottom: 5px;
-
-    color: #0b2e4f;
-
-    font-size: 16px;
-
-    font-weight: 800;
+    margin: 0 0 7px;
+    color: #0b1f3a;
+    font-size: 21px;
+    font-weight: 750;
 }
 
 .profile-error-card p {
-    margin-bottom: 16px;
-
-    color: #7b8794;
-
-    font-size: 8px;
+    margin: 0 0 18px;
+    color: #6c7785;
+    font-size: 14px;
+    line-height: 1.5;
 }
-
-.profile-retry-btn {
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 6px;
-
-    padding: 9px 14px;
-
-    border:
-        1px solid #f7941d;
-
-    border-radius: 8px;
-
-    background: #f7941d;
-
-    color: #ffffff;
-
-    font-size: 8px;
-
-    font-weight: 750;
-
-    cursor: pointer;
-}
-
 
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 991px) {
+    .customer-profile-heading {
+        min-height: 155px;
+    }
+}
 
+@media (max-width: 768px) {
     .customer-profile-page {
-        padding-top: 15px;
+        padding-top: 16px;
+    }
+
+    .customer-profile-heading {
+        align-items: flex-start;
+        min-height: 145px;
+        padding: 24px 21px;
+        border-radius: 16px;
     }
 
     .customer-profile-heading h1 {
-        font-size: 23px;
+        font-size: 28px;
+    }
+
+    .customer-profile-heading p {
+        font-size: 14px;
+    }
+
+    .profile-section-label {
+        font-size: 12px;
+    }
+
+    .customer-profile-hero-icon {
+        width: 58px;
+        height: 58px;
+        font-size: 24px;
+        margin-left: 12px;
     }
 
     .profile-save-section {
         align-items: stretch;
-
         flex-direction: column;
     }
 
     .profile-save-btn {
         width: 100%;
     }
-
 }
 
 @media (max-width: 480px) {
+    .customer-profile-heading {
+        padding: 20px 17px;
+    }
+
+    .customer-profile-heading h1 {
+        font-size: 25px;
+    }
+
+    .customer-profile-heading p {
+        font-size: 13px;
+    }
+
+    .customer-profile-hero-icon {
+        display: none;
+    }
+
+    .profile-hero-meta {
+        gap: 6px;
+    }
+
+    .profile-hero-meta span {
+        font-size: 10px;
+    }
 
     .profile-card-heading {
-        padding:
-            13px;
+        min-height: 64px;
+        padding: 13px 14px;
     }
 
-    .profile-save-info {
+    .profile-card-step {
+        display: none;
+    }
+
+    .profile-card-heading h3 {
+        font-size: 16px;
+    }
+}
+
+
+/* =========================================================
+   HERO ACTIONS
+========================================================= */
+.customer-profile-hero-actions {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    margin-left: 24px;
+}
+
+.profile-hero-action {
+    min-width: 118px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.profile-hero-action-light {
+    border: 1px solid rgba(255,255,255,.35);
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    backdrop-filter: blur(8px);
+}
+
+.profile-hero-action-light:hover {
+    background: rgba(255,255,255,.2);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .customer-profile-heading {
         align-items: flex-start;
+        flex-direction: column;
+        gap: 20px;
     }
 
+    .customer-profile-hero-actions {
+        margin-left: 0;
+    }
+}
+
+/* =========================================================
+   PROFILE OVERVIEW ACTIONS
+   Logout + Deactivate live inside the dashboard/profile box
+========================================================= */
+
+.profile-overview-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-overview-actions {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.profile-overview-btn {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 14px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.profile-overview-logout {
+    color: #0b2e4f;
+    background: #fff;
+    border: 1px solid rgba(11,46,79,.20);
+}
+
+.profile-overview-deactivate {
+    color: #fff;
+    background: #e67e0b;
+    border: 1px solid #e67e0b;
+}
+
+.profile-overview-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(11,46,79,.13);
+}
+
+.profile-overview-logout:hover {
+    background: #fff4e6;
+    border-color: #f7941d;
+}
+
+.profile-overview-deactivate:hover:not(:disabled) {
+    background: #d66f05;
+    border-color: #d66f05;
+}
+
+.profile-overview-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.profile-overview-btn:focus-visible {
+    outline: 3px solid rgba(247,148,29,.25);
+    outline-offset: 2px;
+}
+
+.profile-overview-btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   TWO-ROW PROFILE GRID
+   Row 1: Personal Information | Account Status
+   Row 2: Additional Information | Security
+========================================================= */
+
+.profile-main-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(310px, 1fr);
+    gap: 18px;
+    margin-top: 18px;
+    align-items: stretch;
+}
+
+.profile-main-grid > .profile-personal-card {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.profile-main-grid > .profile-status-card {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.profile-main-grid > .profile-additional-card {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.profile-main-grid > .profile-security-card {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 0 !important;
+}
+
+.profile-main-grid .profile-section-card {
+    height: 100%;
+}
+
+/* Header backgrounds stay branded and readable */
+.profile-main-grid .profile-card-heading {
+    background: linear-gradient(135deg, #fff0dc 0%, #fff8ef 100%);
+}
+
+/* Inputs from the existing child components */
+.profile-main-grid .profile-section-card input,
+.profile-main-grid .profile-section-card select,
+.profile-main-grid .profile-section-card textarea {
+    background: #fff;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+    .profile-main-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .profile-main-grid > .profile-personal-card {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+
+    .profile-main-grid > .profile-status-card {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .profile-main-grid > .profile-additional-card {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    .profile-main-grid > .profile-security-card {
+        grid-column: 2;
+        grid-row: 3;
+    }
+}
+
+@media (max-width: 700px) {
+    .profile-overview-actions {
+        position: static;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        padding: 14px 16px 0;
+    }
+
+    .profile-main-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .profile-main-grid > .profile-section-card {
+        width: 100%;
+    }
 }

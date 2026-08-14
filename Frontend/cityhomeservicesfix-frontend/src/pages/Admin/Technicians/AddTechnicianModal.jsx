@@ -1,585 +1,579 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import technicianService from "../../../services/technicianService";
 
 function AddTechnicianModal({
-
     show,
-
     onClose,
-
     onSuccess
-
 }) {
-
-    const [saving, setSaving] = useState(false);
-
-    const [errors, setErrors] = useState({});
-
     const [form, setForm] = useState({
-
-        firstName: "",
-
-        lastName: "",
-
-        email: "",
-
-        phoneNumber: "",
-
-        password: "",
-
         employeeCode: "",
-
         department: "",
-
         designation: "",
-
         experienceYears: "",
-
-        joiningDate: "",
-
-        hourlyRate: ""
-
+        hourlyRate: "",
+        isAvailable: true,
+        currentStatus: "Available"
     });
 
-    const handleChange = (e) => {
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+
+    useEffect(() => {
+        if (!show) return;
 
         setForm({
-
-            ...form,
-
-            [e.target.name]: e.target.value
-
+            employeeCode: "",
+            department: "",
+            designation: "",
+            experienceYears: "",
+            hourlyRate: "",
+            isAvailable: true,
+            currentStatus: "Available"
         });
 
+        setError("");
+        setSuccess("");
+
+        const handleEscape = (event) => {
+            if (event.key === "Escape" && !saving) {
+                onClose();
+            }
+        };
+
+        document.addEventListener(
+            "keydown",
+            handleEscape
+        );
+
+        document.body.style.overflow = "hidden";
+
+        return () => {
+            document.removeEventListener(
+                "keydown",
+                handleEscape
+            );
+
+            document.body.style.overflow = "";
+        };
+    }, [show, onClose]);
+
+    if (!show) {
+        return null;
+    }
+
+    const handleChange = (event) => {
+        const { name, value, type, checked } =
+            event.target;
+
+        setForm((previous) => ({
+            ...previous,
+            [name]:
+                type === "checkbox"
+                    ? checked
+                    : value
+        }));
+
+        setError("");
+        setSuccess("");
     };
 
-    const validate = () => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-        const validationErrors = {};
+        setError("");
+        setSuccess("");
 
-        if (!form.firstName.trim())
-            validationErrors.firstName = "First Name is required.";
-
-        if (!form.lastName.trim())
-            validationErrors.lastName = "Last Name is required.";
-
-        if (!form.email.trim())
-            validationErrors.email = "Email is required.";
-
-        if (!form.phoneNumber.trim())
-            validationErrors.phoneNumber = "Phone Number is required.";
-
-        if (!form.password.trim())
-            validationErrors.password = "Password is required.";
-
-        if (!form.employeeCode.trim())
-            validationErrors.employeeCode = "Employee Code is required.";
-
-        if (!form.department.trim())
-            validationErrors.department = "Department is required.";
-
-        if (!form.designation.trim())
-            validationErrors.designation = "Designation is required.";
-
-        setErrors(validationErrors);
-
-        return Object.keys(validationErrors).length === 0;
-
-    };
-
-    const handleSave = async () => {
-
-        if (!validate())
+        if (!form.employeeCode.trim()) {
+            setError(
+                "Employee code is required."
+            );
             return;
+        }
+
+        if (!form.department.trim()) {
+            setError(
+                "Department is required."
+            );
+            return;
+        }
+
+        if (!form.designation.trim()) {
+            setError(
+                "Designation is required."
+            );
+            return;
+        }
+
+        if (
+            form.experienceYears !== "" &&
+            Number(form.experienceYears) < 0
+        ) {
+            setError(
+                "Experience cannot be negative."
+            );
+            return;
+        }
+
+        if (
+            form.hourlyRate !== "" &&
+            Number(form.hourlyRate) < 0
+        ) {
+            setError(
+                "Hourly rate cannot be negative."
+            );
+            return;
+        }
 
         setSaving(true);
 
         try {
+            const payload = {
+                employeeCode:
+                    form.employeeCode.trim(),
 
-            await technicianService.create({
+                department:
+                    form.department.trim(),
 
-                firstName: form.firstName,
+                designation:
+                    form.designation.trim(),
 
-                lastName: form.lastName,
+                experienceYears:
+                    form.experienceYears === ""
+                        ? 0
+                        : Number(
+                            form.experienceYears
+                        ),
 
-                email: form.email,
+                hourlyRate:
+                    form.hourlyRate === ""
+                        ? 0
+                        : Number(
+                            form.hourlyRate
+                        ),
 
-                phoneNumber: form.phoneNumber,
+                isAvailable:
+                    Boolean(form.isAvailable),
 
-                password: form.password,
+                currentStatus:
+                    form.isAvailable
+                        ? form.currentStatus
+                        : "Inactive"
+            };
 
-                employeeCode: form.employeeCode,
+            if (
+                typeof technicianService.create !==
+                "function"
+            ) {
+                throw new Error(
+                    "Create operation is not available in technicianService."
+                );
+            }
 
-                department: form.department,
+            await technicianService.create(
+                payload
+            );
 
-                designation: form.designation,
+            setSuccess(
+                "Technician created successfully."
+            );
 
-                experienceYears: form.experienceYears
-                    ? Number(form.experienceYears)
-                    : null,
+            if (onSuccess) {
+                await onSuccess();
+            }
 
-                joiningDate: form.joiningDate || null,
+            setTimeout(() => {
+                onClose();
+            }, 700);
 
-                hourlyRate: form.hourlyRate
-                    ? Number(form.hourlyRate)
-                    : null
+        } catch (error) {
+            console.error(
+                "ADD TECHNICIAN ERROR:",
+                error
+            );
 
-            });
+            const message =
+                error?.response?.data?.message ||
+                error?.response?.data?.Message ||
+                error?.response?.data?.error ||
+                error?.message ||
+                "Unable to create technician.";
 
-            alert("Technician created successfully.");
+            setError(message);
 
-            onSuccess();
-
-            onClose();
-
-        }
-        catch (err) {
-
-            console.error(err);
-
-            alert("Failed to create technician.");
-
-        }
-        finally {
-
+        } finally {
             setSaving(false);
-
         }
-
     };
 
-    if (!show)
-        return null;
+    const handleBackdropClick = (event) => {
+        if (
+            event.target ===
+            event.currentTarget &&
+            !saving
+        ) {
+            onClose();
+        }
+    };
 
     return (
-
         <div
-            className="modal fade show"
-            style={{
-                display: "block",
-                background: "rgba(0,0,0,.45)"
-            }}
+            className="technician-modal-overlay"
+            onMouseDown={handleBackdropClick}
         >
+            <div
+                className="technician-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="add-technician-title"
+                onMouseDown={(event) =>
+                    event.stopPropagation()
+                }
+            >
 
-            <div className="modal-dialog modal-xl modal-dialog-centered">
+                {/* HEADER */}
 
-                <div
-                    className="modal-content border-0 shadow-lg"
-                    style={{
-                        borderRadius: "20px"
-                    }}
-                >
+                <div className="technician-modal-header">
 
-                    <div
-                        className="modal-header"
-                        style={{
-                            background: "#0B2E4F",
-                            color: "#fff"
-                        }}
-                    >
+                    <div className="technician-modal-heading">
 
-                        <h4 className="fw-bold mb-0">
+                        <div className="technician-modal-icon">
+                            <i className="bi bi-person-plus"></i>
+                        </div>
 
-                            Add Technician
+                        <div>
+                            <h3 id="add-technician-title">
+                                Add Technician
+                            </h3>
 
-                        </h4>
-
-                        <button
-                            className="btn-close btn-close-white"
-                            onClick={onClose}
-                        ></button>
+                            <p>
+                                Create a new technician
+                                record
+                            </p>
+                        </div>
 
                     </div>
 
-                    <div className="modal-body p-4">
-                                            <form>
-
-                        <div className="row g-4">
-
-                            {/* ================= Personal Information ================= */}
-
-                            <div className="col-lg-6">
-
-                                <div
-                                    className="card border shadow-sm h-100"
-                                    style={{
-                                        borderRadius: "15px"
-                                    }}
-                                >
-
-                                    <div className="card-body">
-
-                                        <h5
-                                            className="fw-bold mb-4"
-                                            style={{
-                                                color: "#0B2E4F"
-                                            }}
-                                        >
-
-                                            Personal Information
-
-                                        </h5>
-
-                                        <div className="row">
-
-                                            <div className="col-md-6 mb-3">
-
-                                                <label className="form-label fw-semibold">
-
-                                                    First Name
-
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="firstName"
-                                                    className={`form-control ${errors.firstName ? "is-invalid" : ""}`}
-                                                    value={form.firstName}
-                                                    onChange={handleChange}
-                                                />
-
-                                                <div className="invalid-feedback">
-
-                                                    {errors.firstName}
-
-                                                </div>
-
-                                            </div>
-
-                                            <div className="col-md-6 mb-3">
-
-                                                <label className="form-label fw-semibold">
-
-                                                    Last Name
-
-                                                </label>
-
-                                                <input
-                                                    type="text"
-                                                    name="lastName"
-                                                    className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
-                                                    value={form.lastName}
-                                                    onChange={handleChange}
-                                                />
-
-                                                <div className="invalid-feedback">
-
-                                                    {errors.lastName}
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div className="mb-3">
-
-                                            <label className="form-label fw-semibold">
-
-                                                Email Address
-
-                                            </label>
-
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                                                value={form.email}
-                                                onChange={handleChange}
-                                            />
-
-                                            <div className="invalid-feedback">
-
-                                                {errors.email}
-
-                                            </div>
-
-                                        </div>
-
-                                        <div className="mb-3">
-
-                                            <label className="form-label fw-semibold">
-
-                                                Phone Number
-
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="phoneNumber"
-                                                className={`form-control ${errors.phoneNumber ? "is-invalid" : ""}`}
-                                                value={form.phoneNumber}
-                                                onChange={handleChange}
-                                            />
-
-                                            <div className="invalid-feedback">
-
-                                                {errors.phoneNumber}
-
-                                            </div>
-
-                                        </div>
-
-                                        <div>
-
-                                            <label className="form-label fw-semibold">
-
-                                                Password
-
-                                            </label>
-
-                                            <input
-                                                type="password"
-                                                name="password"
-                                                className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                                                value={form.password}
-                                                onChange={handleChange}
-                                            />
-
-                                            <div className="invalid-feedback">
-
-                                                {errors.password}
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            {/* ================= Employment Information ================= */}
-
-                            <div className="col-lg-6">
-
-                                <div
-                                    className="card border shadow-sm h-100"
-                                    style={{
-                                        borderRadius: "15px"
-                                    }}
-                                >
-
-                                    <div className="card-body">
-
-                                        <h5
-                                            className="fw-bold mb-4"
-                                            style={{
-                                                color: "#0B2E4F"
-                                            }}
-                                        >
-
-                                            Employment Information
-
-                                        </h5>
-
-                                        <div className="mb-3">
-
-                                            <label className="form-label fw-semibold">
-
-                                                Employee Code
-
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="employeeCode"
-                                                className={`form-control ${errors.employeeCode ? "is-invalid" : ""}`}
-                                                value={form.employeeCode}
-                                                onChange={handleChange}
-                                            />
-
-                                            <div className="invalid-feedback">
-
-                                                {errors.employeeCode}
-
-                                            </div>
-
-                                        </div>
-
-                                        <div className="mb-3">
-
-                                            <label className="form-label fw-semibold">
-
-                                                Department
-
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="department"
-                                                className={`form-control ${errors.department ? "is-invalid" : ""}`}
-                                                value={form.department}
-                                                onChange={handleChange}
-                                            />
-
-                                            <div className="invalid-feedback">
-
-                                                {errors.department}
-
-                                            </div>
-
-                                        </div>
-
-                                        <div className="mb-3">
-
-                                            <label className="form-label fw-semibold">
-
-                                                Designation
-
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="designation"
-                                                className={`form-control ${errors.designation ? "is-invalid" : ""}`}
-                                                value={form.designation}
-                                                onChange={handleChange}
-                                            />
-
-                                            <div className="invalid-feedback">
-
-                                                {errors.designation}
-
-                                            </div>
-
-                                        </div>
-
-                                        <div className="row">
-
-                                            <div className="col-md-6 mb-3">
-
-                                                <label className="form-label fw-semibold">
-
-                                                    Experience (Years)
-
-                                                </label>
-
-                                                <input
-                                                    type="number"
-                                                    name="experienceYears"
-                                                    className="form-control"
-                                                    value={form.experienceYears}
-                                                    onChange={handleChange}
-                                                />
-
-                                            </div>
-
-                                            <div className="col-md-6 mb-3">
-
-                                                <label className="form-label fw-semibold">
-
-                                                    Hourly Rate (₹)
-
-                                                </label>
-
-                                                <input
-                                                    type="number"
-                                                    name="hourlyRate"
-                                                    className="form-control"
-                                                    value={form.hourlyRate}
-                                                    onChange={handleChange}
-                                                />
-
-                                            </div>
-
-                                        </div>
-
-                                        <div>
-
-                                            <label className="form-label fw-semibold">
-
-                                                Joining Date
-
-                                            </label>
-
-                                            <input
-                                                type="date"
-                                                name="joiningDate"
-                                                className="form-control"
-                                                value={form.joiningDate}
-                                                onChange={handleChange}
-                                            />
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
+                    <button
+                        type="button"
+                        className="technician-modal-close"
+                        onClick={onClose}
+                        disabled={saving}
+                        aria-label="Close"
+                    >
+                        <i className="bi bi-x-lg"></i>
+                    </button>
+
+                </div>
+
+                {/* BODY */}
+
+                <form
+                    onSubmit={handleSubmit}
+                    className="technician-modal-body"
+                >
+
+                    {error && (
+                        <div className="technician-alert error">
+                            <i className="bi bi-exclamation-triangle-fill"></i>
+
+                            <span>
+                                {error}
+                            </span>
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="technician-alert success">
+                            <i className="bi bi-check-circle-fill"></i>
+
+                            <span>
+                                {success}
+                            </span>
+                        </div>
+                    )}
+
+                    <div className="technician-form-grid">
+
+                        {/* EMPLOYEE CODE */}
+
+                        <div className="technician-form-group">
+
+                            <label htmlFor="employeeCode">
+                                Employee Code
+                                <span className="required">
+                                    *
+                                </span>
+                            </label>
+
+                            <input
+                                id="employeeCode"
+                                name="employeeCode"
+                                type="text"
+                                className="technician-form-control"
+                                placeholder="EMP-001"
+                                value={
+                                    form.employeeCode
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={saving}
+                                autoComplete="off"
+                            />
+
+                        </div>
+
+                        {/* DEPARTMENT */}
+
+                        <div className="technician-form-group">
+
+                            <label htmlFor="department">
+                                Department
+                                <span className="required">
+                                    *
+                                </span>
+                            </label>
+
+                            <input
+                                id="department"
+                                name="department"
+                                type="text"
+                                className="technician-form-control"
+                                placeholder="Electrical"
+                                value={
+                                    form.department
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={saving}
+                                autoComplete="off"
+                            />
+
+                        </div>
+
+                        {/* DESIGNATION */}
+
+                        <div className="technician-form-group">
+
+                            <label htmlFor="designation">
+                                Designation
+                                <span className="required">
+                                    *
+                                </span>
+                            </label>
+
+                            <input
+                                id="designation"
+                                name="designation"
+                                type="text"
+                                className="technician-form-control"
+                                placeholder="Senior Technician"
+                                value={
+                                    form.designation
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={saving}
+                                autoComplete="off"
+                            />
+
+                        </div>
+
+                        {/* EXPERIENCE */}
+
+                        <div className="technician-form-group">
+
+                            <label htmlFor="experienceYears">
+                                Experience
+                            </label>
+
+                            <div className="technician-input-with-suffix">
+
+                                <input
+                                    id="experienceYears"
+                                    name="experienceYears"
+                                    type="number"
+                                    min="0"
+                                    step="0.1"
+                                    className="technician-form-control"
+                                    placeholder="5"
+                                    value={
+                                        form.experienceYears
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    disabled={saving}
+                                />
+
+                                <span>
+                                    Years
+                                </span>
 
                             </div>
 
                         </div>
 
-                    </form>
-                                        <div
-                        className="modal-footer"
-                        style={{
-                            background: "#F8F9FA"
-                        }}
+                        {/* HOURLY RATE */}
+
+                        <div className="technician-form-group">
+
+                            <label htmlFor="hourlyRate">
+                                Hourly Rate
+                            </label>
+
+                            <div className="technician-input-with-prefix">
+
+                                <span>
+                                    ₹
+                                </span>
+
+                                <input
+                                    id="hourlyRate"
+                                    name="hourlyRate"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    className="technician-form-control"
+                                    placeholder="500"
+                                    value={
+                                        form.hourlyRate
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    disabled={saving}
+                                />
+
+                            </div>
+
+                        </div>
+
+                        {/* STATUS */}
+
+                        <div className="technician-form-group">
+
+                            <label htmlFor="currentStatus">
+                                Current Status
+                            </label>
+
+                            <select
+                                id="currentStatus"
+                                name="currentStatus"
+                                className="technician-form-control"
+                                value={
+                                    form.isAvailable
+                                        ? form.currentStatus
+                                        : "Inactive"
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={
+                                    saving ||
+                                    !form.isAvailable
+                                }
+                            >
+                                <option value="Available">
+                                    Available
+                                </option>
+
+                                <option value="Busy">
+                                    Busy
+                                </option>
+
+                                <option value="On Leave">
+                                    On Leave
+                                </option>
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    {/* ACTIVE SWITCH */}
+
+                    <label
+                        className="technician-switch-row"
+                        htmlFor="isAvailable"
                     >
+
+                        <input
+                            id="isAvailable"
+                            name="isAvailable"
+                            type="checkbox"
+                            checked={
+                                Boolean(
+                                    form.isAvailable
+                                )
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            disabled={saving}
+                        />
+
+                        <span className="technician-switch"></span>
+
+                        <span>
+                            Technician is active
+                        </span>
+
+                    </label>
+
+                    {/* FOOTER */}
+
+                    <div className="technician-modal-footer">
 
                         <button
                             type="button"
-                            className="btn btn-secondary"
+                            className="technician-btn secondary"
                             onClick={onClose}
                             disabled={saving}
                         >
-
-                            <i className="bi bi-x-circle me-2"></i>
-
+                            <i className="bi bi-x-lg"></i>
                             Cancel
-
                         </button>
 
                         <button
-                            type="button"
-                            className="btn"
-                            style={{
-                                background: "#F7941D",
-                                color: "#fff"
-                            }}
-                            onClick={handleSave}
-                            disabled={saving}
+                            type="submit"
+                            className="technician-btn primary"
+                            disabled={
+                                saving ||
+                                Boolean(success)
+                            }
                         >
 
                             {saving ? (
-
                                 <>
-
                                     <span
-                                        className="spinner-border spinner-border-sm me-2"
+                                        className="spinner-border spinner-border-sm"
+                                        role="status"
+                                        aria-hidden="true"
                                     ></span>
 
                                     Saving...
-
                                 </>
-
                             ) : (
-
                                 <>
-
-                                    <i className="bi bi-check-circle me-2"></i>
-
-                                    Save Technician
-
+                                    <i className="bi bi-check-lg"></i>
+                                    Add Technician
                                 </>
-
                             )}
 
                         </button>
 
                     </div>
 
-                </div>
+                </form>
 
             </div>
-
         </div>
-
-    </div>);
-
+    );
 }
 
 export default AddTechnicianModal;

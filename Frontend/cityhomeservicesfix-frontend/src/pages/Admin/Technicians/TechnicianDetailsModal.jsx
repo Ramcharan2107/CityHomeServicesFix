@@ -1,600 +1,469 @@
-import { useEffect, useState } from "react";
-import technicianService from "../../../services/technicianService";
+import { useEffect } from "react";
 
 function TechnicianDetailsModal({
-
     show,
-
     technician,
-
     onClose
-
 }) {
-
-    const [loading, setLoading] = useState(false);
-
-    const [details, setDetails] = useState(null);
-
-    const [error, setError] = useState("");
-
     useEffect(() => {
+        if (!show) return;
 
-        if (!show || !technician)
-            return;
+        const handleEscape = (event) => {
+            if (event.key === "Escape") {
+                onClose();
+            }
+        };
 
-        loadTechnician();
+        document.addEventListener(
+            "keydown",
+            handleEscape
+        );
 
-    }, [show, technician]);
+        document.body.style.overflow = "hidden";
 
-    const loadTechnician = async () => {
-
-        setLoading(true);
-
-        setError("");
-
-        try {
-
-            const data = await technicianService.getById(
-
-                technician.technicianId
-
+        return () => {
+            document.removeEventListener(
+                "keydown",
+                handleEscape
             );
 
-            setDetails(data);
+            document.body.style.overflow = "";
+        };
+    }, [show, onClose]);
 
-        }
-        catch (err) {
-
-            console.error(err);
-
-            setError("Failed to load technician details.");
-
-        }
-        finally {
-
-            setLoading(false);
-
-        }
-
-    };
-
-    const formatDate = (date) => {
-
-        if (!date)
-            return "-";
-
-        return new Date(date).toLocaleDateString("en-IN", {
-
-            day: "2-digit",
-
-            month: "short",
-
-            year: "numeric"
-
-        });
-
-    };
-
-    const formatCurrency = (amount) => {
-
-        if (amount == null)
-            return "-";
-
-        return `₹ ${Number(amount).toLocaleString("en-IN")}`;
-
-    };
-
-    if (!show)
+    if (!show || !technician) {
         return null;
+    }
+
+    const technicianId =
+        technician.technicianId ??
+        technician.TechnicianId ??
+        "—";
+
+    const firstName =
+        technician.firstName ??
+        technician.FirstName ??
+        technician.user?.firstName ??
+        technician.user?.FirstName ??
+        "";
+
+    const lastName =
+        technician.lastName ??
+        technician.LastName ??
+        technician.user?.lastName ??
+        technician.user?.LastName ??
+        "";
+
+    const fullName =
+        `${firstName} ${lastName}`.trim() ||
+        technician.employeeCode ||
+        technician.EmployeeCode ||
+        "Unnamed Technician";
+
+    const employeeCode =
+        technician.employeeCode ??
+        technician.EmployeeCode ??
+        "—";
+
+    const department =
+        technician.department ??
+        technician.Department ??
+        "—";
+
+    const designation =
+        technician.designation ??
+        technician.Designation ??
+        "—";
+
+    const experience =
+        technician.experienceYears ??
+        technician.ExperienceYears;
+
+    const hourlyRate =
+        technician.hourlyRate ??
+        technician.HourlyRate;
+
+    const isAvailable =
+        technician.isAvailable ??
+        technician.IsAvailable ??
+        false;
+
+    const currentStatus =
+        technician.currentStatus ??
+        technician.CurrentStatus ??
+        (isAvailable
+            ? "Available"
+            : "Inactive");
+
+    const email =
+        technician.email ??
+        technician.Email ??
+        technician.user?.email ??
+        technician.user?.Email ??
+        "—";
+
+    const phone =
+        technician.phoneNumber ??
+        technician.PhoneNumber ??
+        technician.user?.phoneNumber ??
+        technician.user?.PhoneNumber ??
+        "—";
+
+    const createdAt =
+        technician.createdAt ??
+        technician.CreatedAt;
+
+    const updatedAt =
+        technician.updatedAt ??
+        technician.UpdatedAt;
+
+    const formatDate = (value) => {
+        if (!value) return "—";
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return "—";
+        }
+
+        return date.toLocaleString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+    };
+
+    const getStatusClass = () => {
+        if (!isAvailable) {
+            return "inactive";
+        }
+
+        if (
+            String(currentStatus)
+                .toLowerCase()
+                .includes("busy")
+        ) {
+            return "busy";
+        }
+
+        if (
+            String(currentStatus)
+                .toLowerCase()
+                .includes("leave")
+        ) {
+            return "leave";
+        }
+
+        return "available";
+    };
+
+    const handleBackdropClick = (event) => {
+        if (
+            event.target ===
+            event.currentTarget
+        ) {
+            onClose();
+        }
+    };
 
     return (
-
         <div
-            className="modal fade show"
-            style={{
-                display: "block",
-                background: "rgba(0,0,0,.45)"
-            }}
+            className="technician-modal-overlay"
+            onMouseDown={handleBackdropClick}
         >
+            <div
+                className="technician-modal large"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="technician-details-title"
+                onMouseDown={(event) =>
+                    event.stopPropagation()
+                }
+            >
 
-            <div className="modal-dialog modal-xl modal-dialog-centered">
+                {/* HEADER */}
 
-                <div
-                    className="modal-content border-0 shadow-lg"
-                    style={{
-                        borderRadius: "20px"
-                    }}
-                >
+                <div className="technician-modal-header">
 
-                    <div
-                        className="modal-header"
-                        style={{
-                            background: "#0B2E4F",
-                            color: "#fff"
-                        }}
-                    >
+                    <div className="technician-modal-heading">
 
-                        <h4 className="fw-bold mb-0">
+                        <div className="technician-modal-icon">
+                            <i className="bi bi-person-vcard"></i>
+                        </div>
 
-                            Technician Details
+                        <div>
+                            <h3 id="technician-details-title">
+                                Technician Details
+                            </h3>
 
-                        </h4>
-
-                        <button
-                            className="btn-close btn-close-white"
-                            onClick={onClose}
-                        ></button>
+                            <p>
+                                Complete information about
+                                this technician
+                            </p>
+                        </div>
 
                     </div>
 
-                    <div className="modal-body p-4">
-                                            {loading ? (
-
-                        <div className="text-center py-5">
-
-                            <div
-                                className="spinner-border text-warning"
-                                style={{
-                                    width: "3rem",
-                                    height: "3rem"
-                                }}
-                            ></div>
-
-                            <h5 className="mt-3">
-
-                                Loading Technician...
-
-                            </h5>
-
-                        </div>
-
-                    ) : error ? (
-
-                        <div className="alert alert-danger">
-
-                            {error}
-
-                        </div>
-
-                    ) : (
-
-                        <>
-
-                            {/* ================= Header ================= */}
-
-                            <div className="row align-items-center mb-4">
-
-                                <div className="col-lg-3 text-center">
-
-                                    <div
-                                        className="rounded-circle d-flex justify-content-center align-items-center mx-auto"
-                                        style={{
-                                            width: "120px",
-                                            height: "120px",
-                                            background: "#0B2E4F",
-                                            color: "#fff",
-                                            fontSize: "48px"
-                                        }}
-                                    >
-
-                                        <i className="bi bi-person-workspace"></i>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="col-lg-9">
-
-                                    <h2
-                                        className="fw-bold mb-2"
-                                        style={{
-                                            color: "#0B2E4F"
-                                        }}
-                                    >
-
-                                        {details.user?.firstName} {details.user?.lastName}
-
-                                    </h2>
-
-                                    <div className="d-flex flex-wrap gap-2">
-
-                                        <span className="badge bg-primary">
-
-                                            {details.employeeCode}
-
-                                        </span>
-
-                                        <span className="badge bg-info">
-
-                                            {details.department || "Department"}
-
-                                        </span>
-
-                                        {details.isAvailable ? (
-
-                                            <span className="badge bg-success">
-
-                                                {details.currentStatus}
-
-                                            </span>
-
-                                        ) : (
-
-                                            <span className="badge bg-danger">
-
-                                                Inactive
-
-                                            </span>
-
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            {/* ================= Information ================= */}
-
-                            <div className="row g-4">
-
-                                <div className="col-lg-6">
-
-                                    <div
-                                        className="card border shadow-sm h-100"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
-                                    >
-
-                                        <div className="card-body">
-
-                                            <h5
-                                                className="fw-bold mb-4"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
-
-                                                Personal Information
-
-                                            </h5>
-
-                                            <table className="table table-borderless mb-0">
-
-                                                <tbody>
-
-                                                    <tr>
-
-                                                        <th width="45%">
-
-                                                            Employee Code
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.employeeCode}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Full Name
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.user?.firstName} {details.user?.lastName}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Email
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.user?.email || "-"}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Phone
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.user?.phoneNumber || "-"}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                </tbody>
-
-                                            </table>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="col-lg-6">
-
-                                    <div
-                                        className="card border shadow-sm h-100"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
-                                    >
-
-                                        <div className="card-body">
-
-                                            <h5
-                                                className="fw-bold mb-4"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
-
-                                                Professional Information
-
-                                            </h5>
-
-                                            <table className="table table-borderless mb-0">
-
-                                                <tbody>
-
-                                                    <tr>
-
-                                                        <th width="45%">
-
-                                                            Department
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.department || "-"}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Designation
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.designation || "-"}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Experience
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.experienceYears ?? 0} Years
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Joining Date
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {formatDate(details.joiningDate)}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Hourly Rate
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {formatCurrency(details.hourlyRate)}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Availability
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.isAvailable ? (
-
-                                                                <span className="badge bg-success">
-
-                                                                    Available
-
-                                                                </span>
-
-                                                            ) : (
-
-                                                                <span className="badge bg-danger">
-
-                                                                    Unavailable
-
-                                                                </span>
-
-                                                            )}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                    <tr>
-
-                                                        <th>
-
-                                                            Current Status
-
-                                                        </th>
-
-                                                        <td>
-
-                                                            {details.currentStatus}
-
-                                                        </td>
-
-                                                    </tr>
-
-                                                </tbody>
-
-                                            </table>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="col-12">
-
-                                    <div
-                                        className="card border shadow-sm"
-                                        style={{
-                                            borderRadius: "15px"
-                                        }}
-                                    >
-
-                                        <div className="card-body">
-
-                                            <h5
-                                                className="fw-bold mb-3"
-                                                style={{
-                                                    color: "#0B2E4F"
-                                                }}
-                                            >
-
-                                                Skills
-
-                                            </h5>
-
-                                            {details.technicianSkills?.length > 0 ? (
-
-                                                <div className="d-flex flex-wrap gap-2">
-
-                                                    {details.technicianSkills.map((skill, index) => (
-
-                                                        <span
-                                                            key={index}
-                                                            className="badge bg-primary"
-                                                        >
-
-                                                            {skill.skillName || `Skill ${index + 1}`}
-
-                                                        </span>
-
-                                                    ))}
-
-                                                </div>
-
-                                            ) : (
-
-                                                <p className="text-muted mb-0">
-
-                                                    No skills assigned.
-
-                                                </p>
-
-                                            )}
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </>
-
-                    )}
-                                        <div
-                        className="modal-footer"
-                        style={{
-                            background: "#F8F9FA"
-                        }}
+                    <button
+                        type="button"
+                        className="technician-modal-close"
+                        onClick={onClose}
+                        aria-label="Close"
                     >
+                        <i className="bi bi-x-lg"></i>
+                    </button>
 
-                        <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={onClose}
+                </div>
+
+                {/* BODY */}
+
+                <div className="technician-modal-body">
+
+                    {/* PROFILE */}
+
+                    <div className="technician-profile-banner">
+
+                        <div className="technician-avatar">
+                            {fullName
+                                .charAt(0)
+                                .toUpperCase()}
+                        </div>
+
+                        <div className="technician-profile-info">
+
+                            <h2>
+                                {fullName}
+                            </h2>
+
+                            <p>
+                                {designation}
+                            </p>
+
+                            <div className="technician-profile-meta">
+
+                                <span>
+                                    <i className="bi bi-hash"></i>
+                                    {employeeCode}
+                                </span>
+
+                                <span>
+                                    <i className="bi bi-building"></i>
+                                    {department}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <span
+                            className={`technician-status ${getStatusClass()}`}
                         >
+                            <span></span>
+                            {isAvailable
+                                ? currentStatus
+                                : "Inactive"}
+                        </span>
 
-                            <i className="bi bi-x-circle me-2"></i>
+                    </div>
 
-                            Close
+                    {/* BASIC INFORMATION */}
 
-                        </button>
+                    <div className="technician-details-section">
+
+                        <div className="technician-details-section-title">
+                            <i className="bi bi-person"></i>
+
+                            <span>
+                                Personal Information
+                            </span>
+                        </div>
+
+                        <div className="technician-detail-grid">
+
+                            <DetailItem
+                                label="Technician ID"
+                                value={`#${technicianId}`}
+                            />
+
+                            <DetailItem
+                                label="Employee Code"
+                                value={employeeCode}
+                            />
+
+                            <DetailItem
+                                label="First Name"
+                                value={
+                                    firstName || "—"
+                                }
+                            />
+
+                            <DetailItem
+                                label="Last Name"
+                                value={
+                                    lastName || "—"
+                                }
+                            />
+
+                            <DetailItem
+                                label="Email"
+                                value={email}
+                            />
+
+                            <DetailItem
+                                label="Phone Number"
+                                value={phone}
+                            />
+
+                        </div>
+
+                    </div>
+
+                    {/* PROFESSIONAL INFORMATION */}
+
+                    <div className="technician-details-section">
+
+                        <div className="technician-details-section-title">
+                            <i className="bi bi-briefcase"></i>
+
+                            <span>
+                                Professional Information
+                            </span>
+                        </div>
+
+                        <div className="technician-detail-grid">
+
+                            <DetailItem
+                                label="Department"
+                                value={department}
+                            />
+
+                            <DetailItem
+                                label="Designation"
+                                value={designation}
+                            />
+
+                            <DetailItem
+                                label="Experience"
+                                value={
+                                    experience !==
+                                    null &&
+                                    experience !==
+                                    undefined
+                                        ? `${experience} Years`
+                                        : "—"
+                                }
+                            />
+
+                            <DetailItem
+                                label="Hourly Rate"
+                                value={
+                                    hourlyRate !==
+                                    null &&
+                                    hourlyRate !==
+                                    undefined
+                                        ? `₹ ${Number(
+                                            hourlyRate
+                                        ).toLocaleString(
+                                            "en-IN"
+                                        )}`
+                                        : "—"
+                                }
+                            />
+
+                            <DetailItem
+                                label="Availability"
+                                value={
+                                    isAvailable
+                                        ? "Available"
+                                        : "Inactive"
+                                }
+                            />
+
+                            <DetailItem
+                                label="Current Status"
+                                value={currentStatus}
+                            />
+
+                        </div>
+
+                    </div>
+
+                    {/* ACCOUNT / RECORD INFORMATION */}
+
+                    <div className="technician-details-section">
+
+                        <div className="technician-details-section-title">
+                            <i className="bi bi-clock-history"></i>
+
+                            <span>
+                                Record Information
+                            </span>
+                        </div>
+
+                        <div className="technician-detail-grid">
+
+                            <DetailItem
+                                label="Created At"
+                                value={formatDate(
+                                    createdAt
+                                )}
+                            />
+
+                            <DetailItem
+                                label="Last Updated"
+                                value={formatDate(
+                                    updatedAt
+                                )}
+                            />
+
+                        </div>
 
                     </div>
 
                 </div>
 
+                {/* FOOTER */}
+
+                <div className="technician-modal-footer">
+
+                    <button
+                        type="button"
+                        className="technician-btn secondary"
+                        onClick={onClose}
+                    >
+                        <i className="bi bi-x-lg"></i>
+                        Close
+                    </button>
+
+                </div>
+
             </div>
+        </div>
+    );
+}
+
+function DetailItem({
+    label,
+    value
+}) {
+    return (
+        <div className="technician-detail-item">
+
+            <span>
+                {label}
+            </span>
+
+            <strong>
+                {value}
+            </strong>
 
         </div>
-
-    </div>
     );
-
-
 }
 
 export default TechnicianDetailsModal;

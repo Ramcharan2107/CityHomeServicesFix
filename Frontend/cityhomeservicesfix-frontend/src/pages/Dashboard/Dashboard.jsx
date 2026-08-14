@@ -11,6 +11,49 @@ import AccentButton from "../../components/ui/AccentButton";
 
 import { colors } from "../../theme/colors";
 import "./Dashboard.css";
+const getLoggedInUserName = () => {
+    try {
+        const possibleTokenKeys = ["token", "authToken", "accessToken", "jwt", "userToken"];
+        let token = null;
+
+        for (const key of possibleTokenKeys) {
+            token = localStorage.getItem(key);
+            if (token) break;
+        }
+
+        if (!token) {
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                if (value && value.split(".").length === 3) {
+                    token = value;
+                    break;
+                }
+            }
+        }
+
+        if (!token) return "Administrator";
+
+        const payloadPart = token.split(".")[1];
+        const normalized = payloadPart.replace(/-/g, "+").replace(/_/g, "/");
+        const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+        const payload = JSON.parse(atob(padded));
+
+        return (
+            payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] ||
+            payload.name ||
+            payload.unique_name ||
+            payload.userName ||
+            payload.username ||
+            "Administrator"
+        );
+    } catch (error) {
+        console.error("Unable to read logged-in administrator:", error);
+        return "Administrator";
+    }
+};
+
+
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -19,6 +62,7 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [modal, setModal] = useState(null);
+    const [adminName] = useState(getLoggedInUserName());
 
     useEffect(() => {
         loadDashboard();
@@ -195,8 +239,6 @@ function Dashboard() {
                 title="Dashboard"
                 subtitle="Manage your City Home Services platform."
                 onRefresh={loadDashboard}
-                onAdd={() => navigate("/customers")}
-                addText="New Customer"
             />
 
             {/* HERO */}
@@ -207,7 +249,7 @@ function Dashboard() {
                         Administrator Panel
                     </span>
 
-                    <h1>Welcome Back 👋</h1>
+                    <h1>{adminName} 👋</h1>
 
                     <p>
                         Manage customers, technicians, service requests,
@@ -281,13 +323,36 @@ function Dashboard() {
                     type="button"
                     className="admin-stat-button"
                     onClick={() =>
-                        showMetricDetails(
-                            "Customers",
-                            dashboard.totalCustomers,
-                            "Registered customer accounts",
-                            "bi bi-people-fill",
-                            colors.primary
-                        )
+                        openModal({
+                            title: "Customers",
+                            subtitle: "Customer account information",
+                            icon: "bi bi-people-fill",
+                            color: colors.primary,
+                            content: (
+                                <div className="admin-detail-grid">
+                                    <div className="admin-detail-card">
+                                        <span>Total Customers</span>
+                                        <strong>{dashboard.totalCustomers}</strong>
+                                        <small>Registered customer accounts</small>
+                                    </div>
+                                    <div className="admin-detail-card">
+                                        <span>Account Type</span>
+                                        <strong>Customer</strong>
+                                        <small>Platform users</small>
+                                    </div>
+                                    <div className="admin-detail-card">
+                                        <span>Service Requests</span>
+                                        <strong>{dashboard.totalRequests}</strong>
+                                        <small>Requests created on the platform</small>
+                                    </div>
+                                    <div className="admin-detail-card">
+                                        <span>Account Management</span>
+                                        <strong>Available</strong>
+                                        <small>Manage accounts from Profiles</small>
+                                    </div>
+                                </div>
+                            )
+                        })
                     }
                 >
                     <DashboardCard
@@ -303,13 +368,36 @@ function Dashboard() {
                     type="button"
                     className="admin-stat-button"
                     onClick={() =>
-                        showMetricDetails(
-                            "Technicians",
-                            dashboard.totalTechnicians,
-                            "Registered service workforce",
-                            "bi bi-person-workspace",
-                            colors.success
-                        )
+                        openModal({
+                            title: "Technicians",
+                            subtitle: "Technician workforce information",
+                            icon: "bi bi-person-workspace",
+                            color: colors.success,
+                            content: (
+                                <div className="admin-detail-grid">
+                                    <div className="admin-detail-card">
+                                        <span>Total Technicians</span>
+                                        <strong>{dashboard.totalTechnicians}</strong>
+                                        <small>Registered service technicians</small>
+                                    </div>
+                                    <div className="admin-detail-card">
+                                        <span>Available</span>
+                                        <strong>{dashboard.availableTechnicians}</strong>
+                                        <small>Currently available technicians</small>
+                                    </div>
+                                    <div className="admin-detail-card">
+                                        <span>Busy</span>
+                                        <strong>{dashboard.totalTechnicians - dashboard.availableTechnicians}</strong>
+                                        <small>Currently unavailable or assigned</small>
+                                    </div>
+                                    <div className="admin-detail-card">
+                                        <span>Availability</span>
+                                        <strong>{technicianPercentage}%</strong>
+                                        <small>Current workforce availability</small>
+                                    </div>
+                                </div>
+                            )
+                        })
                     }
                 >
                     <DashboardCard
@@ -325,13 +413,36 @@ function Dashboard() {
                     type="button"
                     className="admin-stat-button"
                     onClick={() =>
-                        showMetricDetails(
-                            "Service Requests",
-                            dashboard.totalRequests,
-                            "Total service requests",
-                            "bi bi-tools",
-                            colors.accent
-                        )
+                        openModal({
+                            title: "Service Requests",
+                            subtitle: "Complete service request overview",
+                            icon: "bi bi-tools",
+                            color: colors.accent,
+                            content: (
+                                <div className="admin-detail-grid">
+                                    <div className="admin-detail-card request-pending">
+                                        <span>Pending</span>
+                                        <strong>{dashboard.pendingRequests}</strong>
+                                        <small>Waiting for action</small>
+                                    </div>
+                                    <div className="admin-detail-card request-assigned">
+                                        <span>Assigned</span>
+                                        <strong>{dashboard.assignedRequests}</strong>
+                                        <small>Currently assigned</small>
+                                    </div>
+                                    <div className="admin-detail-card request-completed">
+                                        <span>Completed</span>
+                                        <strong>{dashboard.completedRequests}</strong>
+                                        <small>Successfully completed</small>
+                                    </div>
+                                    <div className="admin-detail-card request-total">
+                                        <span>Total Requests</span>
+                                        <strong>{dashboard.totalRequests}</strong>
+                                        <small>All service requests</small>
+                                    </div>
+                                </div>
+                            )
+                        })
                     }
                 >
                     <DashboardCard

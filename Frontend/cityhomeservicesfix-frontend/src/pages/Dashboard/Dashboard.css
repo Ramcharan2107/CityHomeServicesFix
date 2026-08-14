@@ -17,9 +17,9 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    min-height: 320px;
+    min-height: 210px;
     margin: 18px 0 28px;
-    padding: 42px 48px;
+    padding: 28px 42px;
     border-radius: 24px;
     background:
         radial-gradient(circle at 90% 20%, rgba(247, 148, 29, .28), transparent 32%),
@@ -800,6 +800,50 @@
     font-size: 22px;
 }
 
+/* ---------- Detailed Admin Modal ---------- */
+
+.admin-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.admin-detail-card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #edf0f3;
+    border-radius: 16px;
+    background: #fbfcfd;
+}
+
+.admin-detail-card span {
+    display: block;
+    color: #8491a0;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.admin-detail-card strong {
+    display: block;
+    margin-top: 5px;
+    color: #0B2E4F;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.admin-detail-card small {
+    display: block;
+    margin-top: 5px;
+    color: #9aa4ae;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.admin-detail-card.request-pending { border-left: 4px solid #F7941D; }
+.admin-detail-card.request-assigned { border-left: 4px solid #0B2E4F; }
+.admin-detail-card.request-completed { border-left: 4px solid #198754; }
+.admin-detail-card.request-total { border-left: 4px solid #F7941D; }
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1200px) {
@@ -921,6 +965,10 @@
 
     .admin-overview-grid {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-detail-grid {
+        grid-template-columns: 1fr;
     }
 }
 

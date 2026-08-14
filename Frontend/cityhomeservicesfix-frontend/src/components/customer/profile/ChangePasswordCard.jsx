@@ -4,21 +4,15 @@ import userService from "../../../services/userService";
 function ChangePasswordCard() {
 
     const [currentPassword, setCurrentPassword] = useState("");
-
     const [newPassword, setNewPassword] = useState("");
-
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const [showCurrent, setShowCurrent] = useState(false);
-
     const [showNew, setShowNew] = useState(false);
-
     const [showConfirm, setShowConfirm] = useState(false);
 
     const [loading, setLoading] = useState(false);
-
     const [message, setMessage] = useState("");
-
     const [error, setError] = useState("");
 
     const changePassword = async (e) => {
@@ -29,11 +23,8 @@ function ChangePasswordCard() {
         setError("");
 
         if (newPassword !== confirmPassword) {
-
             setError("Passwords do not match.");
-
             return;
-
         }
 
         try {
@@ -41,11 +32,8 @@ function ChangePasswordCard() {
             setLoading(true);
 
             await userService.changePassword({
-
                 currentPassword,
-
                 newPassword
-
             });
 
             setMessage("Password changed successfully.");
@@ -58,11 +46,8 @@ function ChangePasswordCard() {
         catch (err) {
 
             setError(
-
                 err.response?.data?.message ||
-
                 "Failed to change password."
-
             );
 
         }
@@ -145,12 +130,12 @@ function ChangePasswordCard() {
 
                 <form onSubmit={changePassword}>
 
+                    {/* CURRENT PASSWORD */}
+
                     <div className="mb-3">
 
                         <label className="form-label">
-
                             Current Password
-
                         </label>
 
                         <div className="input-group">
@@ -162,6 +147,7 @@ function ChangePasswordCard() {
                                 onChange={(e) =>
                                     setCurrentPassword(e.target.value)
                                 }
+                                autoComplete="current-password"
                                 required
                             />
 
@@ -171,20 +157,32 @@ function ChangePasswordCard() {
                                 onClick={() =>
                                     setShowCurrent(!showCurrent)
                                 }
+                                aria-label={
+                                    showCurrent
+                                        ? "Hide current password"
+                                        : "Show current password"
+                                }
                             >
-                                <i className={`bi ${showCurrent ? "bi-eye-slash" : "bi-eye"}`}></i>
+                                <i
+                                    className={`bi ${
+                                        showCurrent
+                                            ? "bi-eye-slash"
+                                            : "bi-eye"
+                                    }`}
+                                ></i>
                             </button>
 
                         </div>
 
                     </div>
 
+
+                    {/* NEW PASSWORD */}
+
                     <div className="mb-3">
 
                         <label className="form-label">
-
                             New Password
-
                         </label>
 
                         <div className="input-group">
@@ -196,6 +194,7 @@ function ChangePasswordCard() {
                                 onChange={(e) =>
                                     setNewPassword(e.target.value)
                                 }
+                                autoComplete="new-password"
                                 required
                             />
 
@@ -205,13 +204,27 @@ function ChangePasswordCard() {
                                 onClick={() =>
                                     setShowNew(!showNew)
                                 }
+                                aria-label={
+                                    showNew
+                                        ? "Hide new password"
+                                        : "Show new password"
+                                }
                             >
-                                <i className={`bi ${showNew ? "bi-eye-slash" : "bi-eye"}`}></i>
+                                <i
+                                    className={`bi ${
+                                        showNew
+                                            ? "bi-eye-slash"
+                                            : "bi-eye"
+                                    }`}
+                                ></i>
                             </button>
 
                         </div>
 
                     </div>
+
+
+                    {/* PASSWORD STRENGTH */}
 
                     {strength && (
 
@@ -231,23 +244,20 @@ function ChangePasswordCard() {
                             <small
                                 className={`text-${strength.color}`}
                             >
-
-                                Password Strength :
-                                {" "}
-                                {strength.text}
-
+                                Password Strength : {strength.text}
                             </small>
 
                         </div>
 
                     )}
 
+
+                    {/* CONFIRM PASSWORD */}
+
                     <div className="mb-4">
 
                         <label className="form-label">
-
                             Confirm Password
-
                         </label>
 
                         <div className="input-group">
@@ -259,6 +269,7 @@ function ChangePasswordCard() {
                                 onChange={(e) =>
                                     setConfirmPassword(e.target.value)
                                 }
+                                autoComplete="new-password"
                                 required
                             />
 
@@ -268,13 +279,27 @@ function ChangePasswordCard() {
                                 onClick={() =>
                                     setShowConfirm(!showConfirm)
                                 }
+                                aria-label={
+                                    showConfirm
+                                        ? "Hide confirm password"
+                                        : "Show confirm password"
+                                }
                             >
-                                <i className={`bi ${showConfirm ? "bi-eye-slash" : "bi-eye"}`}></i>
+                                <i
+                                    className={`bi ${
+                                        showConfirm
+                                            ? "bi-eye-slash"
+                                            : "bi-eye"
+                                    }`}
+                                ></i>
                             </button>
 
                         </div>
 
                     </div>
+
+
+                    {/* UPDATE PASSWORD */}
 
                     <button
                         className="btn"
@@ -288,9 +313,7 @@ function ChangePasswordCard() {
                     >
 
                         {loading
-
                             ? "Updating..."
-
                             : "Update Password"}
 
                     </button>
