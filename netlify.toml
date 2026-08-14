@@ -1,0 +1,4 @@
+[build]
+  base = "Frontend/cityhomeservicesfix-frontend"
+  command = "npm run build"
+  publish = "dist"
